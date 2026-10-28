@@ -106,7 +106,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden bg-transparent">
+    <div className="relative w-full pt-12 pb-10 sm:pt-20 sm:pb-20 md:pt-32 md:pb-28 overflow-hidden bg-transparent">
       
       {/* Dynamic Background Effects */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
@@ -128,7 +128,7 @@ export default function HeroSection() {
 
       <div className="max-w-[1400px] mx-auto px-4 lg:px-8 relative z-10">
         
-        <div className="grid lg:grid-cols-2 gap-16 lg:gap-8 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 items-center">
           
           {/* Left Side - Content */}
           <div className="relative">
@@ -200,8 +200,8 @@ export default function HeroSection() {
 
           </div>
 
-          {/* Right Side - Stacked Cards */}
-          <div className="relative h-[600px] flex items-center justify-center lg:justify-end">
+          {/* Right Side - Stacked Cards (Hidden on mobile, visible on desktop lg+) */}
+          <div className="hidden lg:flex relative h-[600px] items-center justify-end">
             <div className="absolute top-[-5%] right-[10%] hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-gray-300 z-50">
               <span className="text-[#ccff00]">✨</span> 100+ Premium Tools
             </div>
