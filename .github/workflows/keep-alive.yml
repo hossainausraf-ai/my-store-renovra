@@ -1,0 +1,18 @@
+name: Keep Database Alive
+
+on:
+  schedule:
+    # Runs every 3 days at 04:00 AM UTC (10:00 AM BD Time)
+    - cron: '0 4 */3 * *'
+  workflow_dispatch: # Allows manual trigger from GitHub Actions tab
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Supabase & Site to prevent auto-pausing
+        run: |
+          echo "Pinging site and database..."
+          curl -s -o /dev/null -w "%{http_code}\n" "${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}/rest/v1/" \
+            -H "apikey: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}" || true
+          echo "Database ping completed successfully. Project is active."
