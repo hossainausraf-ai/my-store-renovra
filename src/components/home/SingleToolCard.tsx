@@ -50,6 +50,8 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               <img 
                 src={tool.imageUrl} 
                 alt={tool.name} 
+                loading="lazy"
+                decoding="async"
                 onError={() => setImgError(true)}
                 className="max-w-full max-h-full object-contain relative z-10" 
               />

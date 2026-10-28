@@ -9,7 +9,7 @@ const changingWords = ['seconds.', 'clicks.', 'minutes.'];
 const defaultToolCards = [
   {
     name: 'Monica AI',
-    logo: 'https://i.ibb.co/311WqS5/monica.png', // Placeholder, using initials or colored box if image fails
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg',
     features: [
       'GPT-4, Claude & Gemini',
       'AI chat on any webpage',
@@ -22,7 +22,7 @@ const defaultToolCards = [
   },
   {
     name: 'Canva Pro',
-    logo: 'https://i.ibb.co/8g6wXW4/canva.png',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
     features: [
       '100M+ premium assets',
       'Magic Studio AI tools',
@@ -35,7 +35,7 @@ const defaultToolCards = [
   },
   {
     name: 'ChatGPT Plus',
-    logo: 'https://i.ibb.co/L5Qx6T2/chatgpt.png',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
     features: [
       'GPT-4o & o1 models',
       'Unlimited prompts',
@@ -48,7 +48,7 @@ const defaultToolCards = [
   },
   {
     name: 'Envato Elements',
-    logo: 'https://i.ibb.co/808bFqJ/envato.png',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Envato_Logo.svg',
     features: [
       'Unlimited downloads',
       'Templates, graphics, fonts',
@@ -243,10 +243,17 @@ export default function HeroSection() {
                     })}
 
                     <div className="w-16 h-16 bg-white rounded-2xl mb-6 flex items-center justify-center overflow-hidden shadow-lg relative z-10">
-                      <img src={card.logo} alt={card.name} className="w-12 h-12 object-contain" onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = 'none';
-                        (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-2xl font-bold text-black">${card.name.charAt(0)}</span>`;
-                      }}/>
+                      <img 
+                        src={card.logo} 
+                        alt={card.name} 
+                        loading="lazy"
+                        decoding="async"
+                        className="w-12 h-12 object-contain" 
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = 'none';
+                          (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-2xl font-bold text-black">${card.name.charAt(0)}</span>`;
+                        }}
+                      />
                     </div>
                     
                     <h3 className="text-3xl font-bold text-white mb-6 relative z-10 drop-shadow-md">{card.name}</h3>

@@ -33,7 +33,13 @@ export default function ToolsMarquee() {
       className="flex flex-col items-center justify-center bg-transparent border border-white/5 rounded-2xl p-4 w-28 h-28 hover:bg-white/5 hover:border-white/10 transition-all duration-300 shrink-0 group"
     >
       <div className="relative w-12 h-12 rounded-xl bg-white/10 backdrop-blur-md border border-white/20 shadow-[inset_0_1px_2px_rgba(255,255,255,0.3)] flex items-center justify-center mb-2 group-hover:bg-white/20 group-hover:border-white/30 transition-all duration-300">
-        <img src={tool.image_url} alt={tool.name} className="w-8 h-8 object-contain group-hover:scale-110 transition-transform duration-300" />
+        <img 
+          src={tool.image_url} 
+          alt={tool.name} 
+          loading="lazy"
+          decoding="async"
+          className="w-8 h-8 object-contain group-hover:scale-110 transition-transform duration-300" 
+        />
       </div>
       <span className="text-[10px] font-semibold text-gray-400 group-hover:text-white transition-colors">{tool.name}</span>
     </div>

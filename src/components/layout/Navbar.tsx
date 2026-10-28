@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="flex items-center absolute md:static left-1/2 -translate-x-1/2 md:translate-x-0">
               <Link href="/" className="flex items-center gap-2 group">
                 {logoUrl && (
-                  <img src={logoUrl} alt="Logo" className="h-8 object-contain" />
+                  <img src={logoUrl} alt="Logo" loading="eager" decoding="async" className="h-8 object-contain" />
                 )}
                 <span className="text-xl font-black text-white tracking-tight">
                   Renovra

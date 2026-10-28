@@ -12,8 +12,10 @@ import {
   X, 
   CheckCircle2, 
   Loader2,
-  ExternalLink
+  ExternalLink,
+  Zap
 } from 'lucide-react';
+import { optimizeImageClient, formatBytes } from '@/lib/image-optimizer';
 
 type DigitalProduct = {
   id: string;
@@ -45,11 +47,18 @@ export default function AdminDigitalProductsPage() {
     download_url: ''
   });
 
-  // Upload state
+  // Upload & Optimization state
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>('');
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationStats, setOptimizationStats] = useState<{
+    original: string;
+    optimized: string;
+    saved: number;
+    format: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
@@ -87,6 +96,8 @@ export default function AdminDigitalProductsPage() {
     });
     setImageFile(null);
     setImagePreview('');
+    setOptimizationStats(null);
+    setIsOptimizing(false);
     setIsAdding(false);
     setIsEditing(null);
   };
@@ -101,6 +112,8 @@ export default function AdminDigitalProductsPage() {
       download_url: product.download_url || ''
     });
     setImagePreview(product.image_url || '');
+    setOptimizationStats(null);
+    setIsOptimizing(false);
     setIsEditing(product.id);
     setIsAdding(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -120,19 +133,44 @@ export default function AdminDigitalProductsPage() {
     }
   };
 
-  const processFile = (file: File) => {
+  const processFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      showNotification('error', 'দয়া করে একটি সঠিক ইমেজ ফাইল দিন (PNG, JPG, SVG)');
+      showNotification('error', 'দয়া করে একটি সঠিক ইমেজ ফাইল দিন (PNG, JPG, SVG, WebP)');
       return;
     }
-    setImageFile(file);
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const result = e.target?.result as string;
-      setImagePreview(result);
-      setFormData(prev => ({ ...prev, image_url: result }));
-    };
-    reader.readAsDataURL(file);
+
+    setIsOptimizing(true);
+    setOptimizationStats(null);
+
+    try {
+      // Auto-downsample to max 1200px & convert to high-fidelity WebP
+      const result = await optimizeImageClient(file, { maxDimension: 1200, quality: 0.85 });
+      setImageFile(result.file);
+      setImagePreview(result.dataUrl);
+      setFormData(prev => ({ ...prev, image_url: result.dataUrl }));
+
+      if (result.originalSize > result.optimizedSize) {
+        setOptimizationStats({
+          original: formatBytes(result.originalSize),
+          optimized: formatBytes(result.optimizedSize),
+          saved: result.savedPercent,
+          format: result.format.toUpperCase(),
+        });
+        showNotification('success', `ইমেজ অপ্টিমাইজড (${result.format.toUpperCase()}): ${formatBytes(result.originalSize)} ➔ ${formatBytes(result.optimizedSize)} (${result.savedPercent}% সাইজ সেভ)`);
+      }
+    } catch (err) {
+      console.warn('Client optimization failed, fallback to raw reader:', err);
+      setImageFile(file);
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const result = e.target?.result as string;
+        setImagePreview(result);
+        setFormData(prev => ({ ...prev, image_url: result }));
+      };
+      reader.readAsDataURL(file);
+    } finally {
+      setIsOptimizing(false);
+    }
   };
 
   const handleSaveProduct = async (e: React.FormEvent) => {
@@ -305,6 +343,29 @@ export default function AdminDigitalProductsPage() {
                   </div>
                 )}
               </div>
+
+              {/* Optimization Status Badge */}
+              {isOptimizing && (
+                <div className="mt-2.5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 flex items-center gap-2 animate-pulse">
+                  <div className="w-3.5 h-3.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin shrink-0"></div>
+                  <span>ইমেজ প্রসেস হচ্ছে: সর্বোচ্চ স্বচ্ছতা বজায় রেখে WebP ফরম্যাটে অপ্টিমাইজ করা হচ্ছে...</span>
+                </div>
+              )}
+
+              {optimizationStats && !isOptimizing && (
+                <div className="mt-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between gap-2 shadow-inner">
+                  <div className="flex items-center gap-2">
+                    <Zap className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>
+                      <b>স্মার্ট অপ্টিমাইজড ({optimizationStats.format}):</b> {optimizationStats.original} ➔ <b className="text-white">{optimizationStats.optimized}</b>
+                    </span>
+                  </div>
+                  <span className="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded text-[10px]">
+                    {optimizationStats.saved}% সাইজ সাশ্রয়!
+                  </span>
+                </div>
+              )}
+
               <div className="mt-2">
                 <input
                   type="text"

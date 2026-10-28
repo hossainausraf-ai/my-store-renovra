@@ -3,10 +3,10 @@
 import { Layers, FileCode } from 'lucide-react';
 
 const heroCards = [
-  { name: 'Monica AI', logo: 'https://i.ibb.co/311WqS5/monica.png', desc: 'GPT-4, Claude & Gemini assistant' },
-  { name: 'Canva Pro', logo: 'https://i.ibb.co/8g6wXW4/canva.png', desc: '100M+ assets & Magic Studio AI' },
-  { name: 'ChatGPT Plus', logo: 'https://i.ibb.co/L5Qx6T2/chatgpt.png', desc: 'GPT-4o & o1 with unlimited prompts' },
-  { name: 'Envato Elements', logo: 'https://i.ibb.co/808bFqJ/envato.png', desc: 'Unlimited themes, graphics & stock' },
+  { name: 'Monica AI', logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg', desc: 'GPT-4, Claude & Gemini assistant' },
+  { name: 'Canva Pro', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg', desc: '100M+ assets & Magic Studio AI' },
+  { name: 'ChatGPT Plus', logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg', desc: 'GPT-4o & o1 with unlimited prompts' },
+  { name: 'Envato Elements', logo: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Envato_Logo.svg', desc: 'Unlimited themes, graphics & stock' },
 ];
 
 export default function AdminHeroCardsPage() {

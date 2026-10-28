@@ -12,8 +12,10 @@ import {
   CheckCircle2, 
   X, 
   Loader2,
-  Globe
+  Globe,
+  Zap
 } from 'lucide-react';
+import { optimizeImageClient, formatBytes } from '@/lib/image-optimizer';
 
 export default function AdminSettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
@@ -34,6 +36,13 @@ export default function AdminSettingsPage() {
 
   const [logoPreview, setLogoPreview] = useState<string>('');
   const [logoFile, setLogoFile] = useState<File | null>(null);
+  const [isOptimizing, setIsOptimizing] = useState(false);
+  const [optimizationStats, setOptimizationStats] = useState<{
+    original: string;
+    optimized: string;
+    saved: number;
+    format: string;
+  } | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const showNotification = (type: 'success' | 'error', message: string) => {
@@ -58,17 +67,46 @@ export default function AdminSettingsPage() {
       .finally(() => setIsLoading(false));
   }, []);
 
-  const handleLogoSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleLogoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setLogoFile(file);
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        const url = ev.target?.result as string;
-        setLogoPreview(url);
-        setFormData(prev => ({ ...prev, logo_url: url }));
-      };
-      reader.readAsDataURL(file);
+      if (!file.type.startsWith('image/')) {
+        showNotification('error', 'দয়া করে একটি সঠিক ইমেজ ফাইল দিন (PNG, JPG, SVG, WebP)');
+        return;
+      }
+
+      setIsOptimizing(true);
+      setOptimizationStats(null);
+
+      try {
+        // Optimize logo to max 600px with 90% quality WebP
+        const result = await optimizeImageClient(file, { maxDimension: 600, quality: 0.9 });
+        setLogoFile(result.file);
+        setLogoPreview(result.dataUrl);
+        setFormData(prev => ({ ...prev, logo_url: result.dataUrl }));
+
+        if (result.originalSize > result.optimizedSize) {
+          setOptimizationStats({
+            original: formatBytes(result.originalSize),
+            optimized: formatBytes(result.optimizedSize),
+            saved: result.savedPercent,
+            format: result.format.toUpperCase(),
+          });
+          showNotification('success', `লোগো অপ্টিমাইজড (${result.format.toUpperCase()}): ${formatBytes(result.originalSize)} ➔ ${formatBytes(result.optimizedSize)} (${result.savedPercent}% সাইজ সেভ)`);
+        }
+      } catch (err) {
+        console.warn('Logo optimization error, fallback to raw reader:', err);
+        setLogoFile(file);
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          const url = ev.target?.result as string;
+          setLogoPreview(url);
+          setFormData(prev => ({ ...prev, logo_url: url }));
+        };
+        reader.readAsDataURL(file);
+      } finally {
+        setIsOptimizing(false);
+      }
     }
   };
 
@@ -206,6 +244,25 @@ export default function AdminSettingsPage() {
                     className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
                   />
                   <p className="text-xs text-gray-500 mt-1">বামপাশের বক্সে ক্লিক করে ছবি আপলোড করতে পারেন অথবা অনলাইন লিংক দিতে পারেন।</p>
+                  
+                  {isOptimizing && (
+                    <div className="mt-2 p-2.5 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 flex items-center gap-2 animate-pulse">
+                      <div className="w-3 h-3 border-2 border-blue-400 border-t-transparent rounded-full animate-spin shrink-0"></div>
+                      <span>লোগো অপ্টিমাইজ হচ্ছে...</span>
+                    </div>
+                  )}
+
+                  {optimizationStats && !isOptimizing && (
+                    <div className="mt-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <Zap className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                        <span><b>অপ্টিমাইজড ({optimizationStats.format}):</b> {optimizationStats.original} ➔ {optimizationStats.optimized}</span>
+                      </div>
+                      <span className="bg-emerald-500/20 text-emerald-300 font-bold px-1.5 py-0.5 rounded text-[10px]">
+                        {optimizationStats.saved}% সাশ্রয়
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
