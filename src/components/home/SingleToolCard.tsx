@@ -27,7 +27,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
   const toolInitial = tool.name ? tool.name.charAt(0).toUpperCase() : 'T';
 
   return (
-    <div className="bg-[#0b151a] border border-white/10 rounded-[24px] overflow-hidden hover:border-[#1e4a5d] transition-all group flex flex-col justify-between h-full relative shadow-2xl">
+    <div className="bg-gradient-to-b from-[#0d171d] to-[#081014] border border-white/10 rounded-[28px] overflow-hidden hover:border-cyan-500/40 hover:-translate-y-2 transition-all duration-300 group flex flex-col justify-between h-full relative shadow-2xl hover:shadow-[0_25px_50px_rgba(0,0,0,0.8),0_0_30px_rgba(6,182,212,0.12)]">
       
       {/* Top Header Section with Blue Gradient & Shadow */}
       <div className="bg-gradient-to-br from-[#123040] to-[#0a1b24] shadow-[0_15px_30px_rgba(0,0,0,0.6)] relative z-10 px-5 pt-5 pb-5 flex flex-col border-b border-white/5">
@@ -117,7 +117,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
 
           <Link 
             href={`/checkout?pkgId=${tool.id}`} 
-            className="w-full py-3.5 rounded-xl bg-[#B3E600] hover:bg-[#9cbd00] text-black font-bold flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_5px_15px_rgba(179,230,0,0.2)] cursor-pointer"
+            className="w-full py-3.5 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_15px_rgba(204,255,0,0.2)] hover:shadow-[0_0_25px_rgba(204,255,0,0.4)] cursor-pointer"
           >
             <ShoppingCart className="w-5 h-5" />
             Buy Now

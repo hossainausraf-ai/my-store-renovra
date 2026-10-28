@@ -1,52 +1,22 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { ShieldCheck, Play, ArrowRight, CheckCircle2, Zap } from 'lucide-react';
+import { ShieldCheck, Play, ArrowRight, CheckCircle2, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 
 const changingWords = ['seconds.', 'clicks.', 'minutes.'];
 
-const defaultToolCards = [
+type ToolCard = {
+  id?: string;
+  name: string;
+  logo: string;
+  features: string[];
+  floatingReactions: string[];
+};
+
+const defaultToolCards: ToolCard[] = [
   {
-    name: 'Monica AI',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg',
-    features: [
-      'GPT-4, Claude & Gemini',
-      'AI chat on any webpage',
-      'Image generation included',
-      'Translator & writer',
-      'Cross-device sync',
-      'Instant access after purchase'
-    ],
-    emojis: ['😍', '🚀', '❤️', '👍', '📌']
-  },
-  {
-    name: 'Canva Pro',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
-    features: [
-      '100M+ premium assets',
-      'Magic Studio AI tools',
-      'Background remover',
-      'Brand kits & resize',
-      '100GB cloud storage',
-      'Instant access after purchase'
-    ],
-    emojis: ['🎨', '✨', '🔥', '👍', '💖']
-  },
-  {
-    name: 'ChatGPT Plus',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
-    features: [
-      'GPT-4o & o1 models',
-      'Unlimited prompts',
-      'Image & file uploads',
-      'Custom GPTs access',
-      'Priority response speed',
-      'Instant access after purchase'
-    ],
-    emojis: ['🤖', '⚡', '🧠', '👍', '💬']
-  },
-  {
+    id: 'envato',
     name: 'Envato Elements',
     logo: 'https://upload.wikimedia.org/wikipedia/commons/a/af/Envato_Logo.svg',
     features: [
@@ -57,38 +27,99 @@ const defaultToolCards = [
       'New items weekly',
       'Instant access after purchase'
     ],
-    emojis: ['🎥', '🎵', '🚀', '😍', '🔥']
+    floatingReactions: ['🚀', '🤩', '❤️']
+  },
+  {
+    id: 'canva',
+    name: 'Canva Pro',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
+    features: [
+      '100M+ premium assets',
+      'Magic Studio AI tools',
+      'Background remover',
+      'Brand kits & resize',
+      '100GB cloud storage',
+      'Instant access after purchase'
+    ],
+    floatingReactions: ['🎨', '✨', '💖']
+  },
+  {
+    id: 'chatgpt',
+    name: 'ChatGPT Plus',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
+    features: [
+      'GPT-4o & o1 models',
+      'Unlimited prompts',
+      'Image & file uploads',
+      'Custom GPTs access',
+      'Priority response speed',
+      'Instant access after purchase'
+    ],
+    floatingReactions: ['🤖', '⚡', '🧠']
+  },
+  {
+    id: 'monica',
+    name: 'Monica AI',
+    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg',
+    features: [
+      'GPT-4, Claude & Gemini',
+      'AI chat on any webpage',
+      'Image generation included',
+      'Translator & writer',
+      'Cross-device sync',
+      'Instant access after purchase'
+    ],
+    floatingReactions: ['💡', '🔥', '🌟']
   }
 ];
 
-type ToolCard = {
-  id?: string;
-  name: string;
-  logo: string;
-  features: string[];
-  emojis: string[];
-};
-
 export default function HeroSection() {
   const [wordIndex, setWordIndex] = useState(0);
-  const [cardIndex, setCardIndex] = useState(0);
-  const [toolCards, setToolCards] = useState<ToolCard[]>(defaultToolCards);
+  const [activeCard, setActiveCard] = useState(0);
+  const [leavingCard, setLeavingCard] = useState<number | null>(null);
+  const [isPaused, setIsPaused] = useState(false);
+  const [toolCards] = useState<ToolCard[]>(defaultToolCards);
+  const autoPlayRef = useRef<NodeJS.Timeout | null>(null);
 
+  // Cycling words animation
   useEffect(() => {
     const wordInterval = setInterval(() => {
       setWordIndex((prev) => (prev + 1) % changingWords.length);
     }, 2500);
+    return () => clearInterval(wordInterval);
+  }, []);
 
-    const cardInterval = setInterval(() => {
-      setCardIndex((prev) => (prev + 1) % (toolCards.length || 1));
-    }, 4000);
+  // Card transition handlers
+  const handleGoTo = (nextIdx: number) => {
+    if (nextIdx === activeCard || leavingCard !== null) return;
+    setLeavingCard(activeCard);
+    setActiveCard(nextIdx);
+    setTimeout(() => {
+      setLeavingCard(null);
+    }, 650);
+  };
 
+  const handleNextCard = () => {
+    const nextIdx = (activeCard + 1) % toolCards.length;
+    handleGoTo(nextIdx);
+  };
+
+  const handlePrevCard = () => {
+    const prevIdx = (activeCard - 1 + toolCards.length) % toolCards.length;
+    handleGoTo(prevIdx);
+  };
+
+  // Autoplay timer with pause on hover
+  useEffect(() => {
+    if (isPaused) return;
+    autoPlayRef.current = setInterval(() => {
+      handleNextCard();
+    }, 4500);
 
     return () => {
-      clearInterval(wordInterval);
-      clearInterval(cardInterval);
+      if (autoPlayRef.current) clearInterval(autoPlayRef.current);
     };
-  }, [toolCards.length]);
+  }, [activeCard, isPaused, toolCards.length]);
 
   return (
     <div className="relative w-full pt-20 pb-20 md:pt-32 md:pb-28 overflow-hidden bg-transparent">
@@ -101,11 +132,17 @@ export default function HeroSection() {
       
       {/* Inline styles for custom floating animations */}
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes fadeUpFloat {
-          0% { transform: translateY(40px) scale(0.8); opacity: 0; }
-          20% { opacity: 1; transform: translateY(10px) scale(1.1); }
-          80% { opacity: 1; transform: translateY(-20px) scale(1); }
-          100% { transform: translateY(-60px) scale(0.5); opacity: 0; }
+        @keyframes floatReaction1 {
+          0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          50% { transform: translateY(-12px) rotate(6deg) scale(1.05); }
+        }
+        @keyframes floatReaction2 {
+          0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          50% { transform: translateY(-15px) rotate(-8deg) scale(1.08); }
+        }
+        @keyframes floatReaction3 {
+          0%, 100% { transform: translateY(0px) rotate(0deg) scale(1); }
+          50% { transform: translateY(-10px) rotate(5deg) scale(1.04); }
         }
         @keyframes float1 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(-15px) rotate(5deg); } }
         @keyframes float2 { 0%, 100% { transform: translateY(0px) rotate(0deg); } 50% { transform: translateY(15px) rotate(-5deg); } }
@@ -189,90 +226,156 @@ export default function HeroSection() {
 
           </div>
 
-          {/* Right Side - Stacked Cards */}
-          <div className="relative h-[600px] flex items-center justify-center lg:justify-end perspective-1000">
-            <div className="absolute top-[-5%] right-[10%] hidden lg:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white/5 border border-white/10 text-[11px] font-medium text-gray-300 z-50">
+          {/* Right Side - Stacked 3D Cards */}
+          <div className="relative h-[620px] flex items-center justify-center lg:justify-end">
+            
+            {/* Top Badge */}
+            <div className="absolute top-[-2%] right-[5%] hidden lg:flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[11px] font-semibold text-gray-300 z-50 shadow-xl">
               <span className="text-[#ccff00]">✨</span> 100+ Premium Tools
             </div>
 
-            <div className="relative w-full max-w-[420px] h-[520px]">
+            {/* Stack Container */}
+            <div 
+              onMouseEnter={() => setIsPaused(true)}
+              onMouseLeave={() => setIsPaused(false)}
+              className="relative w-full max-w-[430px] h-[540px] px-2 sm:px-0"
+            >
               {toolCards.map((card, idx) => {
-                // Calculate position based on current active card
-                let relativeIndex = idx - cardIndex;
-                if (relativeIndex < 0) relativeIndex += toolCards.length;
-                
-                const isTop = relativeIndex === 0;
-                
+                const isLeaving = idx === leavingCard;
+                const isActive = idx === activeCard;
+
+                // Calculate position relative to active card
+                const depth = (idx - activeCard + toolCards.length) % toolCards.length;
+
+                let transform = '';
+                let zIndex = 10;
+                let opacity = 0;
+                let pointerEvents: 'auto' | 'none' = 'none';
+
+                if (isLeaving) {
+                  // Card departure: smoothly lifts and swipes away to top-left
+                  transform = 'translateX(-130px) translateY(-35px) rotate(-14deg) scale(0.92)';
+                  zIndex = 40;
+                  opacity = 0;
+                  pointerEvents = 'none';
+                } else if (isActive) {
+                  // Active front card: perfectly centered, scale 1
+                  transform = 'translateX(0px) translateY(0px) rotate(0deg) scale(1)';
+                  zIndex = 30;
+                  opacity = 1;
+                  pointerEvents = 'auto';
+                } else if (depth === 1) {
+                  // 1st card stacked behind on left
+                  transform = 'translateX(-22px) translateY(-14px) rotate(-3.5deg) scale(0.95)';
+                  zIndex = 20;
+                  opacity = 0.9;
+                  pointerEvents = 'none';
+                } else if (depth === 2) {
+                  // 2nd card stacked further behind on left
+                  transform = 'translateX(-40px) translateY(-26px) rotate(-6.5deg) scale(0.90)';
+                  zIndex = 10;
+                  opacity = 0.7;
+                  pointerEvents = 'none';
+                } else if (depth === 3) {
+                  // 3rd card deepest layer on left
+                  transform = 'translateX(-56px) translateY(-36px) rotate(-9.5deg) scale(0.85)';
+                  zIndex = 5;
+                  opacity = 0.45;
+                  pointerEvents = 'none';
+                } else {
+                  transform = 'translateX(-70px) translateY(-44px) rotate(-12deg) scale(0.80)';
+                  zIndex = 1;
+                  opacity = 0;
+                  pointerEvents = 'none';
+                }
+
                 return (
                   <div 
                     key={card.name}
-                    className="absolute top-0 left-0 w-full h-full rounded-[32px] bg-gradient-to-br from-[#1a1a1a] to-[#0a0a0a] border border-white/10 p-8 transition-all duration-[1200ms] ease-in-out shadow-[0_30px_60px_rgba(0,0,0,0.6)]"
+                    className="absolute top-0 left-0 w-full h-full rounded-[32px] bg-gradient-to-br from-[#161c22] via-[#111519] to-[#0b0e11] border border-white/10 p-7 sm:p-8 transition-all duration-[650ms] ease-[cubic-bezier(0.16,1,0.3,1)] shadow-[0_30px_70px_rgba(0,0,0,0.85),inset_0_1px_1px_rgba(255,255,255,0.12)] flex flex-col justify-between select-none"
                     style={{
-                      transform: `translateX(${relativeIndex * -24}px) translateY(${relativeIndex * -20}px) scale(${1 - relativeIndex * 0.05})`,
-                      zIndex: 30 - relativeIndex,
-                      opacity: relativeIndex >= toolCards.length - 1 ? 0 : (1 - relativeIndex * 0.2),
-                      pointerEvents: isTop ? 'auto' : 'none'
+                      transform,
+                      zIndex,
+                      opacity,
+                      pointerEvents
                     }}
                   >
                     
-                    {/* Floating Emojis for the top card */}
-                    {isTop && card.emojis.map((emoji, eIdx) => {
-                      const positions = [
-                        { top: '-30px', right: '10px', delay: '0s', animation: 'fadeUpFloat 4s ease-in-out infinite' }, // Top Right edge
-                        { top: '180px', right: '-10px', delay: '1s', animation: 'fadeUpFloat 5s ease-in-out infinite' }, // Middle Right edge
-                        { top: '-10px', left: '-15px', delay: '0.5s', animation: 'fadeUpFloat 4.5s ease-in-out infinite' }, // Top Left edge
-                        { top: '220px', left: '-10px', delay: '1.5s', animation: 'fadeUpFloat 5.5s ease-in-out infinite' }, // Middle Left edge
-                        { top: '-40px', left: '45%', delay: '0.8s', animation: 'fadeUpFloat 4.2s ease-in-out infinite' } // Top Center edge
-                      ];
-                      const pos = positions[eIdx % positions.length];
-                      return (
+                    {/* Floating Reaction Badges (Only on Active Card, strictly outside text zone) */}
+                    {isActive && (
+                      <div className="absolute inset-0 pointer-events-none overflow-visible z-30">
+                        {/* Emoji 1: High Top Right */}
                         <div 
-                          key={eIdx} 
-                          className="absolute text-[32px] z-0 drop-shadow-xl opacity-60"
-                          style={{
-                            top: pos.top,
-                            right: pos.right,
-                            left: pos.left,
-                            animation: pos.animation,
-                            animationDelay: pos.delay
-                          }}
+                          className="absolute -top-5 right-8 w-11 h-11 rounded-2xl bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.4)] flex items-center justify-center text-2xl select-none"
+                          style={{ animation: 'floatReaction1 4s ease-in-out infinite' }}
                         >
-                          {emoji}
+                          {card.floatingReactions[0]}
                         </div>
-                      );
-                    })}
 
-                    <div className="w-16 h-16 bg-white rounded-2xl mb-6 flex items-center justify-center overflow-hidden shadow-lg relative z-10">
-                      <img 
-                        src={card.logo} 
-                        alt={card.name} 
-                        loading="lazy"
-                        decoding="async"
-                        className="w-12 h-12 object-contain" 
-                        onError={(e) => {
-                          (e.target as HTMLImageElement).style.display = 'none';
-                          (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-2xl font-bold text-black">${card.name.charAt(0)}</span>`;
-                        }}
-                      />
+                        {/* Emoji 2: Upper Right Edge */}
+                        <div 
+                          className="absolute top-5 -right-4 w-11 h-11 rounded-2xl bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.4)] flex items-center justify-center text-2xl select-none"
+                          style={{ animation: 'floatReaction2 5s ease-in-out infinite 0.4s' }}
+                        >
+                          {card.floatingReactions[1]}
+                        </div>
+
+                        {/* Emoji 3: Mid Right Outer Margin */}
+                        <div 
+                          className="absolute top-24 -right-6 w-11 h-11 rounded-2xl bg-white/[0.08] backdrop-blur-xl border border-white/20 shadow-[0_8px_20px_rgba(0,0,0,0.4)] flex items-center justify-center text-2xl select-none"
+                          style={{ animation: 'floatReaction3 4.5s ease-in-out infinite 0.8s' }}
+                        >
+                          {card.floatingReactions[2]}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Card Content Top */}
+                    <div>
+                      {/* Logo Box */}
+                      <div className="w-16 h-16 bg-white rounded-2xl mb-5 flex items-center justify-center overflow-hidden shadow-[0_10px_25px_rgba(0,0,0,0.35)] border border-white/20 relative z-10 shrink-0">
+                        <img 
+                          src={card.logo} 
+                          alt={card.name} 
+                          loading="lazy"
+                          decoding="async"
+                          className="w-11 h-11 object-contain" 
+                          onError={(e) => {
+                            (e.target as HTMLImageElement).style.display = 'none';
+                            (e.target as HTMLImageElement).parentElement!.innerHTML = `<span class="text-2xl font-black text-black">${card.name.charAt(0)}</span>`;
+                          }}
+                        />
+                      </div>
+                      
+                      {/* Tool Name */}
+                      <h3 className="text-3xl font-black text-white mb-5 relative z-10 tracking-tight drop-shadow-md">
+                        {card.name}
+                      </h3>
+                      
+                      {/* Features Label */}
+                      <div className="flex items-center gap-2 text-[#ccff00] text-sm font-bold mb-3.5 relative z-10">
+                        ✨ Features:
+                      </div>
+
+                      {/* Features List */}
+                      <ul className="space-y-3 relative z-10">
+                        {card.features.map((feature, fIdx) => (
+                          <li key={fIdx} className="flex items-center gap-3">
+                            <div className="w-5 h-5 rounded-full bg-emerald-500/15 border border-emerald-500/40 flex items-center justify-center shrink-0">
+                              <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                            </div>
+                            <span className="text-gray-200 text-sm font-medium leading-snug">{feature}</span>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
-                    
-                    <h3 className="text-3xl font-bold text-white mb-6 relative z-10 drop-shadow-md">{card.name}</h3>
-                    
-                    <div className="flex items-center gap-2 text-[#ccff00] text-sm font-bold mb-4 relative z-10">
-                      ✨ Features:
-                    </div>
 
-                    <ul className="space-y-4 mb-10 relative z-10">
-                      {card.features.map((feature, fIdx) => (
-                        <li key={fIdx} className="flex items-start gap-3">
-                          <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0" />
-                          <span className="text-gray-300 text-sm">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-
-                    <div className="absolute bottom-8 right-8 z-10">
-                      <Link href="/checkout" className="px-6 py-3 rounded-full bg-[#B3E600] text-black font-bold text-sm hover:scale-105 transition-transform flex items-center gap-2 shadow-lg hover:bg-[#9cbd00]">
+                    {/* Card Content Bottom: Action Button */}
+                    <div className="pt-4 flex items-center justify-end relative z-10">
+                      <Link 
+                        href={`/checkout?pkgId=${card.id || 'single_tool'}`} 
+                        className="px-6 py-3 rounded-full bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-sm transition-all duration-300 flex items-center gap-2 shadow-[0_0_20px_rgba(204,255,0,0.3)] hover:shadow-[0_0_30px_rgba(204,255,0,0.55)] hover:scale-105 active:scale-95 cursor-pointer"
+                      >
                         Get Now <ArrowRight className="w-4 h-4" />
                       </Link>
                     </div>
@@ -282,20 +385,45 @@ export default function HeroSection() {
               })}
 
               {/* Slider Dots */}
-              <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-2">
+              <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 flex items-center gap-2.5 z-40">
                 {toolCards.map((_, idx) => (
-                  <div 
+                  <button 
                     key={idx}
-                    className={`h-1.5 rounded-full transition-all duration-300 ${idx === cardIndex ? 'w-6 bg-[#ccff00]' : 'w-1.5 bg-white/20'}`}
-                  ></div>
+                    onClick={() => handleGoTo(idx)}
+                    aria-label={`Go to card ${idx + 1}`}
+                    className={`h-2 rounded-full transition-all duration-500 cursor-pointer ${
+                      idx === activeCard 
+                        ? 'w-8 bg-[#ccff00] shadow-[0_0_12px_rgba(204,255,0,0.6)]' 
+                        : 'w-2 bg-white/20 hover:bg-white/40'
+                    }`}
+                  />
                 ))}
               </div>
+
+              {/* Navigation Arrows for desktop */}
+              <button
+                onClick={handlePrevCard}
+                aria-label="Previous card"
+                className="hidden sm:flex absolute -left-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#161c22]/90 border border-white/15 text-white items-center justify-center hover:bg-[#ccff00] hover:text-black transition-all duration-300 shadow-xl z-40 cursor-pointer active:scale-90"
+              >
+                <ChevronLeft className="w-5 h-5" />
+              </button>
+              <button
+                onClick={handleNextCard}
+                aria-label="Next card"
+                className="hidden sm:flex absolute -right-5 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-[#161c22]/90 border border-white/15 text-white items-center justify-center hover:bg-[#ccff00] hover:text-black transition-all duration-300 shadow-xl z-40 cursor-pointer active:scale-90"
+              >
+                <ChevronRight className="w-5 h-5" />
+              </button>
+
             </div>
 
           </div>
 
         </div>
+
       </div>
+
     </div>
   );
 }

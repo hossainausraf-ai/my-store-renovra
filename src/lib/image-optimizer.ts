@@ -145,3 +145,4 @@ export async function optimizeImageClient(
     img.src = objectUrl;
   });
 }
+
