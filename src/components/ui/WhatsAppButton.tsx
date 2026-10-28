@@ -1,11 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { defaultSettings } from '@/data/settings';
 
 export default function WhatsAppButton() {
-  // Replace with actual WhatsApp number (include country code, e.g., 8801700000000)
-  const whatsappNumber = '8801766392692';
+  const [whatsappNumber, setWhatsappNumber] = useState(defaultSettings.support_whatsapp || '8801766392692');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings?.support_whatsapp) {
+          setWhatsappNumber(data.settings.support_whatsapp);
+        }
+      })
+      .catch(e => console.warn('WhatsApp button settings load fallback:', e));
+  }, []);
+
   const message = 'Hello, I want to know more about your tools and packages.';
   const waUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 

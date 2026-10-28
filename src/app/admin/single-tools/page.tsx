@@ -1,36 +1,405 @@
 'use client';
 
-import { useState } from 'react';
-import { defaultProducts } from '@/data/products';
-import { Wrench, Search, FileCode } from 'lucide-react';
+import { useEffect, useState, useRef } from 'react';
+import { 
+  Wrench, 
+  Search, 
+  Plus, 
+  Pencil, 
+  Trash2, 
+  Upload, 
+  X, 
+  CheckCircle2, 
+  Loader2,
+  Calendar,
+  Clock
+} from 'lucide-react';
+
+type SingleTool = {
+  id: string;
+  name: string;
+  image_url: string;
+  price: number;
+  category: string;
+  validity?: string;
+  description?: string;
+};
 
 export default function AdminSingleToolsPage() {
+  const [tools, setTools] = useState<SingleTool[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const singleTools = defaultProducts.filter((p) => p.product_type === 'single_tool');
+  
+  // Form state
+  const [isAdding, setIsAdding] = useState(false);
+  const [isEditing, setIsEditing] = useState<string | null>(null);
+  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  
+  const [formData, setFormData] = useState({
+    name: '',
+    image_url: '',
+    price: '',
+    category: '',
+    validity: '30 Days',
+    description: ''
+  });
 
-  const filtered = singleTools.filter(
-    (tool) =>
-      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      tool.category.toLowerCase().includes(searchQuery.toLowerCase())
+  // Upload state
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string>('');
+  const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const showNotification = (type: 'success' | 'error', message: string) => {
+    setNotification({ type, message });
+    setTimeout(() => setNotification(null), 4000);
+  };
+
+  const fetchTools = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch('/api/products?type=single_tool');
+      const data = await res.json();
+      if (data.success && data.products) {
+        setTools(data.products);
+      }
+    } catch (e) {
+      console.error('Error fetching tools:', e);
+      showNotification('error', 'টুলস লোড করতে সমস্যা হয়েছে!');
+    }
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    fetchTools();
+  }, []);
+
+  const resetForm = () => {
+    setFormData({
+      name: '',
+      image_url: '',
+      price: '',
+      category: '',
+      validity: '30 Days',
+      description: ''
+    });
+    setImageFile(null);
+    setImagePreview('');
+    setIsAdding(false);
+    setIsEditing(null);
+  };
+
+  const handleEditClick = (tool: SingleTool) => {
+    setFormData({
+      name: tool.name,
+      image_url: tool.image_url || '',
+      price: tool.price.toString(),
+      category: tool.category || '',
+      validity: tool.validity || '30 Days',
+      description: tool.description || ''
+    });
+    setImagePreview(tool.image_url || '');
+    setIsEditing(tool.id);
+    setIsAdding(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleFileDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+      processFile(e.dataTransfer.files[0]);
+    }
+  };
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      processFile(e.target.files[0]);
+    }
+  };
+
+  const processFile = (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      showNotification('error', 'দয়া করে একটি সঠিক ইমেজ ফাইল দিন (PNG, JPG, SVG)');
+      return;
+    }
+    setImageFile(file);
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const result = e.target?.result as string;
+      setImagePreview(result);
+      setFormData(prev => ({ ...prev, image_url: result }));
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const handleSaveTool = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSaving(true);
+
+    let finalImageUrl = formData.image_url;
+
+    // Upload image if a new file was chosen
+    if (imageFile) {
+      setIsUploading(true);
+      try {
+        const uploadData = new FormData();
+        uploadData.append('file', imageFile);
+        const upRes = await fetch('/api/upload', { method: 'POST', body: uploadData });
+        const upJson = await upRes.json();
+        if (upJson.success && upJson.url) {
+          finalImageUrl = upJson.url;
+        }
+      } catch (err) {
+        console.warn('Image upload error:', err);
+      }
+      setIsUploading(false);
+    }
+
+    const payload = {
+      id: isEditing || undefined,
+      product_type: 'single_tool',
+      name: formData.name,
+      description: formData.description,
+      price: parseFloat(formData.price) || 0,
+      category: formData.category,
+      image_url: finalImageUrl,
+      validity: formData.validity || '30 Days',
+      features: [formData.validity || '30 Days']
+    };
+
+    try {
+      const res = await fetch('/api/products', {
+        method: isEditing ? 'PUT' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        showNotification('success', isEditing ? 'টুল আপডেট সফল হয়েছে!' : 'নতুন টুল সফলভাবে যোগ করা হয়েছে!');
+        fetchTools();
+        resetForm();
+      } else {
+        showNotification('error', data.message || 'টুল সংরক্ষণ করতে ব্যর্থ হয়েছে!');
+      }
+    } catch (err: any) {
+      showNotification('error', err.message || 'সার্ভারে সংযোগ করা যায়নি।');
+    }
+
+    setIsSaving(false);
+  };
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('আপনি কি নিশ্চিত যে এই টুলটি ডিলিট করতে চান?')) return;
+
+    try {
+      const res = await fetch(`/api/products?id=${encodeURIComponent(id)}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        setTools(prev => prev.filter(t => t.id !== id));
+        showNotification('success', 'টুল ডিলিট করা হয়েছে!');
+      } else {
+        showNotification('error', 'ডিলিট করতে ব্যর্থ হয়েছে!');
+      }
+    } catch {
+      showNotification('error', 'সার্ভারে সংযোগ করা যায়নি।');
+    }
+  };
+
+  const filteredTools = tools.filter(tool =>
+    tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    tool.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="p-4 lg:p-8 max-w-[1400px] mx-auto space-y-8">
-      <div>
-        <h1 className="text-3xl font-bold text-white mb-1">সিঙ্গেল টুলস (Single Tools)</h1>
-        <p className="text-gray-400 text-sm">এককভাবে বিক্রয়যোগ্য প্রিমিয়াম টুলসের তালিকা।</p>
-      </div>
 
-      <div className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-2xl flex items-start gap-3">
-        <FileCode className="w-6 h-6 text-blue-400 shrink-0 mt-0.5" />
-        <div className="text-sm">
-          <p className="text-blue-300 font-semibold mb-1">টুলস যোগ বা এডিট করবেন কীভাবে?</p>
-          <p className="text-gray-300 leading-relaxed">
-            টুলসের তালিকা সরাসরি <code className="text-white bg-black/40 px-2 py-0.5 rounded font-mono">src/data/products.ts</code> ফাইলে সংরক্ষিত। কোডে আপডেট করে GitHub-এ পুশ করলেই ওয়েবসাইটে স্বয়ংক্রিয়ভাবে আপডেট হয়ে যাবে।
-          </p>
+      {/* Notification Toast */}
+      {notification && (
+        <div className={`fixed bottom-6 right-6 z-50 px-5 py-3 rounded-xl shadow-2xl flex items-center gap-3 border text-sm font-semibold transition-all ${
+          notification.type === 'success' 
+            ? 'bg-green-950 border-green-500/40 text-green-300' 
+            : 'bg-red-950 border-red-500/40 text-red-300'
+        }`}>
+          {notification.type === 'success' ? <CheckCircle2 className="w-5 h-5" /> : <X className="w-5 h-5" />}
+          {notification.message}
         </div>
+      )}
+
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-bold text-white mb-1">সিঙ্গেল টুলস (Single Tools)</h1>
+          <p className="text-gray-400 text-sm">এককভাবে বিক্রয়যোগ্য প্রিমিয়াম টুলসের তালিকা ও প্রাইসিং ম্যানেজ করুন।</p>
+        </div>
+        <button
+          onClick={() => {
+            if (isAdding) resetForm();
+            else setIsAdding(true);
+          }}
+          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold shadow-lg shadow-blue-500/20 transition-all self-start sm:self-auto cursor-pointer"
+        >
+          {isAdding ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+          {isAdding ? 'বাতিল করুন' : 'নতুন টুল যোগ করুন'}
+        </button>
       </div>
 
+      {/* Add / Edit Form Modal */}
+      {isAdding && (
+        <div className="bg-[#111827] border border-blue-500/30 rounded-2xl p-6 shadow-2xl space-y-6 relative overflow-hidden animate-in fade-in slide-in-from-top-4 duration-200">
+          <div className="flex items-center justify-between border-b border-white/10 pb-4">
+            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+              <Wrench className="w-5 h-5 text-blue-400" />
+              {isEditing ? 'টুল এডিট করুন' : 'নতুন টুল যোগ করুন'}
+            </h3>
+            <button onClick={resetForm} className="text-gray-400 hover:text-white p-1">
+              <X className="w-5 h-5" />
+            </button>
+          </div>
+
+          <form 
+            onSubmit={handleSaveTool} 
+            onKeyDown={(e) => {
+              if (e.key === 'Enter' && (e.target as HTMLElement).tagName !== 'TEXTAREA') {
+                e.preventDefault();
+              }
+            }}
+            className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
+          >
+            
+            {/* Logo Upload Section */}
+            <div className="sm:col-span-2 lg:col-span-3">
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">টুল লোগো বা ছবি</label>
+              <div
+                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
+                onDragLeave={() => setIsDragging(false)}
+                onDrop={handleFileDrop}
+                onClick={() => fileInputRef.current?.click()}
+                className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[120px] ${
+                  isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-white/10 hover:border-white/20 bg-black/20'
+                }`}
+              >
+                <input
+                  type="file"
+                  ref={fileInputRef}
+                  onChange={handleFileSelect}
+                  accept="image/*"
+                  className="hidden"
+                />
+                {imagePreview ? (
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-xl bg-white/10 p-2 flex items-center justify-center border border-white/10">
+                      <img src={imagePreview} alt="Preview" className="max-w-full max-h-full object-contain" />
+                    </div>
+                    <div className="text-left">
+                      <p className="text-sm font-bold text-white">ছবি সিলেক্ট করা হয়েছে</p>
+                      <p className="text-xs text-blue-400 hover:underline">ছবি পরিবর্তন করতে ক্লিক করুন</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="flex flex-col items-center gap-2 text-gray-400">
+                    <Upload className="w-6 h-6 text-gray-500" />
+                    <p className="text-sm"><span className="text-blue-400 font-semibold">ক্লিক করে ছবি আপলোড করুন</span> অথবা ড্র্যাগ করে ড্রপ করুন</p>
+                    <p className="text-xs text-gray-500">PNG, JPG, SVG বা WebP</p>
+                  </div>
+                )}
+              </div>
+              <div className="mt-2">
+                <input
+                  type="text"
+                  placeholder="অথবা সরাসরি অনলাইন ইমেজ লিংক দিন (https://...)"
+                  value={formData.image_url}
+                  onChange={e => {
+                    setFormData({ ...formData, image_url: e.target.value });
+                    setImagePreview(e.target.value);
+                  }}
+                  className="w-full bg-[#1F2937]/30 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">টুলের নাম *</label>
+              <input
+                type="text"
+                required
+                placeholder="যেমন: ChatGPT Plus"
+                value={formData.name}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">মূল্য (টাকা) *</label>
+              <input
+                type="number"
+                required
+                placeholder="যেমন: 350"
+                value={formData.price}
+                onChange={e => setFormData({ ...formData, price: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">ক্যাটাগরি</label>
+              <input
+                type="text"
+                placeholder="যেমন: AI Writing, Graphics"
+                value={formData.category}
+                onChange={e => setFormData({ ...formData, category: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">মেয়াদ (Validity)</label>
+              <input
+                type="text"
+                placeholder="যেমন: 30 Days বা 1 Year"
+                value={formData.validity}
+                onChange={e => setFormData({ ...formData, validity: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div className="sm:col-span-2">
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">সংক্ষিপ্ত বর্ণনা (Description)</label>
+              <input
+                type="text"
+                placeholder="টুলের সুবিধা বা বর্ণনা..."
+                value={formData.description}
+                onChange={e => setFormData({ ...formData, description: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div className="sm:col-span-2 lg:col-span-3 flex justify-end gap-3 pt-3">
+              <button
+                type="button"
+                onClick={resetForm}
+                className="px-5 py-2.5 rounded-xl border border-white/10 text-gray-300 hover:text-white hover:bg-white/5 text-sm font-semibold transition-colors cursor-pointer"
+              >
+                বাতিল
+              </button>
+              <button
+                type="submit"
+                disabled={isSaving || isUploading}
+                className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white text-sm font-bold shadow-lg shadow-blue-500/20 transition-all disabled:opacity-50 cursor-pointer"
+              >
+                {(isSaving || isUploading) && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isEditing ? 'আপডেট করুন' : 'সংরক্ষণ করুন'}
+              </button>
+            </div>
+          </form>
+        </div>
+      )}
+
+      {/* Search Input */}
       <div className="relative max-w-md">
         <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
         <input
@@ -42,33 +411,70 @@ export default function AdminSingleToolsPage() {
         />
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {filtered.map((tool) => (
-          <div
-            key={tool.id}
-            className="bg-[var(--surface)] border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between"
-          >
-            <div>
-              <div className="w-12 h-12 rounded-xl bg-white/10 p-2 mb-4 flex items-center justify-center">
-                {tool.image_url ? (
-                  <img src={tool.image_url} alt={tool.name} className="w-8 h-8 object-contain" />
-                ) : (
-                  <Wrench className="w-6 h-6 text-gray-400" />
-                )}
-              </div>
-              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1">
-                {tool.category}
-              </span>
-              <h3 className="text-lg font-bold text-white mb-1">{tool.name}</h3>
-              <p className="text-xs text-gray-400 line-clamp-2 mb-4">{tool.description}</p>
-            </div>
-
-            <div className="flex items-center justify-between border-t border-white/5 pt-4">
-              <span className="text-xl font-bold text-white">৳ {tool.price}</span>
-              <span className="text-xs text-gray-400">{tool.validity || '1 Month'}</span>
-            </div>
+      {/* Tools Grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+        {isLoading ? (
+          <div className="col-span-full py-20 text-center text-gray-500 flex flex-col items-center gap-3">
+            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+            টুলস লোড হচ্ছে...
           </div>
-        ))}
+        ) : filteredTools.length === 0 ? (
+          <div className="col-span-full py-20 text-center text-gray-500 border border-dashed border-white/10 rounded-2xl bg-black/10">
+            কোনো টুল পাওয়া যায়নি। নতুন টুল যোগ করতে "+ নতুন টুল যোগ করুন" বাটনে চাপুন।
+          </div>
+        ) : (
+          filteredTools.map((tool) => (
+            <div
+              key={tool.id}
+              className="bg-[var(--surface)] border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between group hover:border-white/20 hover:shadow-2xl transition-all"
+            >
+              <div>
+                <div className="flex items-start justify-between mb-4">
+                  <div className="w-14 h-14 rounded-2xl bg-white/10 p-2.5 flex items-center justify-center border border-white/10 overflow-hidden shadow-inner">
+                    {tool.image_url ? (
+                      <img src={tool.image_url} alt={tool.name} className="max-w-full max-h-full object-contain" />
+                    ) : (
+                      <Wrench className="w-7 h-7 text-gray-400" />
+                    )}
+                  </div>
+                  <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-1 rounded-full">
+                    {tool.category || 'Tool'}
+                  </span>
+                </div>
+
+                <h3 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{tool.name}</h3>
+                <p className="text-xs text-gray-400 line-clamp-2 mb-4">{tool.description || 'No description'}</p>
+
+                <div className="flex items-center gap-2 text-xs text-green-400 bg-green-950/30 border border-green-800/30 px-3 py-1.5 rounded-lg mb-4 w-fit">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>মেয়াদ: {tool.validity || '30 Days'}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                <div className="text-xl font-bold text-white">
+                  ৳{tool.price}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => handleEditClick(tool)}
+                    className="p-2 text-blue-400 hover:text-white hover:bg-blue-500/20 rounded-lg transition-colors cursor-pointer"
+                    title="Edit tool"
+                  >
+                    <Pencil className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => handleDelete(tool.id)}
+                    className="p-2 text-red-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors cursor-pointer"
+                    title="Delete tool"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
+              </div>
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

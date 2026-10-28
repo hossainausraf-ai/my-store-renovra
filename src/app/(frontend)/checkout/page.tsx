@@ -32,24 +32,58 @@ function CheckoutForm() {
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
 
   useEffect(() => {
-    setAllProducts(defaultProducts);
-    setSiteSettings(defaultSettings);
+    // Check if user is logged in to pre-fill their info
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.user) {
+          if (data.user.name) setCustomerName(data.user.name);
+          if (data.user.phone) {
+            setPhone(data.user.phone);
+            setWhatsappNumber(data.user.phone);
+          }
+        }
+      })
+      .catch(() => {});
 
-    if (pkgId) {
-      const found = defaultProducts.find((p) => p.id === pkgId);
-      if (found) {
-        setProduct(found);
-        setSelectedProductId(found.id);
-      } else {
-        setProduct(defaultProducts[0]);
-        setSelectedProductId(defaultProducts[0]?.id || '');
-      }
-    } else if (defaultProducts.length > 0) {
-      setProduct(defaultProducts[0]);
-      setSelectedProductId(defaultProducts[0].id);
-    }
+    // Fetch live settings (bKash/Nagad numbers)
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings) {
+          setSiteSettings(data.settings);
+        }
+      })
+      .catch(e => console.warn('Checkout settings load fallback:', e));
 
-    setIsLoadingProduct(false);
+    // Fetch live products
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        const prodList = (data.success && data.products?.length > 0) ? data.products : defaultProducts;
+        setAllProducts(prodList);
+        if (pkgId) {
+          const found = prodList.find((p: any) => p.id === pkgId);
+          if (found) {
+            setProduct(found);
+            setSelectedProductId(found.id);
+          } else {
+            setProduct(prodList[0]);
+            setSelectedProductId(prodList[0]?.id || '');
+          }
+        } else if (prodList.length > 0) {
+          setProduct(prodList[0]);
+          setSelectedProductId(prodList[0].id);
+        }
+      })
+      .catch(e => {
+        console.warn('Checkout products load fallback:', e);
+        if (pkgId) {
+          const found = defaultProducts.find((p) => p.id === pkgId);
+          if (found) setProduct(found);
+        }
+      })
+      .finally(() => setIsLoadingProduct(false));
   }, [pkgId]);
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

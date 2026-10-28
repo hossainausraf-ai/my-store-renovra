@@ -11,11 +11,22 @@ import { defaultProducts } from '@/data/products';
 import { useEffect, useState } from 'react';
 
 export default function Home() {
-  const [products] = useState<any[]>(defaultProducts);
+  const [products, setProducts] = useState<any[]>(defaultProducts);
   const [activeCategory, setActiveCategory] = useState('All');
   const [isLoading, setIsLoading] = useState(false);
 
-  const uniqueCats = Array.from(new Set(defaultProducts.map((p) => p.category))).filter(Boolean);
+  useEffect(() => {
+    fetch('/api/products')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.products?.length > 0) {
+          setProducts(data.products);
+        }
+      })
+      .catch(e => console.warn('Frontend products load fallback:', e));
+  }, []);
+
+  const uniqueCats = Array.from(new Set(products.map((p) => p.category))).filter(Boolean);
   const categories = ['All', ...uniqueCats];
 
   const filteredProducts = activeCategory === 'All'
@@ -113,7 +124,7 @@ export default function Home() {
                         price: tool.price,
                         category: tool.category,
                         imageUrl: tool.image_url || '',
-                        validity: tool.features?.[0] || '30 Days'
+                        validity: tool.validity || '30 Days'
                       }}
                     />
                   ))}

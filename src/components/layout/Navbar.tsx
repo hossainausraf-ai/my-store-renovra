@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, X } from 'lucide-react';
+import { Menu, X, User } from 'lucide-react';
 import { defaultSettings } from '@/data/settings';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
@@ -10,8 +10,33 @@ import StarBorder from '@/components/ui/StarBorder';
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const logoUrl = defaultSettings.logo_url;
+  const [logoUrl, setLogoUrl] = useState<string>(defaultSettings.logo_url);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings?.logo_url) {
+          setLogoUrl(data.settings.logo_url);
+        }
+      })
+      .catch(e => console.warn('Navbar settings load fallback:', e));
+  }, []);
+
+  useEffect(() => {
+    fetch('/api/auth/me')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.user) {
+          setCurrentUser(data.user);
+        } else {
+          setCurrentUser(null);
+        }
+      })
+      .catch(() => setCurrentUser(null));
+  }, [pathname]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -112,17 +137,26 @@ export default function Navbar() {
                 </Link>
                 <StarBorder
                   as={Link}
-                  href="https://wa.me/8801766392692?text=Hello"
-                  target="_blank"
+                  href={currentUser ? "/dashboard" : "/login"}
                   color="cyan"
                   speed="5s"
-                  backgroundColor="#B3E600"
-                  textColor="#000000"
-                  borderColor="rgba(179,230,0,0.4)"
+                  backgroundColor={currentUser ? "#2563EB" : "#B3E600"}
+                  textColor={currentUser ? "#FFFFFF" : "#000000"}
+                  borderColor={currentUser ? "rgba(37,99,235,0.4)" : "rgba(179,230,0,0.4)"}
                   thickness={2}
-                  className="hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(179,230,0,0.3)] transition-all"
+                  className="hover:scale-105 active:scale-95 shadow-[0_0_15px_rgba(179,230,0,0.3)] transition-all font-bold"
                 >
-                  Contact Us
+                  {currentUser ? (
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5" />
+                      {currentUser.name ? currentUser.name.split(' ')[0] : 'Dashboard'}
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5">
+                      <User className="w-3.5 h-3.5" />
+                      Login
+                    </span>
+                  )}
                 </StarBorder>
               </div>
               {/* Invisible spacer for mobile to keep logo centered */}
@@ -206,24 +240,45 @@ export default function Navbar() {
             >
               Contact
             </Link>
-            <Link 
-              href="/track" 
-              onClick={toggleMobileMenu}
-              className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/track' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
-            >
-              Track Order
-            </Link>
+            {currentUser ? (
+              <Link 
+                href="/dashboard" 
+                onClick={toggleMobileMenu}
+                className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
+              >
+                Dashboard
+              </Link>
+            ) : (
+              <Link 
+                href="/login" 
+                onClick={toggleMobileMenu}
+                className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/login' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
+              >
+                Login / Sign Up
+              </Link>
+            )}
           </div>
           
           <div className="p-6 border-t border-white/10">
-            <a 
-              href="https://wa.me/8801766392692?text=Hello"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-black font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(0,191,255,0.3)]"
-            >
-              Contact Us
-            </a>
+            {currentUser ? (
+              <Link 
+                href="/dashboard"
+                onClick={toggleMobileMenu}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(59,130,246,0.3)]"
+              >
+                <User className="w-4 h-4" />
+                My Dashboard
+              </Link>
+            ) : (
+              <Link 
+                href="/login"
+                onClick={toggleMobileMenu}
+                className="w-full flex items-center justify-center gap-2 py-3 bg-[#B3E600] hover:bg-[#a1cf00] text-black font-bold rounded-xl transition-all shadow-[0_0_15px_rgba(179,230,0,0.3)]"
+              >
+                <User className="w-4 h-4" />
+                Login / Create Account
+              </Link>
+            )}
           </div>
         </div>
       </div>

@@ -91,7 +91,7 @@ export const defaultProducts: Product[] = [
     description: 'Get access to GPT-4o, DALL-E 3, code interpreter and custom GPTs.',
     price: 350,
     category: 'AI Writing & Code',
-    image_url: 'https://i.ibb.co/L5Qx6T2/chatgpt.png',
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
     features: ['GPT-4o & o1 access', 'Image & file analysis', 'Fast response speed'],
     badge_text: 'Top Rated',
     validity: '1 Month'
@@ -103,7 +103,7 @@ export const defaultProducts: Product[] = [
     description: '100M+ premium graphics, templates, brand kit and Magic Studio AI.',
     price: 150,
     category: 'Graphics & Design',
-    image_url: 'https://i.ibb.co/8g6wXW4/canva.png',
+    image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
     features: ['100M+ Premium photos & videos', 'Background remover', 'Brand kits & resize'],
     badge_text: 'Best Seller',
     validity: '1 Year'
@@ -115,7 +115,7 @@ export const defaultProducts: Product[] = [
     description: 'Unlimited downloads of themes, templates, stock footage and audio.',
     price: 450,
     category: 'Design Assets',
-    image_url: 'https://i.ibb.co/808bFqJ/envato.png',
+    image_url: 'https://cdn.worldvectorlogo.com/logos/envato.svg',
     features: ['Themes, templates, graphics', 'Commercial license', 'Daily high speed download'],
     badge_text: 'Essential',
     validity: '1 Month'
@@ -127,7 +127,7 @@ export const defaultProducts: Product[] = [
     description: 'All-in-one AI assistant powered by GPT-4, Claude 3.5 and Gemini Pro.',
     price: 390,
     category: 'AI Assistant',
-    image_url: 'https://i.ibb.co/311WqS5/monica.png',
+    image_url: 'https://monica.im/favicon.ico',
     features: ['GPT-4 & Claude 3.5 in sidebar', 'Web page summarizer', 'Image generator'],
     badge_text: 'Trending',
     validity: '1 Month'

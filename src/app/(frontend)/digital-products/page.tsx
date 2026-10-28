@@ -2,13 +2,24 @@
 
 import DigitalProductCard from '@/components/home/DigitalProductCard';
 import { defaultProducts } from '@/data/products';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function DigitalProductsPage() {
-  const [digitalProducts] = useState<any[]>(
+  const [digitalProducts, setDigitalProducts] = useState<any[]>(
     defaultProducts.filter((p) => p.product_type === 'digital')
   );
-  const isLoading = false;
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/products?type=digital')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.products) {
+          setDigitalProducts(data.products);
+        }
+      })
+      .catch(e => console.warn('Digital products fetch fallback:', e));
+  }, []);
 
   return (
     <main className="flex flex-col items-center pt-32 pb-24 px-4 min-h-screen">

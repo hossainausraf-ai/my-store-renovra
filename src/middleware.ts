@@ -7,8 +7,6 @@ export function middleware(request: NextRequest) {
 
   const isAdminRoute = pathname.startsWith('/admin');
   const isAdminLoginRoute = pathname === '/admin/login';
-  const isOldLoginRoute = pathname === '/login';
-  const isDashboardRoute = pathname === '/dashboard';
 
   // Protect Admin Dashboard
   if (isAdminRoute && !isAdminLoginRoute) {
@@ -20,11 +18,6 @@ export function middleware(request: NextRequest) {
   // Redirect from login if already authenticated as admin
   if (isAdminLoginRoute && isAuthenticated) {
     return NextResponse.redirect(new URL('/admin', request.url));
-  }
-
-  // Redirect old user login/dashboard to track order
-  if (isOldLoginRoute || isDashboardRoute) {
-    return NextResponse.redirect(new URL('/track', request.url));
   }
 
   return NextResponse.next();

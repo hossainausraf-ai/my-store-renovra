@@ -35,10 +35,6 @@ export default function AdminLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const isLoginPage = pathname === '/admin/login';
 
-  if (isLoginPage) {
-    return <>{children}</>;
-  }
-
   const [logoUrl, setLogoUrl] = useState<string | null>(defaultSettings.logo_url || null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [hasNew, setHasNew] = useState(false);
@@ -64,6 +60,10 @@ export default function AdminLayout({
 
     return () => clearInterval(interval);
   }, [isLoginPage]);
+
+  if (isLoginPage) {
+    return <>{children}</>;
+  }
   
   const handleLogout = async () => {
     await fetch('/api/admin/logout', { method: 'POST' });
