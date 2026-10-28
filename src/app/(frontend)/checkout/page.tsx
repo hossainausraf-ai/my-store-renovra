@@ -49,6 +49,7 @@ function CheckoutForm() {
   const [submittedTrxId, setSubmittedTrxId] = useState('');
   const [submittedOrderId, setSubmittedOrderId] = useState('');
 
+  const [currentUser, setCurrentUser] = useState<any>(null);
   const [allProducts, setAllProducts] = useState<any[]>(defaultProducts);
   const [selectedProductId, setSelectedProductId] = useState<string>(pkgId || defaultProducts[0]?.id || '');
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
@@ -59,6 +60,7 @@ function CheckoutForm() {
       .then(res => res.json())
       .then(data => {
         if (data.success && data.user) {
+          setCurrentUser(data.user);
           if (data.user.name) setCustomerName(data.user.name);
           if (data.user.phone) {
             setPhone(data.user.phone);
@@ -148,7 +150,7 @@ function CheckoutForm() {
       formData.append('price', String(product?.price || 0));
       formData.append('paymentMethod', paymentMethod);
       formData.append('trxId', trxIdInput);
-      if (user?.id) formData.append('userId', user.id);
+      if (currentUser?.id) formData.append('userId', currentUser.id);
       if (proofFile) formData.append('proof', proofFile);
 
       const res = await fetch('/api/orders', {
@@ -286,7 +288,7 @@ function CheckoutForm() {
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mb-6 max-w-md mx-auto">
           <a
-            href={`https://wa.me/8801766392692?text=${encodeURIComponent(
+            href={`https://wa.me/${(siteSettings?.support_whatsapp || '8801766392692').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
               `Hello, I just ordered "${product?.name}" (Order ID: ${submittedOrderId}, Phone: ${phone}). Please verify my payment.`
             )}`}
             target="_blank"

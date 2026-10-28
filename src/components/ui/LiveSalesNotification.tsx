@@ -192,7 +192,7 @@ export default function LiveSalesNotification() {
         isVisible 
           ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' 
           : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
-      } bottom-[84px] md:bottom-6 left-4 md:left-6 max-w-[calc(100vw-32px)] sm:max-w-[360px]`}
+      } bottom-[84px] md:bottom-6 left-3 sm:left-6 max-w-[calc(100vw-88px)] sm:max-w-[360px]`}
     >
       <Link 
         href="/#packages"

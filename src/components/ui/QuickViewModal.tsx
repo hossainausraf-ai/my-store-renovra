@@ -38,6 +38,20 @@ interface QuickViewModalProps {
 }
 
 export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModalProps) {
+  const [supportWhatsApp, setSupportWhatsApp] = React.useState('8801766392692');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings?.support_whatsapp) {
+          const num = data.settings.support_whatsapp.replace(/[^0-9]/g, '');
+          setSupportWhatsApp(num.startsWith('88') ? num : `88${num}`);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
   // ESC key and body scroll lock
   useEffect(() => {
     if (!isOpen) return;
@@ -254,7 +268,7 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
           </Link>
 
           <a
-            href={`https://wa.me/8801766392692?text=${whatsappMsg}`}
+            href={`https://wa.me/${supportWhatsApp}?text=${whatsappMsg}`}
             target="_blank"
             rel="noopener noreferrer"
             className="w-full sm:w-auto py-3.5 px-5 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"

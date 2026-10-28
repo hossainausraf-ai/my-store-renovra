@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { searchOrders } from '@/lib/orders-store';
 import { defaultProducts } from '@/data/products';
+import { dbGetProducts } from '@/lib/d1';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -21,8 +22,19 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    let allProducts = defaultProducts;
+    try {
+      const dynamicProducts = await dbGetProducts();
+      if (dynamicProducts && dynamicProducts.length > 0) {
+        allProducts = dynamicProducts as any;
+      }
+    } catch {
+      // fallback to defaultProducts
+    }
+
     const formattedOrders = matchedOrders.map((order) => {
-      const product = defaultProducts.find((p) => p.id === order.package_id || p.name === order.product_name) || {
+      const product = allProducts.find((p) => p.id === order.package_id || p.name === order.product_name) || 
+                      defaultProducts.find((p) => p.id === order.package_id || p.name === order.product_name) || {
         download_url: '',
       };
 

@@ -1,11 +1,22 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, MonitorPlay, Info, Phone } from 'lucide-react';
+import { Home, Package, MonitorPlay, Phone } from 'lucide-react';
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const [currentHash, setCurrentHash] = useState('');
+
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setCurrentHash(window.location.hash);
+      const handleHashChange = () => setCurrentHash(window.location.hash);
+      window.addEventListener('hashchange', handleHashChange);
+      return () => window.removeEventListener('hashchange', handleHashChange);
+    }
+  }, []);
 
   const navItems = [
     { name: 'Home', href: '/', icon: Home },
@@ -16,15 +27,28 @@ export default function BottomNav() {
 
   return (
     <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-      <div className="bg-[#1E293B]/80 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+      <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
         {navItems.map((item) => {
-          // Special active state logic for hash links if needed, but for simplicity:
-          const isActive = pathname === item.href || (item.href === '/#packages' && pathname === '/');
+          const isPackages = item.href === '/#packages';
+          const isHome = item.href === '/';
+          
+          let isActive = false;
+          if (isPackages) {
+            isActive = pathname === '/' && currentHash === '#packages';
+          } else if (isHome) {
+            isActive = pathname === '/' && currentHash !== '#packages';
+          } else {
+            isActive = pathname === item.href;
+          }
           
           return (
             <Link
               key={item.name}
               href={item.href}
+              onClick={() => {
+                if (isPackages) setCurrentHash('#packages');
+                else if (isHome) setCurrentHash('');
+              }}
               className={`flex flex-col items-center gap-1 transition-colors ${
                 isActive ? 'text-[#B3E600]' : 'text-gray-400 hover:text-white'
               }`}

@@ -14,6 +14,19 @@ function TrackOrderContent() {
   const [isLoading, setIsLoading] = useState(false);
   const [hasSearched, setHasSearched] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const [supportWhatsApp, setSupportWhatsApp] = useState('8801766392692');
+
+  useEffect(() => {
+    fetch('/api/settings')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.settings?.support_whatsapp) {
+          const num = data.settings.support_whatsapp.replace(/[^0-9]/g, '');
+          setSupportWhatsApp(num.startsWith('88') ? num : `88${num}`);
+        }
+      })
+      .catch(() => {});
+  }, []);
 
   useEffect(() => {
     if (initialQuery) {
@@ -182,7 +195,7 @@ function TrackOrderContent() {
                   )}
 
                   <a
-                    href={`https://wa.me/8801766392692?text=${encodeURIComponent(
+                    href={`https://wa.me/${supportWhatsApp}?text=${encodeURIComponent(
                       `Hello, I am inquiring about Order TrxID: ${order.trx_id} (${order.product_name})`
                     )}`}
                     target="_blank"
