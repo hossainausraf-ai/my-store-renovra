@@ -139,10 +139,6 @@ export default function HeroSection() {
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                 Trusted by 15K+
               </div>
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-medium text-gray-300 shadow-xl">
-                <span className="bg-gradient-to-r from-[#ccff00] to-[#99cc00] text-black px-1.5 py-0.5 rounded-[3px] font-bold text-[8px] sm:text-[10px]">NEW</span>
-                GoSEOTools Saas Dashboard
-              </div>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[76px] font-black tracking-tighter leading-[1.05] sm:leading-[1.1] text-white mb-4 sm:mb-6 break-words">
