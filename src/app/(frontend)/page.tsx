@@ -46,19 +46,19 @@ export default function Home() {
       </div>
 
       {/* Subscriptions Section (Moved below Hero) */}
-      <div className="max-w-7xl mx-auto w-full mt-24 px-4 scroll-mt-24" id="packages">
+      <div className="max-w-7xl mx-auto w-full mt-14 sm:mt-24 px-2.5 sm:px-4 scroll-mt-24" id="packages">
         {isLoading ? (
           <div className="text-center py-20 text-gray-400">লোড হচ্ছে...</div>
         ) : (
           subscriptions.length > 0 && (
-            <div className="mb-20">
-              <div className="text-center mb-12">
-                <p className="text-blue-500 text-xs font-bold tracking-[0.2em] uppercase mb-3">Pricing</p>
-                <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">Choose a plan that's right for you</h2>
-                <p className="text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
+            <div className="mb-14 sm:mb-20">
+              <div className="text-center mb-8 sm:mb-12">
+                <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Pricing</p>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Choose a plan that's right for you</h2>
+                <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5">
+              <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-5">
                 {subscriptions.map((pkg) => (
                   <PackageCard
                     key={pkg.id}
@@ -83,15 +83,15 @@ export default function Home() {
 
       <WhyChooseUs />
 
-      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-16 px-4">
+      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-12 sm:mt-16 px-2.5 sm:px-4">
 
         {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-3 mb-12">
+        <div className="flex flex-wrap justify-center gap-1.5 sm:gap-3 mb-8 sm:mb-12">
           {categories.map(cat => (
             <button
               key={cat}
               onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2.5 rounded-full text-sm font-semibold transition-all border ${activeCategory === cat
+              className={`px-3.5 py-1.5 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all border ${activeCategory === cat
                   ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
                   : 'bg-[var(--surface)] text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/30'
                 }`}
@@ -107,14 +107,14 @@ export default function Home() {
           <>
             {/* Single Premium Tools Section */}
             {singleTools.length > 0 && (
-              <div className="mb-24">
-                <div className="text-center mb-12">
-                  <p className="text-green-500 text-xs font-bold tracking-[0.2em] uppercase mb-3">The Arsenal</p>
-                  <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">Premium tools, zero setup.</h2>
-                  <p className="text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
+              <div className="mb-16 sm:mb-24">
+                <div className="text-center mb-8 sm:mb-12">
+                  <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">The Arsenal</p>
+                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Premium tools, zero setup.</h2>
+                  <p className="text-xs sm:text-base text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
                   {singleTools.map((tool) => (
                     <SingleToolCard
                       key={tool.id}
