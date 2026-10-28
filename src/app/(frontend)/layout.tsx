@@ -2,6 +2,7 @@ import Navbar from '@/components/layout/Navbar';
 import Footer from '@/components/layout/Footer';
 import BottomNav from '@/components/layout/BottomNav';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
+import LiveSalesNotification from '@/components/ui/LiveSalesNotification';
 
 export default function FrontendLayout({
   children,
@@ -17,6 +18,7 @@ export default function FrontendLayout({
       <Footer />
       <BottomNav />
       <WhatsAppButton />
+      <LiveSalesNotification />
     </>
   );
 }
