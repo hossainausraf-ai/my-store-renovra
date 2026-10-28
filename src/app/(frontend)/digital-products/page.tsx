@@ -1,53 +1,14 @@
 'use client';
 
 import DigitalProductCard from '@/components/home/DigitalProductCard';
-import { createClient } from '@/lib/supabase/client';
-import { useEffect, useState } from 'react';
-
-type Product = {
-  id: string;
-  product_type: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image_url: string;
-};
-
 import { defaultProducts } from '@/data/products';
+import { useState } from 'react';
 
 export default function DigitalProductsPage() {
-  const [digitalProducts, setDigitalProducts] = useState<any[]>(
+  const [digitalProducts] = useState<any[]>(
     defaultProducts.filter((p) => p.product_type === 'digital')
   );
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchDigitalProducts();
-  }, []);
-
-  const fetchDigitalProducts = async () => {
-    setIsLoading(true);
-    let items = defaultProducts.filter((p) => p.product_type === 'digital');
-
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('product_type', 'digital')
-        .order('created_at', { ascending: false });
-
-      if (data && data.length > 0) {
-        items = data;
-      }
-    } catch (e) {
-      console.warn('Using static digital products:', e);
-    }
-
-    setDigitalProducts(items);
-    setIsLoading(false);
-  };
+  const isLoading = false;
 
   return (
     <main className="flex flex-col items-center pt-32 pb-24 px-4 min-h-screen">

@@ -1,7 +1,5 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
-import { useEffect, useState } from 'react';
 import LogoLoop from '@/components/ui/LogoLoop';
 
 type ToolLogo = {
@@ -11,43 +9,23 @@ type ToolLogo = {
   row_position: 'top' | 'bottom';
 };
 
+const defaultTools: ToolLogo[] = [
+  { id: '1', name: 'ChatGPT', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg', row_position: 'top' },
+  { id: '2', name: 'Claude', image_url: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg', row_position: 'top' },
+  { id: '3', name: 'MidJourney', image_url: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Midjourney_Emblem.png', row_position: 'top' },
+  { id: '4', name: 'ElevenLabs', image_url: 'https://images.seeklogo.com/logo-png/51/1/elevenlabs-logo-png_seeklogo-513682.png', row_position: 'top' },
+  { id: '5', name: 'Canva', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg', row_position: 'bottom' },
+  { id: '6', name: 'CapCut', image_url: 'https://upload.wikimedia.org/wikipedia/en/2/26/CapCut_logo.png', row_position: 'bottom' },
+  { id: '7', name: 'Grammarly', image_url: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Grammarly_logo.svg', row_position: 'bottom' },
+  { id: '8', name: 'Semrush', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Semrush_logo.svg', row_position: 'bottom' },
+];
+
 export default function ToolsMarquee() {
-  const [tools, setTools] = useState<ToolLogo[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    fetchTools();
-  }, []);
-
-  const fetchTools = async () => {
-    const supabase = createClient();
-    const { data, error } = await supabase
-      .from('tools_logos')
-      .select('*')
-      .order('created_at', { ascending: true });
-
-    if (!error && data && data.length > 0) {
-      setTools(data);
-    } else {
-      // Fallback dummy data if table is empty or missing
-      setTools([
-        { id: '1', name: 'ChatGPT', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg', row_position: 'top' },
-        { id: '2', name: 'Claude', image_url: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg', row_position: 'top' },
-        { id: '3', name: 'MidJourney', image_url: 'https://upload.wikimedia.org/wikipedia/commons/e/e6/Midjourney_Emblem.png', row_position: 'top' },
-        { id: '4', name: 'ElevenLabs', image_url: 'https://images.seeklogo.com/logo-png/51/1/elevenlabs-logo-png_seeklogo-513682.png', row_position: 'top' },
-        { id: '5', name: 'Canva', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg', row_position: 'bottom' },
-        { id: '6', name: 'CapCut', image_url: 'https://upload.wikimedia.org/wikipedia/en/2/26/CapCut_logo.png', row_position: 'bottom' },
-        { id: '7', name: 'Grammarly', image_url: 'https://upload.wikimedia.org/wikipedia/commons/1/15/Grammarly_logo.svg', row_position: 'bottom' },
-        { id: '8', name: 'Semrush', image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/07/Semrush_logo.svg', row_position: 'bottom' },
-      ]);
-    }
-    setIsLoading(false);
-  };
+  const tools = defaultTools;
 
   const topRow = tools.filter(t => t.row_position === 'top');
   const bottomRow = tools.filter(t => t.row_position === 'bottom');
 
-  if (isLoading) return null;
 
   const renderTool = (tool: any, key: any) => (
     <div

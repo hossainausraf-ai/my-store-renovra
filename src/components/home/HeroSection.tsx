@@ -83,24 +83,6 @@ export default function HeroSection() {
       setCardIndex((prev) => (prev + 1) % (toolCards.length || 1));
     }, 4000);
 
-    import('@/lib/supabase/client').then(({ createClient }) => {
-      const supabase = createClient();
-      supabase
-        .from('hero_cards')
-        .select('*')
-        .order('order_idx', { ascending: true })
-        .then(({ data, error }) => {
-          if (!error && data && data.length > 0) {
-            setToolCards(data.map(d => ({
-              id: d.id,
-              name: d.name,
-              logo: d.logo_url,
-              features: d.features || [],
-              emojis: d.emojis || []
-            })));
-          }
-        });
-    });
 
     return () => {
       clearInterval(wordInterval);

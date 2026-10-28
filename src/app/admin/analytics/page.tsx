@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { createClient } from '@/lib/supabase/client';
+import { defaultProducts } from '@/data/products';
 import { 
   Calendar, 
   Download, 
@@ -43,8 +43,6 @@ export default function AnalyticsPage() {
   const [revenueData, setRevenueData] = useState<any[]>([]);
   const [categoryData, setCategoryData] = useState<any[]>([]);
 
-  const supabase = createClient();
-
   useEffect(() => {
     setIsClient(true);
     fetchData();
@@ -53,20 +51,18 @@ export default function AnalyticsPage() {
   const fetchData = async () => {
     setIsLoading(true);
     
-    // Fetch payments and products
-    const [paymentsRes, productsRes] = await Promise.all([
-      supabase.from('manual_payments').select('*'),
-      supabase.from('products').select('id, price, category')
-    ]);
-
-    if (paymentsRes.error || productsRes.error) {
-      console.error('Error fetching data for analytics');
-      setIsLoading(false);
-      return;
+    let payments: any[] = [];
+    try {
+      const res = await fetch('/api/orders');
+      const data = await res.json();
+      if (data.success && data.orders) {
+        payments = data.orders;
+      }
+    } catch (e) {
+      console.warn('Error fetching orders for analytics:', e);
     }
 
-    const payments = paymentsRes.data || [];
-    const products = productsRes.data || [];
+    const products = defaultProducts;
 
     // Map products for quick lookup
     const productMap = new Map();

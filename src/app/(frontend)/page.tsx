@@ -7,60 +7,16 @@ import ToolsMarquee from '@/components/home/ToolsMarquee';
 import HeroSection from '@/components/home/HeroSection';
 import UserReviews from '@/components/home/UserReviews';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
-import { createClient } from '@/lib/supabase/client';
+import { defaultProducts } from '@/data/products';
 import { useEffect, useState } from 'react';
 
-type Product = {
-  id: string;
-  product_type: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image_url: string;
-  features: string[];
-  badge_text: string;
-  color_from: string;
-  color_to: string;
-  is_popular: boolean;
-};
-
-import { defaultProducts } from '@/data/products';
-
 export default function Home() {
-  const [products, setProducts] = useState<any[]>(defaultProducts);
-  const [categories, setCategories] = useState<string[]>(['All']);
+  const [products] = useState<any[]>(defaultProducts);
   const [activeCategory, setActiveCategory] = useState('All');
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    fetchProducts();
-  }, []);
-
-  const fetchProducts = async () => {
-    setIsLoading(true);
-    let items = defaultProducts;
-
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('order_idx', { ascending: true, nullsFirst: false })
-        .order('created_at', { ascending: false });
-
-      if (data && data.length > 0) {
-        items = data;
-      }
-    } catch (e) {
-      console.warn('Using static products:', e);
-    }
-
-    setProducts(items);
-    const uniqueCats = Array.from(new Set(items.map((p) => p.category))).filter(Boolean);
-    setCategories(['All', ...uniqueCats]);
-    setIsLoading(false);
-  };
+  const uniqueCats = Array.from(new Set(defaultProducts.map((p) => p.category))).filter(Boolean);
+  const categories = ['All', ...uniqueCats];
 
   const filteredProducts = activeCategory === 'All'
     ? products

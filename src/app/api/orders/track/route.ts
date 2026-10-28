@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/client';
+import { searchOrders } from '@/lib/orders-store';
 import { defaultProducts } from '@/data/products';
 
 export async function GET(req: NextRequest) {
@@ -11,32 +11,18 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const supabase = createClient();
-    
-    // Search in manual_payments by phone or trx_id
-    const { data, error } = await supabase
-      .from('manual_payments')
-      .select('*')
-      .or(`user_phone.ilike.%${query}%,trx_id.ilike.%${query}%`)
-      .order('created_at', { ascending: false })
-      .limit(10);
+    const matchedOrders = searchOrders(query);
 
-    if (error || !data || data.length === 0) {
+    if (matchedOrders.length === 0) {
       return NextResponse.json({
         success: true,
         orders: [],
-        message: 'কোনো অর্ডার খুঁজে পাওয়া যায়নি। অনুগ্রহ করে সঠিক ফোন নম্বর বা TrxID দিন।'
+        message: 'কোনো অর্ডার খুঁজে পাওয়া যায়নি। অনুগ্রহ করে সঠিক ফোন নম্বর বা TrxID দিন।',
       });
     }
 
-    // Attach product information
-    const { data: dbProducts } = await supabase.from('products').select('*');
-    const allProducts = [...(dbProducts || []), ...defaultProducts];
-
-    const formattedOrders = data.map((order) => {
-      const product = allProducts.find((p) => p.id === order.package_id) || {
-        name: 'Premium Tool / Subscription',
-        price: 0,
+    const formattedOrders = matchedOrders.map((order) => {
+      const product = defaultProducts.find((p) => p.id === order.package_id || p.name === order.product_name) || {
         download_url: '',
       };
 
@@ -47,7 +33,7 @@ export async function GET(req: NextRequest) {
         user_phone: order.user_phone,
         status: order.status || 'pending',
         payment_method: order.payment_method,
-        product_name: product.name,
+        product_name: order.product_name,
         download_url: order.status === 'approved' ? (product.download_url || '') : '',
       };
     });

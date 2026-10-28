@@ -1,310 +1,74 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
-import { useEffect, useState, useRef } from 'react';
-
-type SingleTool = {
-  id: string;
-  name: string;
-  image_url: string;
-  price: number;
-  category: string;
-  features: string[]; // We'll store validity (e.g. 30 Days) in features[0]
-};
+import { useState } from 'react';
+import { defaultProducts } from '@/data/products';
+import { Wrench, Search, FileCode } from 'lucide-react';
 
 export default function AdminSingleToolsPage() {
-  const [tools, setTools] = useState<SingleTool[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isAdding, setIsAdding] = useState(false);
-  const [isEditing, setIsEditing] = useState<string | null>(null);
-  
-  const [formData, setFormData] = useState({
-    name: '',
-    image_url: '',
-    price: '',
-    category: '',
-    validity: '30 Days'
-  });
+  const [searchQuery, setSearchQuery] = useState('');
+  const singleTools = defaultProducts.filter((p) => p.product_type === 'single_tool');
 
-  // Drag and Drop state
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string>('');
-  const [isDragging, setIsDragging] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
-
-  const supabase = createClient();
-
-  useEffect(() => {
-    fetchTools();
-  }, []);
-
-  const fetchTools = async () => {
-    setIsLoading(true);
-    const { data, error } = await supabase
-      .from('products')
-      .select('*')
-      .eq('product_type', 'single_tool')
-      .order('created_at', { ascending: false });
-
-    if (!error && data) {
-      setTools(data as any[]);
-    }
-    setIsLoading(false);
-  };
-
-  const handleDragOver = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(true);
-  };
-
-  const handleDragLeave = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-  };
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault();
-    setIsDragging(false);
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      handleFileChange(e.dataTransfer.files[0]);
-    }
-  };
-
-  const handleFileChange = (file: File) => {
-    if (!file.type.startsWith('image/')) {
-      alert('অনুগ্রহ করে শুধুমাত্র ছবি সিলেক্ট করুন!');
-      return;
-    }
-    setImageFile(file);
-    setImagePreview(URL.createObjectURL(file));
-  };
-
-  const resetForm = () => {
-    setFormData({ name: '', image_url: '', price: '', category: '', validity: '30 Days' });
-    setImageFile(null);
-    setImagePreview('');
-    setIsAdding(false);
-    setIsEditing(null);
-  };
-
-  const handleEditClick = (tool: SingleTool) => {
-    setFormData({
-      name: tool.name,
-      image_url: tool.image_url || '',
-      price: tool.price.toString(),
-      category: tool.category || '',
-      validity: tool.features?.[0] || '30 Days'
-    });
-    setImageFile(null);
-    setImagePreview(tool.image_url || '');
-    setIsEditing(tool.id);
-    setIsAdding(true);
-  };
-
-  const handleSaveTool = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsUploading(true);
-    
-    let finalImageUrl = formData.image_url;
-
-    // Upload new image if file selected
-    if (imageFile) {
-      const fileExt = imageFile.name.split('.').pop();
-      const fileName = `singletool_${Date.now()}_${Math.random().toString(36).substring(2, 9)}.${fileExt}`;
-      const filePath = `${fileName}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('product-images')
-        .upload(filePath, imageFile);
-
-      if (uploadError) {
-        console.error('Upload Error:', uploadError);
-        alert('ছবি আপলোড করতে সমস্যা হয়েছে!');
-        setIsUploading(false);
-        return;
-      }
-
-      const { data } = supabase.storage
-        .from('product-images')
-        .getPublicUrl(filePath);
-
-      finalImageUrl = data.publicUrl;
-    }
-
-    const productPayload = {
-      product_type: 'single_tool',
-      name: formData.name,
-      image_url: finalImageUrl,
-      price: parseFloat(formData.price),
-      category: formData.category,
-      features: [formData.validity],
-      description: 'Single Premium Tool'
-    };
-
-    if (isEditing) {
-      const { error } = await supabase
-        .from('products')
-        .update(productPayload)
-        .eq('id', isEditing);
-
-      if (error) {
-        alert('আপডেট করতে সমস্যা হয়েছে!');
-      } else {
-        alert('সফলভাবে আপডেট হয়েছে!');
-        fetchTools();
-        resetForm();
-      }
-    } else {
-      const { error } = await supabase
-        .from('products')
-        .insert([productPayload]);
-
-      if (error) {
-        alert('অ্যাড করতে সমস্যা হয়েছে!');
-      } else {
-        alert('সফলভাবে যোগ করা হয়েছে!');
-        fetchTools();
-        resetForm();
-      }
-    }
-    
-    setIsUploading(false);
-  };
-
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this tool?')) return;
-    const { error } = await supabase.from('products').delete().eq('id', id);
-    if (error) alert('ডিলিট করতে সমস্যা হয়েছে!');
-    else fetchTools();
-  };
+  const filtered = singleTools.filter(
+    (tool) =>
+      tool.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      tool.category.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
-    <div className="p-4 lg:p-8 max-w-[1600px] mx-auto">
+    <div className="p-4 lg:p-8 max-w-[1400px] mx-auto space-y-8">
       <div>
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-3xl font-bold">Single Premium Tools</h1>
-          <button 
-            onClick={() => isAdding ? resetForm() : setIsAdding(true)}
-            className={`${isAdding ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'} text-white px-4 py-2 rounded-lg transition`}
+        <h1 className="text-3xl font-bold text-white mb-1">সিঙ্গেল টুলস (Single Tools)</h1>
+        <p className="text-gray-400 text-sm">এককভাবে বিক্রয়যোগ্য প্রিমিয়াম টুলসের তালিকা।</p>
+      </div>
+
+      <div className="bg-blue-500/10 border border-blue-500/20 p-5 rounded-2xl flex items-start gap-3">
+        <FileCode className="w-6 h-6 text-blue-400 shrink-0 mt-0.5" />
+        <div className="text-sm">
+          <p className="text-blue-300 font-semibold mb-1">টুলস যোগ বা এডিট করবেন কীভাবে?</p>
+          <p className="text-gray-300 leading-relaxed">
+            টুলসের তালিকা সরাসরি <code className="text-white bg-black/40 px-2 py-0.5 rounded font-mono">src/data/products.ts</code> ফাইলে সংরক্ষিত। কোডে আপডেট করে GitHub-এ পুশ করলেই ওয়েবসাইটে স্বয়ংক্রিয়ভাবে আপডেট হয়ে যাবে।
+          </p>
+        </div>
+      </div>
+
+      <div className="relative max-w-md">
+        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+        <input
+          type="text"
+          placeholder="টুল খুঁজুন..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+        />
+      </div>
+
+      <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {filtered.map((tool) => (
+          <div
+            key={tool.id}
+            className="bg-[var(--surface)] border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between"
           >
-            {isAdding ? 'Cancel' : '+ Add Single Tool'}
-          </button>
-        </div>
-
-        {isAdding && (
-          <div className="bg-[var(--surface)] p-6 rounded-2xl border border-white/10 mb-8">
-            <h2 className="text-xl font-bold mb-4">{isEditing ? 'Edit Single Tool' : 'Add New Single Tool'}</h2>
-            <form onSubmit={handleSaveTool} className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              
-              <div className="md:col-span-2 space-y-4">
-                <label className="block text-sm text-gray-400 font-semibold mb-2">Tool Logo (Drag & Drop)</label>
-                
-                <div 
-                  className={`border-2 border-dashed rounded-xl p-8 text-center transition-all cursor-pointer flex flex-col items-center justify-center ${
-                    isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-white/20 hover:border-white/40 bg-black/20'
-                  }`}
-                  onDragOver={handleDragOver}
-                  onDragLeave={handleDragLeave}
-                  onDrop={handleDrop}
-                  onClick={() => fileInputRef.current?.click()}
-                >
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    className="hidden" 
-                    ref={fileInputRef}
-                    onClick={(e) => ((e.target as HTMLInputElement).value = '')}
-                    onChange={(e) => e.target.files && e.target.files[0] && handleFileChange(e.target.files[0])}
-                  />
-                  
-                  {imagePreview ? (
-                    <div className="relative">
-                      <img src={imagePreview} alt="Preview" className="h-32 object-contain rounded-lg" />
-                      <div className="mt-4 text-sm text-blue-400 font-medium">Click or drag another image to replace</div>
-                    </div>
-                  ) : (
-                    <div className="text-gray-400">
-                      <svg className="w-12 h-12 mx-auto mb-3 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
-                      <p className="mb-1 text-sm font-semibold">Click to upload or drag and drop</p>
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm mb-1 text-gray-400">Tool Name</label>
-                <input required type="text" value={formData.name} onChange={e => setFormData({...formData, name: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="e.g. Claude Ai" />
-              </div>
-              
-              <div>
-                <label className="block text-sm mb-1 text-gray-400">Category</label>
-                <input required type="text" value={formData.category} onChange={e => setFormData({...formData, category: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="e.g. AI & WRITING" />
-              </div>
-
-              <div>
-                <label className="block text-sm mb-1 text-gray-400">Price (৳)</label>
-                <input required type="number" value={formData.price} onChange={e => setFormData({...formData, price: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="e.g. 400" />
-              </div>
-
-              <div>
-                <label className="block text-sm mb-1 text-gray-400">Validity (Remaining)</label>
-                <input required type="text" value={formData.validity} onChange={e => setFormData({...formData, validity: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg p-3 text-white outline-none focus:border-blue-500" placeholder="e.g. 30 Days" />
-              </div>
-              
-              <div className="md:col-span-2 mt-4 flex gap-4">
-                <button type="submit" disabled={isUploading} className="flex-1 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-lg transition disabled:opacity-50">
-                  {isUploading ? 'Saving...' : (isEditing ? 'Update Single Tool' : 'Save Single Tool')}
-                </button>
-              </div>
-            </form>
-          </div>
-        )}
-
-        <div className="bg-[var(--surface)] rounded-2xl border border-white/10 overflow-hidden">
-          <div className="p-6 border-b border-white/10">
-            <h2 className="text-xl font-bold">All Single Tools</h2>
-          </div>
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-black/20 text-gray-400">
-                <tr>
-                  <th className="p-4">Logo</th>
-                  <th className="p-4">Name</th>
-                  <th className="p-4">Category</th>
-                  <th className="p-4">Price</th>
-                  <th className="p-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-white/10">
-                {isLoading ? (
-                  <tr><td colSpan={5} className="p-8 text-center text-gray-400">Loading...</td></tr>
-                ) : tools.length === 0 ? (
-                  <tr><td colSpan={5} className="p-8 text-center text-gray-400">No tools found. Add some tools!</td></tr>
+            <div>
+              <div className="w-12 h-12 rounded-xl bg-white/10 p-2 mb-4 flex items-center justify-center">
+                {tool.image_url ? (
+                  <img src={tool.image_url} alt={tool.name} className="w-8 h-8 object-contain" />
                 ) : (
-                  tools.map(tool => (
-                    <tr key={tool.id} className="hover:bg-white/5 transition">
-                      <td className="p-4">
-                        <div className="bg-white p-1 rounded w-12 h-12 flex items-center justify-center">
-                          {tool.image_url && <img src={tool.image_url} alt={tool.name} className="max-w-full max-h-full object-contain" />}
-                        </div>
-                      </td>
-                      <td className="p-4 font-semibold text-base">{tool.name}</td>
-                      <td className="p-4 text-gray-400">{tool.category}</td>
-                      <td className="p-4 font-bold">৳{tool.price}</td>
-                      <td className="p-4">
-                        <div className="flex gap-3">
-                          <button onClick={() => handleEditClick(tool)} className="text-blue-400 hover:text-blue-300 transition font-medium">Edit</button>
-                          <button onClick={() => handleDelete(tool.id)} className="text-red-500 hover:text-red-400 transition font-medium">Delete</button>
-                        </div>
-                      </td>
-                    </tr>
-                  ))
+                  <Wrench className="w-6 h-6 text-gray-400" />
                 )}
-              </tbody>
-            </table>
+              </div>
+              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider block mb-1">
+                {tool.category}
+              </span>
+              <h3 className="text-lg font-bold text-white mb-1">{tool.name}</h3>
+              <p className="text-xs text-gray-400 line-clamp-2 mb-4">{tool.description}</p>
+            </div>
+
+            <div className="flex items-center justify-between border-t border-white/5 pt-4">
+              <span className="text-xl font-bold text-white">৳ {tool.price}</span>
+              <span className="text-xs text-gray-400">{tool.validity || '1 Month'}</span>
+            </div>
           </div>
-        </div>
+        ))}
       </div>
     </div>
   );

@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { createClient } from '@/lib/supabase/client';
+import { defaultSettings } from '@/data/settings';
 import { 
   LayoutDashboard, 
   ShoppingCart, 
@@ -39,47 +39,34 @@ export default function AdminLayout({
     return <>{children}</>;
   }
 
-  const supabase = createClient();
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const [logoUrl, setLogoUrl] = useState<string | null>(defaultSettings.logo_url || null);
   const [pendingOrders, setPendingOrders] = useState<any[]>([]);
   const [hasNew, setHasNew] = useState(false);
 
   useEffect(() => {
     if (isLoginPage) return;
-    const fetchLogo = async () => {
-      const { data } = await supabase.from('site_settings').select('logo_url').limit(1).single();
-      if (data?.logo_url) setLogoUrl(data.logo_url);
-    };
-    fetchLogo();
 
     const fetchPendingOrders = async () => {
-      const { data } = await supabase
-        .from('manual_payments')
-        .select('*')
-        .eq('status', 'pending')
-        .order('created_at', { ascending: false })
-        .limit(10);
-      if (data) setPendingOrders(data);
-    };
-    fetchPendingOrders();
-
-    const channel = supabase
-      .channel('admin-layout-notifications')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'manual_payments' }, (payload: any) => {
-        fetchPendingOrders();
-        if (payload.eventType === 'INSERT' || (payload.eventType === 'UPDATE' && payload.new.status === 'pending')) {
-           setHasNew(true);
+      try {
+        const res = await fetch('/api/orders');
+        const data = await res.json();
+        if (data.success && data.orders) {
+          const pending = data.orders.filter((o: any) => o.status === 'pending');
+          setPendingOrders(pending.slice(0, 10));
         }
-      })
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
+      } catch (e) {
+        console.warn('Orders fetch error in admin layout:', e);
+      }
     };
-  }, [isLoginPage, supabase]);
+
+    fetchPendingOrders();
+    const interval = setInterval(fetchPendingOrders, 10000); // Check every 10s
+
+    return () => clearInterval(interval);
+  }, [isLoginPage]);
   
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    await fetch('/api/admin/logout', { method: 'POST' });
     window.location.href = '/admin/login';
   };
 

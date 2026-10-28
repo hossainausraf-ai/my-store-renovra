@@ -1,10 +1,8 @@
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/server';
+import { defaultSettings } from '@/data/settings';
 
-export default async function Footer() {
-  const supabase = await createClient();
-  const { data: settings } = await supabase.from('site_settings').select('logo_url').limit(1).single();
-  const logoUrl = settings?.logo_url;
+export default function Footer() {
+  const logoUrl = defaultSettings.logo_url;
 
   return (
     <footer className="bg-[var(--surface)] border-t border-white/10 pt-16 pb-8 mt-auto w-full relative z-10">

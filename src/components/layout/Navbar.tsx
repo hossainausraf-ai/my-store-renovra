@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Menu, X } from 'lucide-react';
-import { createClient } from '@/lib/supabase/client';
+import { defaultSettings } from '@/data/settings';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import StarBorder from '@/components/ui/StarBorder';
@@ -10,33 +10,8 @@ import StarBorder from '@/components/ui/StarBorder';
 export default function Navbar() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
-  const [logoUrl, setLogoUrl] = useState<string | null>(null);
-  const [user, setUser] = useState<any>(null);
-  const supabase = createClient();
-
+  const logoUrl = defaultSettings.logo_url;
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    const fetchLogo = async () => {
-      const { data } = await supabase.from('site_settings').select('logo_url').limit(1).single();
-      if (data?.logo_url) setLogoUrl(data.logo_url);
-    };
-    fetchLogo();
-
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
-      setUser(user);
-    };
-    fetchUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange((event, session) => {
-      setUser(session?.user || null);
-    });
-
-    return () => {
-      authListener.subscription.unsubscribe();
-    };
-  }, [supabase]);
 
   // Handle scroll effect
   useEffect(() => {
@@ -132,15 +107,9 @@ export default function Navbar() {
             {/* Desktop Right Side & Empty Mobile Right side placeholder to balance flex-between */}
             <div className="flex items-center space-x-4">
               <div className="hidden md:flex items-center space-x-4">
-                {user ? (
-                  <Link href="/dashboard" className="text-gray-300 hover:text-white font-medium text-sm transition-colors">
-                    Dashboard
-                  </Link>
-                ) : (
-                  <Link href="/login" className="text-gray-300 hover:text-white font-medium text-sm transition-colors">
-                    Login
-                  </Link>
-                )}
+                <Link href="/track" className="text-gray-300 hover:text-white font-medium text-sm transition-colors">
+                  Track Order
+                </Link>
                 <StarBorder
                   as={Link}
                   href="https://wa.me/8801766392692?text=Hello"
@@ -237,23 +206,13 @@ export default function Navbar() {
             >
               Contact
             </Link>
-            {user ? (
-              <Link 
-                href="/dashboard" 
-                onClick={toggleMobileMenu}
-                className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/dashboard' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
-              >
-                Dashboard
-              </Link>
-            ) : (
-              <Link 
-                href="/login" 
-                onClick={toggleMobileMenu}
-                className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/login' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
-              >
-                Login
-              </Link>
-            )}
+            <Link 
+              href="/track" 
+              onClick={toggleMobileMenu}
+              className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/track' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
+            >
+              Track Order
+            </Link>
           </div>
           
           <div className="p-6 border-t border-white/10">

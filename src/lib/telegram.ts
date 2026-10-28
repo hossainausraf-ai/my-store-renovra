@@ -96,7 +96,7 @@ ${payload.customerName ? `🧑 <b>নাম:</b> ${escapeHtml(payload.customerNa
       return { success: true };
     }
 
-    // 2. If we have public proof URL (from Supabase/ImgBB)
+    // 2. If we have public proof URL
     if (payload.proofUrl && payload.proofUrl !== 'FREE_TRIAL') {
       const response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {
         method: 'POST',

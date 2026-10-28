@@ -3,7 +3,6 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { createClient } from '@/lib/supabase/client';
 import { defaultProducts, Product } from '@/data/products';
 import { defaultSettings } from '@/data/settings';
 import { Package, ShieldCheck, CreditCard, ArrowLeft, CheckCircle2, Upload, X, Search } from 'lucide-react';
@@ -32,78 +31,26 @@ function CheckoutForm() {
   const [selectedProductId, setSelectedProductId] = useState<string>(pkgId || defaultProducts[0]?.id || '');
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
 
-  const supabase = createClient();
-  const router = useRouter();
-  const [user, setUser] = useState<any>(null);
-
   useEffect(() => {
-    const initData = async () => {
-      // 1. Check logged in user (optional - guest allowed!)
-      try {
-        const { data } = await supabase.auth.getUser();
-        if (data?.user) {
-          setUser(data.user);
-        }
-      } catch (e) {
-        console.warn('Auth check skipped:', e);
-      }
-
-      // 2. Fetch products (with fallback)
-      await fetchProducts();
-
-      // 3. Fetch site settings (with fallback)
-      await fetchSiteSettings();
-    };
-
-    initData();
-  }, [supabase]);
-
-  const fetchSiteSettings = async () => {
-    try {
-      const { data } = await supabase.from('site_settings').select('*').limit(1).single();
-      if (data) {
-        setSiteSettings({ ...defaultSettings, ...data });
-      }
-    } catch {
-      setSiteSettings(defaultSettings);
-    }
-  };
-
-  const fetchProducts = async () => {
-    setIsLoadingProduct(true);
-    let items = defaultProducts;
-
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .order('price', { ascending: true });
-        
-      if (data && data.length > 0) {
-        items = data;
-      }
-    } catch (e) {
-      console.warn('Using static fallback products:', e);
-    }
-
-    setAllProducts(items);
+    setAllProducts(defaultProducts);
+    setSiteSettings(defaultSettings);
 
     if (pkgId) {
-      const found = items.find(p => p.id === pkgId);
+      const found = defaultProducts.find((p) => p.id === pkgId);
       if (found) {
         setProduct(found);
         setSelectedProductId(found.id);
       } else {
-        setProduct(items[0]);
-        setSelectedProductId(items[0]?.id || '');
+        setProduct(defaultProducts[0]);
+        setSelectedProductId(defaultProducts[0]?.id || '');
       }
-    } else if (items.length > 0) {
-      setProduct(items[0]);
-      setSelectedProductId(items[0].id);
+    } else if (defaultProducts.length > 0) {
+      setProduct(defaultProducts[0]);
+      setSelectedProductId(defaultProducts[0].id);
     }
 
     setIsLoadingProduct(false);
-  };
+  }, [pkgId]);
 
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;

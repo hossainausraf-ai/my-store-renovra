@@ -1,6 +1,5 @@
 'use client';
 
-import { createClient } from '@/lib/supabase/client';
 import { useEffect, useState } from 'react';
 import { defaultProducts } from '@/data/products';
 import { 
@@ -35,85 +34,62 @@ export default function AdminDashboard() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<any[]>(defaultProducts);
   const [selectedProof, setSelectedProof] = useState<string | null>(null);
-
-  const supabase = createClient();
-
-
 
   const fetchPayments = async () => {
     setIsLoading(true);
-    
-    const { data: prodData } = await supabase.from('products').select('id, name');
-    setProducts([...defaultProducts, ...(prodData || [])]);
-
-    const { data, error } = await supabase
-      .from('manual_payments')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Error fetching payments:', error);
-    } else {
-      setPayments(data || []);
+    setProducts(defaultProducts);
+    try {
+      const res = await fetch('/api/orders');
+      const data = await res.json();
+      if (data.success && data.orders) {
+        setPayments(data.orders);
+      }
+    } catch (e) {
+      console.warn('Error fetching orders:', e);
     }
     setIsLoading(false);
   };
 
   useEffect(() => {
     fetchPayments();
-
-    const channel = supabase
-      .channel('public:manual_payments')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'manual_payments' }, (payload) => {
-        // Prepend the new payment to the list
-        setPayments((current) => [payload.new as Payment, ...current]);
-        // Optional: show a native browser notification or a simple alert if not focused
-        if (document.hidden && Notification.permission === 'granted') {
-          new Notification('New Order Received', {
-            body: `Order from ${payload.new.user_phone} for package ${payload.new.package_id}`
-          });
-        }
-      })
-      .subscribe();
-
-    // Request notification permission
-    if (typeof window !== 'undefined' && 'Notification' in window) {
-      Notification.requestPermission();
-    }
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
+    const interval = setInterval(fetchPayments, 10000);
+    return () => clearInterval(interval);
   }, []);
 
   const updateStatus = async (id: string, newStatus: string) => {
-    const { error } = await supabase
-      .from('manual_payments')
-      .update({ status: newStatus })
-      .eq('id', id);
-
-    if (error) {
+    try {
+      const res = await fetch('/api/orders', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setPayments(payments.map(p => (p.id === id || p.trx_id === id) ? { ...p, status: newStatus } : p));
+      } else {
+        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
+      }
+    } catch (err) {
       alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
-      console.error(error);
-    } else {
-      setPayments(payments.map(p => p.id === id ? { ...p, status: newStatus } : p));
+      console.error(err);
     }
   };
 
   const deleteOrder = async (id: string) => {
     if (!window.confirm('Are you sure you want to delete this order?')) return;
-    const { error } = await supabase
-      .from('manual_payments')
-      .delete()
-      .eq('id', id);
-
-    if (error) {
+    try {
+      const res = await fetch(`/api/orders?id=${id}`, { method: 'DELETE' });
+      const data = await res.json();
+      if (data.success) {
+        setPayments(payments.filter(p => p.id !== id));
+      } else {
+        alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে!');
+      }
+    } catch (err) {
       alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে!');
-      console.error(error);
-    } else {
-      setPayments(payments.filter(p => p.id !== id));
+      console.error(err);
     }
   };
 
