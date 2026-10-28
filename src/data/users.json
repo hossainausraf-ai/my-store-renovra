@@ -6,5 +6,13 @@
     "password_hash": "a67037a8ac89c7baf997bd3b16284e31ec60df6f1bc1f6beec3cfec9e3f2fbdb",
     "phone": "01766392692",
     "created_at": "2026-10-28T17:13:24.006Z"
+  },
+  {
+    "id": "usr_1793212051824_1jj60",
+    "name": "Afjal Hossain Nayem",
+    "email": "mdausrafhossain@gmail.com",
+    "password_hash": "b61783a18c6d3d0c98253da5fd06e491ee1ae8a2dd5ce21753c98cc94e8cdda7",
+    "phone": "01766392692",
+    "created_at": "2026-10-28T18:27:31.824Z"
   }
 ]

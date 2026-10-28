@@ -5,7 +5,21 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { defaultProducts, Product } from '@/data/products';
 import { defaultSettings } from '@/data/settings';
-import { Package, ShieldCheck, CreditCard, ArrowLeft, CheckCircle2, Upload, X, Search } from 'lucide-react';
+import { 
+  Package, 
+  ShieldCheck, 
+  CreditCard, 
+  ArrowLeft, 
+  CheckCircle2, 
+  Upload, 
+  X, 
+  Search,
+  Building2,
+  Smartphone,
+  QrCode,
+  Copy,
+  Check
+} from 'lucide-react';
 
 function CheckoutForm() {
   const searchParams = useSearchParams();
@@ -21,7 +35,15 @@ function CheckoutForm() {
   const [trxIdInput, setTrxIdInput] = useState('');
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
-  const [paymentMethod, setPaymentMethod] = useState('bkash');
+  const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'cellfin' | 'bank_transfer' | 'bangla_qr' | 'redotpay'>('bkash');
+  const [copied, setCopied] = useState(false);
+
+  const copyToClipboard = (text: string) => {
+    if (!text) return;
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
   const [submittedTrxId, setSubmittedTrxId] = useState('');
@@ -303,35 +325,55 @@ function CheckoutForm() {
       return {
         name: 'bKash Personal',
         number: siteSettings?.bkash_number || defaultSettings.bkash_number,
-        color: 'text-pink-500',
+        color: 'text-pink-400',
         bg: 'bg-pink-500/10',
         border: 'border-pink-500/30',
+        type: 'phone',
+        instructions: 'bKash অ্যাপ বা *247# থেকে সেন্ড মানি করুন এবং TrxID নিচে লিখুন।'
+      };
+    }
+    if (paymentMethod === 'cellfin') {
+      return {
+        name: 'CellFin (IBBL)',
+        number: siteSettings?.cellfin_number || defaultSettings.cellfin_number,
+        color: 'text-emerald-400',
+        bg: 'bg-emerald-500/10',
+        border: 'border-emerald-500/30',
+        type: 'phone',
+        instructions: 'CellFin অ্যাপে Send Money ➔ CellFin / Account-এ পাঠিয়ে TrxID নিচে দিন।'
       };
     }
     if (paymentMethod === 'bank_transfer') {
       return {
-        name: 'Bank Transfer',
+        name: 'Bank Transfer (ব্যাংক একাউন্ট)',
         number: siteSettings?.bank_transfer_number || defaultSettings.bank_transfer_number,
-        color: 'text-indigo-500',
-        bg: 'bg-indigo-500/10',
-        border: 'border-indigo-500/30',
+        color: 'text-blue-400',
+        bg: 'bg-blue-500/10',
+        border: 'border-blue-500/30',
+        type: 'bank',
+        instructions: 'ব্যাংক অ্যাপ বা শাখা থেকে ফান্ড ট্রান্সফার করে ট্রানজ্যাকশন আইডি বা রেফারেন্স লিখুন।'
       };
     }
-    if (paymentMethod === 'redotpay') {
+    if (paymentMethod === 'bangla_qr') {
       return {
-        name: 'RedotPay ID',
-        number: siteSettings?.redotpay_id || defaultSettings.redotpay_id,
-        color: 'text-red-500',
-        bg: 'bg-red-500/10',
-        border: 'border-red-500/30',
+        name: 'বাংলা কিউআর (Bangla QR)',
+        number: siteSettings?.bangla_qr_details || defaultSettings.bangla_qr_details || 'যেকোনো ব্যাংক বা ওয়ালেট অ্যাপ দিয়ে স্ক্যান করে সরাসরি পেমেন্ট করুন।',
+        qrUrl: siteSettings?.bangla_qr_url || defaultSettings.bangla_qr_url,
+        color: 'text-purple-400',
+        bg: 'bg-purple-500/10',
+        border: 'border-purple-500/30',
+        type: 'qr',
+        instructions: 'যেকোনো ব্যাংক বা ওয়ালেট (bKash, CellFin, Citytouch, Astha, Upay) দিয়ে নিচের বাংলা কিউআর স্ক্যান করে পেমেন্ট করুন।'
       };
     }
     return {
-      name: 'Nagad Personal',
-      number: siteSettings?.nagad_number || defaultSettings.nagad_number,
-      color: 'text-orange-500',
-      bg: 'bg-orange-500/10',
-      border: 'border-orange-500/30',
+      name: 'RedotPay ID',
+      number: siteSettings?.redotpay_id || defaultSettings.redotpay_id,
+      color: 'text-red-400',
+      bg: 'bg-red-500/10',
+      border: 'border-red-500/30',
+      type: 'phone',
+      instructions: 'RedotPay বা Binance Pay দিয়ে পেমেন্ট করে TrxID দিন।'
     };
   };
 
@@ -421,7 +463,7 @@ function CheckoutForm() {
               <ul className="text-sm text-gray-400 space-y-3">
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">1</span>
-                  <span>আপনার পেমেন্ট মেথড নির্বাচন করুন (bKash / Nagad / Bank / RedotPay)।</span>
+                  <span>আপনার পেমেন্ট মেথড নির্বাচন করুন (bKash / Bank Transfer / CellFin / Bangla QR)।</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">2</span>
@@ -447,37 +489,119 @@ function CheckoutForm() {
               <>
                 <h3 className="font-bold text-xl text-white mb-4">পেমেন্ট মেথড বেছে নিন</h3>
 
-                <div className="grid grid-cols-3 gap-3 md:gap-4 mb-6">
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3.5 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-500/10 text-pink-500 shadow-[0_0_15px_rgba(236,72,153,0.2)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
+                  {/* bKash */}
+                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-500/10 text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="bkash" className="hidden" checked={paymentMethod === 'bkash'} onChange={() => setPaymentMethod('bkash')} />
-                    <div className="font-bold mb-0.5">bKash</div>
-                    <div className="text-[10px] opacity-70">Personal</div>
+                    <span className="font-bold text-sm mb-0.5">bKash</span>
+                    <span className="text-[10px] opacity-70">Personal</span>
                   </label>
 
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3.5 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bank_transfer' ? 'border-indigo-500 bg-indigo-500/10 text-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                  {/* CellFin */}
+                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'cellfin' ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                    <input type="radio" name="method" value="cellfin" className="hidden" checked={paymentMethod === 'cellfin'} onChange={() => setPaymentMethod('cellfin')} />
+                    <span className="font-bold text-sm mb-0.5">CellFin</span>
+                    <span className="text-[10px] opacity-70">IBBL</span>
+                  </label>
+
+                  {/* Bank Transfer */}
+                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-500/10 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="bank_transfer" className="hidden" checked={paymentMethod === 'bank_transfer'} onChange={() => setPaymentMethod('bank_transfer')} />
-                    <div className="font-bold mb-0.5 text-center">Bank</div>
-                    <div className="text-[10px] opacity-70">Transfer</div>
+                    <span className="font-bold text-sm mb-0.5">Bank</span>
+                    <span className="text-[10px] opacity-70">Transfer</span>
                   </label>
 
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3.5 flex flex-col items-center justify-center transition-all ${paymentMethod === 'redotpay' ? 'border-red-500 bg-red-500/10 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
-                    <input type="radio" name="method" value="redotpay" className="hidden" checked={paymentMethod === 'redotpay'} onChange={() => setPaymentMethod('redotpay')} />
-                    <div className="font-bold mb-0.5">RedotPay</div>
-                    <div className="text-[10px] opacity-70">Wallet</div>
+                  {/* Bangla QR */}
+                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bangla_qr' ? 'border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                    <input type="radio" name="method" value="bangla_qr" className="hidden" checked={paymentMethod === 'bangla_qr'} onChange={() => setPaymentMethod('bangla_qr')} />
+                    <span className="font-bold text-sm mb-0.5">Bangla QR</span>
+                    <span className="text-[10px] opacity-70">Any App</span>
                   </label>
                 </div>
 
-                {/* Account Number Box */}
+                {/* Account Number / QR Details Box */}
                 <div className={`p-5 rounded-2xl border ${paymentConfig.border} ${paymentConfig.bg} mb-6 transition-all`}>
-                  <div className="flex items-center justify-between mb-2">
-                    <span className={`font-bold text-sm ${paymentConfig.color}`}>Send Money to {paymentConfig.name}</span>
-                  </div>
-                  <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3">
-                    <p className="text-xl sm:text-2xl font-mono font-bold text-white tracking-wider select-all">{paymentConfig.number}</p>
-                    <div className="text-sm font-medium text-white/70 bg-black/30 px-3 py-1.5 rounded-lg border border-white/5 self-start sm:self-auto">
-                      টাকার পরিমাণ: <span className="text-white font-bold">৳ {product.price}</span>
+                  <div className="flex items-center justify-between mb-3">
+                    <span className={`font-bold text-sm ${paymentConfig.color} flex items-center gap-1.5`}>
+                      {paymentMethod === 'bkash' && <span className="w-2.5 h-2.5 rounded-full bg-pink-500"></span>}
+                      {paymentMethod === 'cellfin' && <Smartphone className="w-4 h-4 text-emerald-400" />}
+                      {paymentMethod === 'bank_transfer' && <Building2 className="w-4 h-4 text-blue-400" />}
+                      {paymentMethod === 'bangla_qr' && <QrCode className="w-4 h-4 text-purple-400" />}
+                      {paymentConfig.name}
+                    </span>
+                    <div className="text-xs font-bold text-white/90 bg-black/40 px-3 py-1 rounded-lg border border-white/10">
+                      টাকার পরিমাণ: <span className="text-[#ccff00] font-mono">৳ {product.price}</span>
                     </div>
                   </div>
+
+                  {/* If Bangla QR */}
+                  {paymentConfig.type === 'qr' && (
+                    <div className="flex flex-col sm:flex-row items-center gap-5 pt-2 pb-2">
+                      <div className="w-40 h-40 sm:w-44 sm:h-44 rounded-2xl bg-white p-3 shadow-2xl border border-white/20 flex items-center justify-center shrink-0">
+                        {paymentConfig.qrUrl ? (
+                          <img 
+                            src={paymentConfig.qrUrl} 
+                            alt="Bangla QR Code" 
+                            className="w-full h-full object-contain"
+                          />
+                        ) : (
+                          <div className="flex flex-col items-center justify-center text-gray-500 text-center p-2">
+                            <QrCode className="w-12 h-12 mb-1 text-purple-600" />
+                            <span className="text-[11px] font-semibold">বাংলা কিউআর</span>
+                          </div>
+                        )}
+                      </div>
+                      <div className="space-y-2.5 text-center sm:text-left">
+                        <p className="text-sm font-bold text-white">কিউআর কোড স্ক্যান করে পেমেন্ট করুন</p>
+                        <p className="text-xs text-gray-300 leading-relaxed">{paymentConfig.instructions}</p>
+                        <div className="flex flex-wrap gap-1.5 justify-center sm:justify-start pt-1">
+                          {['bKash', 'CellFin', 'City Touch', 'Astha', 'Upay'].map(app => (
+                            <span key={app} className="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/30">
+                              {app}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* If Bank Transfer */}
+                  {paymentConfig.type === 'bank' && (
+                    <div className="space-y-3 pt-1">
+                      <div className="p-3.5 rounded-xl bg-black/40 border border-white/10 text-xs text-gray-200 font-mono leading-relaxed whitespace-pre-wrap select-all">
+                        {paymentConfig.number}
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <p className="text-xs text-gray-400">{paymentConfig.instructions}</p>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(paymentConfig.number)}
+                          className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/10 transition-colors shrink-0"
+                        >
+                          {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copied ? 'কপি হয়েছে' : 'কপি করুন'}</span>
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* If bKash or CellFin */}
+                  {paymentConfig.type === 'phone' && (
+                    <div className="space-y-2 pt-1">
+                      <div className="flex items-center justify-between bg-black/40 border border-white/10 rounded-xl px-4 py-2.5">
+                        <p className="text-lg sm:text-xl font-mono font-bold text-white tracking-wider select-all">{paymentConfig.number}</p>
+                        <button
+                          type="button"
+                          onClick={() => copyToClipboard(paymentConfig.number)}
+                          className="text-xs text-blue-400 hover:text-blue-300 flex items-center gap-1 bg-white/5 hover:bg-white/10 px-2.5 py-1.5 rounded-lg border border-white/10 transition-colors"
+                        >
+                          {copied ? <Check className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
+                          <span>{copied ? 'কপি হয়েছে' : 'কপি করুন'}</span>
+                        </button>
+                      </div>
+                      <p className="text-xs text-gray-400">{paymentConfig.instructions}</p>
+                    </div>
+                  )}
                 </div>
               </>
             )}

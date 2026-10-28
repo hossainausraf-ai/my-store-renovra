@@ -308,8 +308,10 @@ export async function dbGetSettings(): Promise<SiteSettings> {
           support_whatsapp: rows[0].support_whatsapp || defaultSettings.support_whatsapp,
           support_phone: rows[0].support_phone || defaultSettings.support_phone,
           bkash_number: rows[0].bkash_number || defaultSettings.bkash_number,
-          nagad_number: rows[0].nagad_number || defaultSettings.nagad_number,
           bank_transfer_number: rows[0].bank_transfer_number || defaultSettings.bank_transfer_number,
+          cellfin_number: rows[0].cellfin_number || defaultSettings.cellfin_number,
+          bangla_qr_url: rows[0].bangla_qr_url || defaultSettings.bangla_qr_url,
+          bangla_qr_details: rows[0].bangla_qr_details || defaultSettings.bangla_qr_details,
           redotpay_id: rows[0].redotpay_id || defaultSettings.redotpay_id,
           telegram_channel: rows[0].telegram_channel || defaultSettings.telegram_channel,
         };
@@ -332,25 +334,27 @@ export async function dbSaveSettings(settings: Partial<SiteSettings>): Promise<S
         await queryD1(
           `UPDATE settings SET 
             site_name = ?, logo_url = ?, support_whatsapp = ?, support_phone = ?,
-            bkash_number = ?, nagad_number = ?, bank_transfer_number = ?, redotpay_id = ?,
-            telegram_channel = ?, updated_at = CURRENT_TIMESTAMP
+            bkash_number = ?, bank_transfer_number = ?, cellfin_number = ?, bangla_qr_url = ?, bangla_qr_details = ?,
+            redotpay_id = ?, telegram_channel = ?, updated_at = CURRENT_TIMESTAMP
           WHERE id = ?`,
           [
             settings.site_name || '', settings.logo_url || '', settings.support_whatsapp || '',
-            settings.support_phone || '', settings.bkash_number || '', settings.nagad_number || '',
-            settings.bank_transfer_number || '', settings.redotpay_id || '', settings.telegram_channel || '',
+            settings.support_phone || '', settings.bkash_number || '', settings.bank_transfer_number || '',
+            settings.cellfin_number || '', settings.bangla_qr_url || '', settings.bangla_qr_details || '',
+            settings.redotpay_id || '', settings.telegram_channel || '',
             existing[0].id
           ]
         );
       } else {
         await queryD1(
           `INSERT INTO settings 
-            (id, site_name, logo_url, support_whatsapp, support_phone, bkash_number, nagad_number, bank_transfer_number, redotpay_id, telegram_channel)
-          VALUES ('default', ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (id, site_name, logo_url, support_whatsapp, support_phone, bkash_number, bank_transfer_number, cellfin_number, bangla_qr_url, bangla_qr_details, redotpay_id, telegram_channel)
+          VALUES ('default', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             settings.site_name || '', settings.logo_url || '', settings.support_whatsapp || '',
-            settings.support_phone || '', settings.bkash_number || '', settings.nagad_number || '',
-            settings.bank_transfer_number || '', settings.redotpay_id || '', settings.telegram_channel || ''
+            settings.support_phone || '', settings.bkash_number || '', settings.bank_transfer_number || '',
+            settings.cellfin_number || '', settings.bangla_qr_url || '', settings.bangla_qr_details || '',
+            settings.redotpay_id || '', settings.telegram_channel || ''
           ]
         );
       }

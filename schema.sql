@@ -27,16 +27,18 @@ CREATE TABLE IF NOT EXISTS products (
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Site Settings Table (bKash, Nagad, WhatsApp, Logo, Name)
+-- 2. Site Settings Table (bKash, Bank Transfer, CellFin, Bangla QR, WhatsApp, Logo, Name)
 CREATE TABLE IF NOT EXISTS settings (
   id TEXT PRIMARY KEY DEFAULT 'default',
   site_name TEXT DEFAULT 'Renovra',
   logo_url TEXT DEFAULT '',
   support_whatsapp TEXT DEFAULT '8801766392692',
   support_phone TEXT DEFAULT '01766392692',
-  bkash_number TEXT DEFAULT '01766392692 (Personal)',
-  nagad_number TEXT DEFAULT '01766392692 (Personal)',
-  bank_transfer_number TEXT DEFAULT 'City Bank / Islami Bank',
+  bkash_number TEXT DEFAULT '01766392692 (Personal / Send Money)',
+  bank_transfer_number TEXT DEFAULT 'City Bank / Islami Bank (Account details)',
+  cellfin_number TEXT DEFAULT '01766392692 (CellFin / IBBL)',
+  bangla_qr_url TEXT DEFAULT '',
+  bangla_qr_details TEXT DEFAULT '',
   redotpay_id TEXT DEFAULT '12345678 (RedotPay ID)',
   telegram_channel TEXT DEFAULT '@renovra',
   updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
