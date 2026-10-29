@@ -26,12 +26,21 @@ export default function Home() {
       .catch(e => console.warn('Frontend products load fallback:', e));
   }, []);
 
-  const uniqueCats = Array.from(new Set(products.map((p) => p.category))).filter(Boolean);
-  const categories = ['All', ...uniqueCats];
+  // Normalize and deduplicate categories
+  const categoryMap = new Map<string, string>();
+  products.forEach(p => {
+    const raw = (p.category || '').trim();
+    if (!raw) return;
+    const lower = raw.toLowerCase();
+    if (!categoryMap.has(lower)) {
+      categoryMap.set(lower, raw);
+    }
+  });
+  const categories = ['All', ...Array.from(categoryMap.values())];
 
-  const filteredProducts = activeCategory === 'All'
+  const filteredProducts = activeCategory.toLowerCase() === 'all'
     ? products
-    : products.filter(p => p.category === activeCategory);
+    : products.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
 
   const subscriptions = filteredProducts.filter(p => p.product_type === 'subscription');
   const digitalProducts = filteredProducts.filter(p => p.product_type === 'digital');
@@ -91,20 +100,26 @@ export default function Home() {
           <p className="text-xs sm:text-base text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
         </div>
 
-        {/* Category Filters */}
-        <div className="flex flex-wrap justify-center gap-1.5 sm:gap-3 mb-8 sm:mb-12">
-          {categories.map(cat => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-3.5 py-1.5 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-semibold transition-all border ${activeCategory === cat
-                  ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)]'
-                  : 'bg-[var(--surface)] text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/30'
-                }`}
-            >
-              {cat}
-            </button>
-          ))}
+        {/* Category Filters (Mobile: 1-line horizontal scroll, Desktop: flex wrap centered) */}
+        <div className="relative w-full mb-8 sm:mb-12">
+          <div className="flex sm:flex-wrap items-center sm:justify-center gap-2 sm:gap-3 overflow-x-auto sm:overflow-x-visible no-scrollbar px-2 sm:px-0 py-1.5 scroll-smooth">
+            {categories.map(cat => {
+              const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
+              return (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
+                    isActive
+                      ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105'
+                      : 'bg-[var(--surface)] text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/30 hover:text-white'
+                  }`}
+                >
+                  {cat}
+                </button>
+              );
+            })}
+          </div>
         </div>
 
         {isLoading ? (
