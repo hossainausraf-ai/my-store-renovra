@@ -3,6 +3,8 @@ import Footer from '@/components/layout/Footer';
 import BottomNav from '@/components/layout/BottomNav';
 import WhatsAppButton from '@/components/ui/WhatsAppButton';
 import LiveSalesNotification from '@/components/ui/LiveSalesNotification';
+import { CartProvider } from '@/context/CartContext';
+import CartDrawer from '@/components/cart/CartDrawer';
 
 export default function FrontendLayout({
   children,
@@ -10,7 +12,7 @@ export default function FrontendLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    <CartProvider>
       <Navbar />
       <div className="flex-1">
         {children}
@@ -19,6 +21,7 @@ export default function FrontendLayout({
       <BottomNav />
       <WhatsAppButton />
       <LiveSalesNotification />
-    </>
+      <CartDrawer />
+    </CartProvider>
   );
 }

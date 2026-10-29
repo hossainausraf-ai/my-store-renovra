@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Eye, ShoppingCart, Image as ImageIcon } from 'lucide-react';
+import { Eye, ShoppingCart, Image as ImageIcon, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
+import { useCart } from '@/context/CartContext';
 
 interface DigitalProductProps {
   id: string;
@@ -16,7 +17,9 @@ interface DigitalProductProps {
 }
 
 export default function DigitalProductCard({ product }: { product: DigitalProductProps }) {
+  const { addToCart } = useCart();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   const quickViewData: QuickViewItem = {
     id: product.id,
@@ -78,17 +81,44 @@ export default function DigitalProductCard({ product }: { product: DigitalProduc
             <p className="hidden sm:block text-sm text-gray-400 mb-4 line-clamp-2">{product.description}</p>
           )}
 
-          <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-white/5">
-            <span className="text-sm sm:text-xl font-black tracking-tight text-white">৳ {product.price}</span>
+          <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-white/5 gap-2">
+            <span className="text-sm sm:text-lg font-black tracking-tight text-white shrink-0">৳ {product.price}</span>
 
-            <Link
-              href={`/checkout?pkgId=${product.id}`}
-              onClick={(e) => e.stopPropagation()}
-              className="bg-[#B3E600] text-black hover:bg-[#9cbd00] px-3 py-1.5 sm:px-4 sm:py-2 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all shadow-[0_5px_15px_rgba(179,230,0,0.2)] flex items-center gap-1.5 cursor-pointer"
-            >
-              <ShoppingCart className="w-3.5 h-3.5" />
-              <span>Order</span>
-            </Link>
+            <div className="flex items-center gap-1.5">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    imageUrl: product.imageUrl,
+                    product_type: 'digital',
+                    validity: '1 Month'
+                  });
+                  setIsAdded(true);
+                  setTimeout(() => setIsAdded(false), 1500);
+                }}
+                className={`p-1.5 sm:px-2.5 sm:py-1.5 rounded-lg sm:rounded-xl border text-xs font-bold flex items-center gap-1 transition-all active:scale-95 cursor-pointer ${
+                  isAdded
+                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                    : 'bg-white/10 hover:bg-white/20 border-white/20 text-white hover:text-[#ccff00]'
+                }`}
+                title="Add to Cart"
+              >
+                {isAdded ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <ShoppingBag className="w-3.5 h-3.5 text-[#ccff00]" />}
+                <span className="hidden sm:inline">{isAdded ? 'Added' : 'Cart'}</span>
+              </button>
+
+              <Link
+                href={`/checkout?pkgId=${product.id}`}
+                onClick={(e) => e.stopPropagation()}
+                className="bg-[#B3E600] text-black hover:bg-[#9cbd00] px-3 py-1.5 sm:px-3.5 sm:py-1.5 rounded-lg sm:rounded-xl font-bold text-xs sm:text-sm transition-all shadow-[0_5px_15px_rgba(179,230,0,0.2)] flex items-center gap-1 cursor-pointer"
+              >
+                <span>Order</span>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

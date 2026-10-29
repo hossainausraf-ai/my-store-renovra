@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Home, Package, MonitorPlay, Phone } from 'lucide-react';
+import { Home, Package, MonitorPlay, Phone, ShoppingBag } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 export default function BottomNav() {
   const pathname = usePathname();
+  const { totalCount, openCart } = useCart();
   const [currentHash, setCurrentHash] = useState('');
 
   useEffect(() => {
@@ -58,6 +60,22 @@ export default function BottomNav() {
             </Link>
           );
         })}
+
+        {/* Floating Cart Trigger */}
+        <button
+          onClick={openCart}
+          className="relative flex flex-col items-center gap-1 text-gray-400 hover:text-[#ccff00] transition-colors"
+        >
+          <div className="relative">
+            <ShoppingBag className="w-5 h-5 text-[#ccff00]" />
+            {totalCount > 0 && (
+              <span className="absolute -top-1.5 -right-2 min-w-[15px] h-[15px] px-0.5 rounded-full bg-[#ccff00] text-black font-black text-[9px] flex items-center justify-center">
+                {totalCount}
+              </span>
+            )}
+          </div>
+          <span className="text-[10px] font-bold text-white">Cart</span>
+        </button>
       </div>
     </div>
   );

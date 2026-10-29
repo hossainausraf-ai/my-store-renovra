@@ -1,14 +1,16 @@
 'use client';
 
 import Link from 'next/link';
-import { Menu, X, User } from 'lucide-react';
+import { Menu, X, User, ShoppingBag } from 'lucide-react';
 import { defaultSettings } from '@/data/settings';
 import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import StarBorder from '@/components/ui/StarBorder';
+import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
   const pathname = usePathname();
+  const { totalCount, openCart } = useCart();
   const [scrolled, setScrolled] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string>(defaultSettings.logo_url);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -129,8 +131,26 @@ export default function Navbar() {
               </Link>
             </div>
 
-            {/* Desktop Right Side & Empty Mobile Right side placeholder to balance flex-between */}
-            <div className="flex items-center space-x-4">
+            {/* Desktop Right Side & Mobile Cart button */}
+            <div className="flex items-center space-x-3">
+              {/* Desktop Cart Button */}
+              <button
+                onClick={openCart}
+                className="hidden md:flex items-center gap-2 px-3.5 py-2 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-300 hover:text-white transition-all active:scale-95"
+                title="View Shopping Cart"
+              >
+                <div className="relative">
+                  <ShoppingBag className="w-4 h-4 text-[#ccff00]" />
+                  {totalCount > 0 && (
+                    <span className="absolute -top-2 -right-2 min-w-[16px] h-[16px] px-1 rounded-full bg-[#ccff00] text-black font-black text-[9px] flex items-center justify-center">
+                      {totalCount}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs font-bold text-white">Cart</span>
+              </button>
+
+              {/* Desktop Login Button */}
               <div className="hidden md:flex items-center space-x-4">
                 <StarBorder
                   as={Link}
@@ -156,8 +176,22 @@ export default function Navbar() {
                   )}
                 </StarBorder>
               </div>
-              {/* Invisible spacer for mobile to keep logo centered */}
-              <div className="w-6 h-6 md:hidden"></div>
+
+              {/* Mobile Cart Button on Pill Navbar */}
+              <div className="md:hidden flex items-center">
+                <button
+                  onClick={openCart}
+                  className="relative p-2 text-white hover:text-[#ccff00] transition-colors flex items-center justify-center rounded-full hover:bg-white/5 active:scale-95"
+                  aria-label="View Shopping Cart"
+                >
+                  <ShoppingBag className="w-5 h-5 text-[#ccff00]" />
+                  {totalCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#ccff00] text-black font-black text-[10px] flex items-center justify-center shadow-[0_0_10px_rgba(204,255,0,0.6)] animate-pulse">
+                      {totalCount}
+                    </span>
+                  )}
+                </button>
+              </div>
             </div>
 
           </div>
@@ -194,7 +228,23 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className="flex-1 overflow-y-auto py-6 px-4 flex flex-col gap-4">
+          <div className="flex-1 overflow-y-auto py-5 px-4 flex flex-col gap-2.5">
+            {/* View Cart Button on Mobile Menu */}
+            <button
+              onClick={() => {
+                toggleMobileMenu();
+                openCart();
+              }}
+              className="w-full p-3.5 mb-2 rounded-2xl bg-[#ccff00]/10 hover:bg-[#ccff00]/20 border border-[#ccff00]/30 text-white font-bold text-xs sm:text-sm flex items-center justify-between transition-all active:scale-[0.98] shadow-[0_0_15px_rgba(204,255,0,0.15)]"
+            >
+              <div className="flex items-center gap-2.5">
+                <ShoppingBag className="w-5 h-5 text-[#ccff00]" />
+                <span>View Cart / কার্ট দেখুন</span>
+              </div>
+              <span className="px-2 py-0.5 rounded-full bg-[#ccff00] text-black font-black text-xs">
+                {totalCount} Items
+              </span>
+            </button>
             <Link 
               href="/" 
               onClick={toggleMobileMenu}

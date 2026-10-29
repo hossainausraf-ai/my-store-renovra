@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowRight, Star, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Star, CheckCircle2, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
+import { useCart } from '@/context/CartContext';
 
 interface PackageProps {
   id: string;
@@ -20,7 +21,9 @@ interface PackageProps {
 }
 
 export default function PackageCard({ pkg }: { pkg: PackageProps }) {
+  const { addToCart } = useCart();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   const quickViewData: QuickViewItem = {
     id: pkg.id,
@@ -63,12 +66,12 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
           <span className="text-[9px] sm:text-sm text-gray-400">/{pkg.period}</span>
         </div>
 
-        {/* Action Row: Order Button */}
-        <div className="mt-2.5 sm:mt-5">
+        {/* Action Row: Get Started & Add to Cart */}
+        <div className="mt-2.5 sm:mt-5 flex items-center gap-1.5 sm:gap-2">
           <Link
             href={`/checkout?pkgId=${pkg.id}`}
             onClick={(e) => e.stopPropagation()}
-            className={`w-full flex items-center justify-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-2.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm transition-all truncate ${
+            className={`flex-1 flex items-center justify-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-2.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm transition-all truncate ${
               pkg.isPopular 
                 ? 'bg-[#B3E600] text-black shadow-[0_0_15px_rgba(179,230,0,0.4)] hover:bg-[#9cbd00]' 
                 : 'bg-transparent border border-blue-500/40 text-blue-500 hover:bg-blue-500/10'
@@ -77,6 +80,31 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
             <span>Get Started</span>
             <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
           </Link>
+
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              addToCart({
+                id: pkg.id,
+                name: pkg.name,
+                price: pkg.price,
+                imageUrl: pkg.imageUrl,
+                product_type: 'subscription',
+                validity: pkg.period === 'month' ? '1 Month' : pkg.period
+              });
+              setIsAdded(true);
+              setTimeout(() => setIsAdded(false), 1500);
+            }}
+            className={`h-9 sm:h-11 w-9 sm:w-11 rounded-xl border flex items-center justify-center transition-all shrink-0 active:scale-95 cursor-pointer ${
+              isAdded
+                ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                : 'bg-white/10 hover:bg-white/20 border-white/20 text-white hover:text-[#ccff00] hover:border-[#ccff00]/40'
+            }`}
+            title="Add to Cart"
+          >
+            {isAdded ? <Check className="w-4 h-4 text-emerald-400" /> : <ShoppingBag className="w-4 h-4 text-[#ccff00]" />}
+          </button>
         </div>
 
         <div className="mt-3 sm:mt-6 pt-2.5 sm:pt-5 border-t border-white/10 flex-1">

@@ -2,8 +2,9 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Crown, CheckCircle2, Calendar, ShoppingCart, Clock } from 'lucide-react';
+import { Crown, CheckCircle2, Calendar, ShoppingCart, Clock, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
+import { useCart } from '@/context/CartContext';
 
 interface SingleToolProps {
   tool: {
@@ -18,8 +19,10 @@ interface SingleToolProps {
 }
 
 export default function SingleToolCard({ tool }: SingleToolProps) {
+  const { addToCart } = useCart();
   const [imgError, setImgError] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
+  const [isAdded, setIsAdded] = useState(false);
 
   // Normalize validity to prevent long sentences from breaking layout
   const rawValidity = tool.validity || '1 Month';
@@ -142,14 +145,49 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               </div>
             </div>
 
-            <div>
+            <div className="flex items-center gap-1.5 sm:gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart({
+                    id: tool.id,
+                    name: tool.name,
+                    price: tool.price,
+                    imageUrl: tool.imageUrl,
+                    product_type: 'single_tool',
+                    validity: cleanValidity
+                  });
+                  setIsAdded(true);
+                  setTimeout(() => setIsAdded(false), 1500);
+                }}
+                className={`flex-1 py-2 sm:py-2.5 px-2 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer truncate ${
+                  isAdded
+                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                    : 'bg-white/10 hover:bg-white/20 border-white/15 text-white hover:text-[#ccff00] hover:border-[#ccff00]/40 shadow-sm'
+                }`}
+                title="Add to Shopping Cart"
+              >
+                {isAdded ? (
+                  <>
+                    <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                    <span className="truncate">Added</span>
+                  </>
+                ) : (
+                  <>
+                    <ShoppingBag className="w-3.5 h-3.5 text-[#ccff00] shrink-0" />
+                    <span className="truncate">Add to Cart</span>
+                  </>
+                )}
+              </button>
+
               <Link 
                 href={`/checkout?pkgId=${tool.id}`} 
                 onClick={(e) => e.stopPropagation()}
-                className="w-full py-2 sm:py-2.5 px-3 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.35)] cursor-pointer truncate"
+                className="py-2 sm:py-2.5 px-3 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] shrink-0"
+                title="Buy Now"
               >
-                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
-                <span>Buy Now</span>
+                <span>Buy</span>
               </Link>
             </div>
           </div>

@@ -21,12 +21,21 @@ import {
   Check,
   TicketPercent,
   Tag,
-  Loader2
+  Loader2,
+  ShoppingBag
 } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 function CheckoutForm() {
   const searchParams = useSearchParams();
   const pkgId = searchParams.get('pkgId') || '';
+  const {
+    items: cartItems,
+    subtotal: cartSubtotal,
+    appliedCoupon: cartCoupon,
+    clearCart
+  } = useCart();
+  const isCartCheckout = searchParams.get('cart') === 'true' && cartItems.length > 0;
   
   const [product, setProduct] = useState<any>(null);
   const [isLoadingProduct, setIsLoadingProduct] = useState(true);
@@ -143,6 +152,24 @@ function CheckoutForm() {
       })
       .finally(() => setIsLoadingProduct(false));
   }, [pkgId]);
+
+  // Handle Cart Checkout
+  useEffect(() => {
+    if (isCartCheckout && cartItems.length > 0) {
+      const cartProduct = {
+        id: 'cart-order',
+        name: `Shopping Cart (${cartItems.length} Items: ${cartItems.map(i => i.name).slice(0, 3).join(', ')}${cartItems.length > 3 ? '...' : ''})`,
+        price: cartSubtotal,
+        category: 'Shopping Cart',
+        validity: '1 Month',
+        features: cartItems.map(i => `${i.name} (x${i.quantity}) - ৳${i.price * i.quantity}`),
+        image_url: cartItems[0]?.imageUrl || ''
+      };
+      setProduct(cartProduct);
+      setSelectedProductId('cart-order');
+      setIsLoadingProduct(false);
+    }
+  }, [isCartCheckout, cartItems, cartSubtotal]);
 
   const validateCouponCode = async (codeToValidate: string, currentProd: any) => {
     if (!codeToValidate || !codeToValidate.trim()) {
@@ -271,6 +298,9 @@ function CheckoutForm() {
         setSubmittedOrderId(data.orderId);
         setSubmittedTrxId(data.trxId);
         setIsSubmitted(true);
+        if (isCartCheckout) {
+          clearCart();
+        }
       } else {
         setError(data.message || 'অর্ডার সাবমিট করতে সমস্যা হয়েছে। দয়া করে আবার চেষ্টা করুন।');
       }

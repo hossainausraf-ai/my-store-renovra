@@ -13,8 +13,10 @@ import {
   MessageCircle, 
   ArrowRight, 
   Sparkles,
-  Crown
+  Crown,
+  ShoppingBag
 } from 'lucide-react';
+import { useCart } from '@/context/CartContext';
 
 export interface QuickViewItem {
   id: string;
@@ -39,6 +41,7 @@ interface QuickViewModalProps {
 }
 
 export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModalProps) {
+  const { addToCart } = useCart();
   const [supportWhatsApp, setSupportWhatsApp] = React.useState('8801766392692');
   const [activeImg, setActiveImg] = React.useState<string>('');
 
@@ -311,26 +314,45 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
 
         </div>
 
-        {/* Footer Actions: Order Now + WhatsApp */}
-        <div className="p-6 pt-4 border-t border-white/10 bg-white/[0.02] flex flex-col sm:flex-row items-center gap-3">
+        {/* Footer Actions: Add to Cart + Order Now + WhatsApp */}
+        <div className="p-4 sm:p-6 pt-3 sm:pt-4 border-t border-white/10 bg-white/[0.02] flex flex-col sm:flex-row items-center gap-2.5 sm:gap-3">
+          <button
+            type="button"
+            onClick={() => {
+              addToCart({
+                id: item.id,
+                name: item.name,
+                price: item.price,
+                imageUrl: item.imageUrl,
+                product_type: item.type,
+                validity: item.validity || '1 Month'
+              });
+              onClose();
+            }}
+            className="w-full sm:flex-1 py-3 sm:py-3.5 px-4 rounded-2xl bg-white/10 hover:bg-white/20 border border-white/20 hover:border-[#ccff00]/50 text-white hover:text-[#ccff00] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all shadow-sm active:scale-95 cursor-pointer"
+          >
+            <ShoppingBag className="w-4 h-4 text-[#ccff00]" />
+            <span>Add to Cart / কার্ট</span>
+          </button>
+
           <Link
             href={`/checkout?pkgId=${item.id}`}
             onClick={onClose}
-            className="w-full sm:flex-1 py-3.5 px-6 rounded-2xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all shadow-[0_0_25px_rgba(204,255,0,0.35)] hover:shadow-[0_0_35px_rgba(204,255,0,0.55)] hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+            className="w-full sm:flex-1 py-3 sm:py-3.5 px-4 rounded-2xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-[0_0_20px_rgba(204,255,0,0.3)] hover:shadow-[0_0_30px_rgba(204,255,0,0.5)] active:scale-95 cursor-pointer"
           >
-            <ShoppingCart className="w-5 h-5" />
-            <span>Order Now / অর্ডার করুন</span>
-            <ArrowRight className="w-4 h-4 ml-1" />
+            <ShoppingCart className="w-4 h-4" />
+            <span>Order Now / অর্ডার</span>
+            <ArrowRight className="w-3.5 h-3.5" />
           </Link>
 
           <a
             href={`https://wa.me/${supportWhatsApp}?text=${whatsappMsg}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto py-3.5 px-5 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-bold text-sm flex items-center justify-center gap-2 transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer shrink-0"
+            className="w-full sm:w-auto py-3 sm:py-3.5 px-4 rounded-2xl bg-[#25D366]/15 hover:bg-[#25D366]/25 border border-[#25D366]/40 text-[#25D366] font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all active:scale-95 cursor-pointer shrink-0"
           >
-            <MessageCircle className="w-5 h-5" />
-            <span>WhatsApp Order</span>
+            <MessageCircle className="w-4 h-4" />
+            <span>WhatsApp</span>
           </a>
         </div>
 
