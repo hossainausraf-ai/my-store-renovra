@@ -55,7 +55,7 @@ export default function Home() {
               <div className="text-center mb-8 sm:mb-12">
                 <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Pricing</p>
                 <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Choose a plan that's right for you</h2>
-                <p className="text-xs sm:text-base text-gray-400">Premium tools, zero setup.</p>
+                <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-5">
@@ -83,9 +83,7 @@ export default function Home() {
         )}
       </div>
 
-      <WhyChooseUs />
-
-      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-12 sm:mt-16 px-2.5 sm:px-4">
+      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-8 sm:mt-16 px-2.5 sm:px-4">
 
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-1.5 sm:gap-3 mb-8 sm:mb-12">
@@ -145,6 +143,9 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* Why Choose Us Section */}
+      <WhyChooseUs />
 
       {/* Tools Marquee Section */}
       <ToolsMarquee />
