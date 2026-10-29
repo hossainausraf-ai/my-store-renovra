@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Play, ArrowRight, CheckCircle2, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const changingWords = ['seconds.', 'clicks.', 'minutes.'];
+const changingWords = ['Creators.', 'Agencies.', 'Freelancers.', 'Designers.', 'Marketers.'];
 
 const defaultToolCards = [
   {
@@ -142,13 +142,13 @@ export default function HeroSection() {
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-[76px] font-black tracking-tighter leading-[1.05] sm:leading-[1.1] text-white mb-4 sm:mb-6 break-words">
-              Premium tools at <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">90% off —</span> <br />
-              in <span className="text-[#ccff00] transition-all duration-300 inline-block drop-shadow-[0_0_15px_rgba(204,255,0,0.4)]">{changingWords[wordIndex]}</span>
+              Access 100+ premium <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400">tools & AI built for —</span> <br />
+              <span className="text-[#ccff00] transition-all duration-300 inline-block drop-shadow-[0_0_15px_rgba(204,255,0,0.4)]">{changingWords[wordIndex]}</span>
             </h1>
 
             <p className="text-base sm:text-lg text-gray-400 mb-8 sm:mb-10 max-w-lg leading-relaxed break-words pr-2">
-              Pick any premium tool from <span className="text-white font-bold">100+ options</span>. Get instant access, share with team, save up to 90% on every subscription.
+              Get instant access to ChatGPT Plus, Canva Pro, Envato Elements, Claude & 100+ top software subscriptions at up to 90% discount with instant activation and 24/7 warranty.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-10 sm:mb-12">
