@@ -15,6 +15,8 @@ interface PackageProps {
   colorFrom: string;
   colorTo: string;
   isPopular?: boolean;
+  imageUrl?: string;
+  galleryImages?: string[];
 }
 
 export default function PackageCard({ pkg }: { pkg: PackageProps }) {
@@ -27,6 +29,8 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
     price: pkg.price,
     period: pkg.period || 'month',
     category: pkg.badge || 'Subscription Plan',
+    imageUrl: pkg.imageUrl,
+    galleryImages: pkg.galleryImages,
     features: pkg.features || [],
     isPopular: pkg.isPopular,
     validity: '30 Days / Monthly Access'

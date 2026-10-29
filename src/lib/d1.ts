@@ -161,6 +161,7 @@ export async function dbGetProducts(type?: string): Promise<Product[]> {
         price: Number(r.price) || 0,
         category: r.category || '',
         image_url: r.image_url || '',
+        gallery_images: r.gallery_images ? (typeof r.gallery_images === 'string' ? JSON.parse(r.gallery_images) : r.gallery_images) : [],
         features: r.features ? (typeof r.features === 'string' ? JSON.parse(r.features) : r.features) : [],
         badge_text: r.badge_text || '',
         color_from: r.color_from || 'from-blue-500/50',
@@ -187,32 +188,38 @@ export async function dbGetProducts(type?: string): Promise<Product[]> {
 export async function dbSaveProduct(product: Partial<Product> & { name: string; price: number; product_type: any }): Promise<Product> {
   const id = product.id || `prod_${Date.now()}_${Math.random().toString(36).substring(2, 7)}`;
   const featuresJson = JSON.stringify(product.features || []);
+  const galleryImagesJson = JSON.stringify(product.gallery_images || []);
 
   if (isD1Configured()) {
     try {
+      // Auto-migrate column if not exists in D1
+      try {
+        await queryD1('ALTER TABLE products ADD COLUMN gallery_images TEXT');
+      } catch {}
+
       // Check if exists
       const existing = await queryD1('SELECT id FROM products WHERE id = ?', [id]);
       if (existing && existing.length > 0) {
         await queryD1(
           `UPDATE products SET 
             product_type = ?, name = ?, description = ?, price = ?, category = ?, 
-            image_url = ?, features = ?, badge_text = ?, color_from = ?, color_to = ?, 
+            image_url = ?, gallery_images = ?, features = ?, badge_text = ?, color_from = ?, color_to = ?, 
             is_popular = ?, validity = ?, download_url = ?
           WHERE id = ?`,
           [
             product.product_type, product.name, product.description || '', product.price, product.category || '',
-            product.image_url || '', featuresJson, product.badge_text || '', product.color_from || '', product.color_to || '',
+            product.image_url || '', galleryImagesJson, featuresJson, product.badge_text || '', product.color_from || '', product.color_to || '',
             product.is_popular ? 1 : 0, product.validity || '', product.download_url || '', id
           ]
         );
       } else {
         await queryD1(
           `INSERT INTO products 
-            (id, product_type, name, description, price, category, image_url, features, badge_text, color_from, color_to, is_popular, validity, download_url, order_idx)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+            (id, product_type, name, description, price, category, image_url, gallery_images, features, badge_text, color_from, color_to, is_popular, validity, download_url, order_idx)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
           [
             id, product.product_type, product.name, product.description || '', product.price, product.category || '',
-            product.image_url || '', featuresJson, product.badge_text || '', product.color_from || '', product.color_to || '',
+            product.image_url || '', galleryImagesJson, featuresJson, product.badge_text || '', product.color_from || '', product.color_to || '',
             product.is_popular ? 1 : 0, product.validity || '', product.download_url || '', 0
           ]
         );
@@ -234,6 +241,7 @@ export async function dbSaveProduct(product: Partial<Product> & { name: string; 
     price: product.price,
     category: product.category || '',
     image_url: product.image_url || '',
+    gallery_images: product.gallery_images || [],
     features: product.features || [],
     badge_text: product.badge_text || '',
     color_from: product.color_from || 'from-blue-500/50',

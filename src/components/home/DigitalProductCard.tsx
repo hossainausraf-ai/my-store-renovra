@@ -12,6 +12,7 @@ interface DigitalProductProps {
   price: number;
   category: string;
   imageUrl: string;
+  galleryImages?: string[];
 }
 
 export default function DigitalProductCard({ product }: { product: DigitalProductProps }) {
@@ -25,6 +26,7 @@ export default function DigitalProductCard({ product }: { product: DigitalProduc
     period: 'one-time',
     category: product.category || 'Digital Asset',
     imageUrl: product.imageUrl,
+    galleryImages: product.galleryImages,
     description: product.description,
     validity: 'Lifetime Access',
     features: [

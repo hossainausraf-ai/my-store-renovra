@@ -25,6 +25,7 @@ export interface QuickViewItem {
   category?: string;
   badge?: string;
   imageUrl?: string;
+  galleryImages?: string[];
   features?: string[];
   description?: string;
   validity?: string;
@@ -39,6 +40,27 @@ interface QuickViewModalProps {
 
 export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModalProps) {
   const [supportWhatsApp, setSupportWhatsApp] = React.useState('8801766392692');
+  const [activeImg, setActiveImg] = React.useState<string>('');
+
+  React.useEffect(() => {
+    if (item) {
+      setActiveImg(item.imageUrl || item.galleryImages?.[0] || '');
+    }
+  }, [item?.id]);
+
+  const allImages = React.useMemo(() => {
+    if (!item) return [];
+    const list: string[] = [];
+    if (item.imageUrl) list.push(item.imageUrl);
+    if (item.galleryImages && Array.isArray(item.galleryImages)) {
+      item.galleryImages.forEach(img => {
+        if (img && !list.includes(img)) list.push(img);
+      });
+    }
+    return list;
+  }, [item]);
+
+  const currentImg = activeImg || item?.imageUrl || allImages[0] || '';
 
   useEffect(() => {
     fetch('/api/settings')
@@ -133,9 +155,9 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
           {/* Main Info Header: Logo / Cover + Title */}
           <div className="flex items-start gap-4 sm:gap-5">
             <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white/10 border border-white/20 p-2.5 flex items-center justify-center shrink-0 shadow-xl overflow-hidden relative backdrop-blur-md">
-              {item.imageUrl ? (
+              {currentImg ? (
                 <img 
-                  src={item.imageUrl} 
+                  src={currentImg} 
                   alt={item.name} 
                   className="max-w-full max-h-full object-contain" 
                   onError={(e) => {
@@ -182,6 +204,40 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
               )}
             </div>
           </div>
+
+          {/* Gallery Showcase (if multiple screenshots/images exist) */}
+          {allImages.length > 1 && (
+            <div className="bg-black/40 border border-white/10 rounded-2xl p-3.5 space-y-2.5">
+              <div className="relative w-full h-44 sm:h-52 rounded-xl overflow-hidden bg-black/60 border border-white/10 flex items-center justify-center">
+                <img 
+                  src={currentImg} 
+                  alt={item.name} 
+                  className="max-w-full max-h-full object-contain p-2"
+                />
+                <div className="absolute top-2 right-2 bg-black/75 backdrop-blur-md text-[10px] text-white/90 border border-white/20 px-2 py-0.5 rounded-full">
+                  {allImages.indexOf(currentImg) + 1} / {allImages.length}
+                </div>
+              </div>
+
+              {/* Thumbnails row */}
+              <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-thin">
+                {allImages.map((img, idx) => (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImg(img)}
+                    className={`w-12 h-12 rounded-xl overflow-hidden border-2 p-1 bg-black/50 shrink-0 cursor-pointer transition-all ${
+                      img === currentImg
+                        ? 'border-[#ccff00] ring-2 ring-[#ccff00]/40 scale-105 shadow-md shadow-[#ccff00]/20'
+                        : 'border-white/10 opacity-60 hover:opacity-100 hover:border-white/30'
+                    }`}
+                  >
+                    <img src={img} alt="" className="w-full h-full object-contain rounded-lg" />
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* Pricing & Validity Box */}
           <div className="bg-black/40 border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-inner">

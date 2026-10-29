@@ -16,6 +16,7 @@ CREATE TABLE IF NOT EXISTS products (
   price REAL NOT NULL,
   category TEXT,
   image_url TEXT,
+  gallery_images TEXT, -- JSON array string e.g. ["url1", "url2", "url3"]
   features TEXT, -- JSON array string e.g. ["Feature 1", "Feature 2"]
   badge_text TEXT,
   color_from TEXT DEFAULT 'from-blue-500/50',

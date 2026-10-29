@@ -6,6 +6,7 @@ export interface Product {
   price: number;
   category: string;
   image_url: string;
+  gallery_images?: string[];
   features?: string[];
   badge_text?: string;
   color_from?: string;
@@ -24,7 +25,14 @@ export const defaultProducts: Product[] = [
     description: 'Essential AI tools bundle for creators and students.',
     price: 490,
     category: 'AI Bundle',
-    image_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=500&auto=format&fit=crop&q=60',
+    image_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+    gallery_images: [
+      'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80',
+      'https://i.ibb.co/L5Qx6T2/chatgpt.png',
+      'https://i.ibb.co/8g6wXW4/canva.png',
+      'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80',
+      'https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80'
+    ],
     features: [
       'ChatGPT Plus (Shared Access)',
       'Canva Pro Education/Team',
@@ -45,7 +53,13 @@ export const defaultProducts: Product[] = [
     description: 'All-in-one suite for digital marketers, designers & video editors.',
     price: 990,
     category: 'Design & AI',
-    image_url: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=500&auto=format&fit=crop&q=60',
+    image_url: 'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80',
+    gallery_images: [
+      'https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80',
+      'https://i.ibb.co/8g6wXW4/canva.png',
+      'https://i.ibb.co/L5Qx6T2/chatgpt.png',
+      'https://i.ibb.co/808bFqJ/envato.png'
+    ],
     features: [
       'Canva Pro (Private/Direct Invite)',
       'ChatGPT Plus GPT-4o Access',

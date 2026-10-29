@@ -17,11 +17,13 @@ import {
   Sparkles
 } from 'lucide-react';
 import { optimizeImageClient, formatBytes } from '@/lib/image-optimizer';
+import ProductGalleryManager from '@/components/admin/ProductGalleryManager';
 
 type SingleTool = {
   id: string;
   name: string;
   image_url: string;
+  gallery_images?: string[];
   price: number;
   category: string;
   validity?: string;
@@ -42,6 +44,7 @@ export default function AdminSingleToolsPage() {
   const [formData, setFormData] = useState({
     name: '',
     image_url: '',
+    gallery_images: [] as string[],
     price: '',
     category: '',
     validity: '30 Days',
@@ -90,6 +93,7 @@ export default function AdminSingleToolsPage() {
     setFormData({
       name: '',
       image_url: '',
+      gallery_images: [],
       price: '',
       category: '',
       validity: '30 Days',
@@ -107,6 +111,7 @@ export default function AdminSingleToolsPage() {
     setFormData({
       name: tool.name,
       image_url: tool.image_url || '',
+      gallery_images: tool.gallery_images || [],
       price: tool.price.toString(),
       category: tool.category || '',
       validity: tool.validity || '30 Days',
@@ -205,6 +210,7 @@ export default function AdminSingleToolsPage() {
       price: parseFloat(formData.price) || 0,
       category: formData.category,
       image_url: finalImageUrl,
+      gallery_images: formData.gallery_images,
       validity: formData.validity || '30 Days',
       features: [formData.validity || '30 Days']
     };
@@ -309,78 +315,17 @@ export default function AdminSingleToolsPage() {
             className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6"
           >
             
-            {/* Logo Upload Section */}
+            {/* Product Gallery Manager (Main + 4-5 Thumbnails) */}
             <div className="sm:col-span-2 lg:col-span-3">
-              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">টুল লোগো বা ছবি</label>
-              <div
-                onDragOver={(e) => { e.preventDefault(); setIsDragging(true); }}
-                onDragLeave={() => setIsDragging(false)}
-                onDrop={handleFileDrop}
-                onClick={() => fileInputRef.current?.click()}
-                className={`border-2 border-dashed rounded-xl p-5 text-center cursor-pointer transition-all flex flex-col items-center justify-center min-h-[120px] ${
-                  isDragging ? 'border-blue-500 bg-blue-500/10' : 'border-white/10 hover:border-white/20 bg-black/20'
-                }`}
-              >
-                <input
-                  type="file"
-                  ref={fileInputRef}
-                  onChange={handleFileSelect}
-                  accept="image/*"
-                  className="hidden"
-                />
-                {imagePreview ? (
-                  <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 rounded-xl bg-white/10 p-2 flex items-center justify-center border border-white/10">
-                      <img src={imagePreview} alt="Preview" className="max-w-full max-h-full object-contain" />
-                    </div>
-                    <div className="text-left">
-                      <p className="text-sm font-bold text-white">ছবি সিলেক্ট করা হয়েছে</p>
-                      <p className="text-xs text-blue-400 hover:underline">ছবি পরিবর্তন করতে ক্লিক করুন</p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex flex-col items-center gap-2 text-gray-400">
-                    <Upload className="w-6 h-6 text-gray-500" />
-                    <p className="text-sm"><span className="text-blue-400 font-semibold">ক্লিক করে ছবি আপলোড করুন</span> অথবা ড্র্যাগ করে ড্রপ করুন</p>
-                    <p className="text-xs text-gray-500">PNG, JPG, SVG বা WebP</p>
-                  </div>
-                )}
-              </div>
-
-              {/* Optimization Status Badge */}
-              {isOptimizing && (
-                <div className="mt-2.5 p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-xs text-blue-300 flex items-center gap-2 animate-pulse">
-                  <div className="w-3.5 h-3.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin shrink-0"></div>
-                  <span>ইমেজ প্রসেস হচ্ছে: ক্রিস্টাল ক্লিয়ার কোয়ালিটি রেখে WebP ফরম্যাটে অপ্টিমাইজ করা হচ্ছে...</span>
-                </div>
-              )}
-
-              {optimizationStats && !isOptimizing && (
-                <div className="mt-2.5 p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-xs text-emerald-300 flex items-center justify-between gap-2 shadow-inner">
-                  <div className="flex items-center gap-2">
-                    <Zap className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>
-                      <b>স্মার্ট অপ্টিমাইজড ({optimizationStats.format}):</b> {optimizationStats.original} ➔ <b className="text-white">{optimizationStats.optimized}</b>
-                    </span>
-                  </div>
-                  <span className="bg-emerald-500/20 text-emerald-300 font-bold px-2 py-0.5 rounded text-[10px]">
-                    {optimizationStats.saved}% সাইজ সাশ্রয়!
-                  </span>
-                </div>
-              )}
-
-              <div className="mt-2">
-                <input
-                  type="text"
-                  placeholder="অথবা সরাসরি অনলাইন ইমেজ লিংক দিন (https://...)"
-                  value={formData.image_url}
-                  onChange={e => {
-                    setFormData({ ...formData, image_url: e.target.value });
-                    setImagePreview(e.target.value);
-                  }}
-                  className="w-full bg-[#1F2937]/30 border border-white/10 rounded-xl px-4 py-2 text-xs text-white focus:outline-none focus:border-blue-500"
-                />
-              </div>
+              <ProductGalleryManager
+                imageUrl={formData.image_url}
+                onImageUrlChange={(url) => {
+                  setFormData(prev => ({ ...prev, image_url: url }));
+                  setImagePreview(url);
+                }}
+                galleryImages={formData.gallery_images}
+                onGalleryImagesChange={(imgs) => setFormData(prev => ({ ...prev, gallery_images: imgs }))}
+              />
             </div>
 
             <div>

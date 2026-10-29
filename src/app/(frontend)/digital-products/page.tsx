@@ -45,7 +45,8 @@ export default function DigitalProductsPage() {
                   description: product.description,
                   price: product.price,
                   category: product.category,
-                  imageUrl: product.image_url || ''
+                  imageUrl: product.image_url || '',
+                  galleryImages: product.gallery_images
                 }}
               />
             ))}

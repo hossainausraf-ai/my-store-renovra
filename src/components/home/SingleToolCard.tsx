@@ -12,6 +12,7 @@ interface SingleToolProps {
     price: number;
     category: string;
     imageUrl: string;
+    galleryImages?: string[];
     validity?: string;
   };
 }
@@ -36,6 +37,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
     period: cleanValidity.toLowerCase().includes('year') ? '/ year' : '/ month',
     category: tool.category,
     imageUrl: tool.imageUrl,
+    galleryImages: tool.galleryImages,
     validity: cleanValidity,
     features: [
       'Instant access credentials upon activation',

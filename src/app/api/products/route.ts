@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
       price: Number(body.price),
       category: body.category || '',
       image_url: body.image_url || '',
+      gallery_images: Array.isArray(body.gallery_images) ? body.gallery_images : [],
       features: body.features || [],
       badge_text: body.badge_text || '',
       color_from: body.color_from || 'from-blue-500/50',

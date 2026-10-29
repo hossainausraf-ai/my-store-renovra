@@ -53,6 +53,20 @@ function CheckoutForm() {
   const [allProducts, setAllProducts] = useState<any[]>(defaultProducts);
   const [selectedProductId, setSelectedProductId] = useState<string>(pkgId || defaultProducts[0]?.id || '');
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
+  const [selectedGalleryImg, setSelectedGalleryImg] = useState<string>('');
+
+  useEffect(() => {
+    if (product) {
+      setSelectedGalleryImg(product.image_url || product.gallery_images?.[0] || '');
+    }
+  }, [product?.id]);
+
+  const allProductImages = (product ? [
+    ...(product.image_url ? [product.image_url] : []),
+    ...(Array.isArray(product.gallery_images) ? product.gallery_images : [])
+  ].filter((img, idx, arr) => img && arr.indexOf(img) === idx) : []) as string[];
+
+  const currentDisplayImage = selectedGalleryImg || product?.image_url || allProductImages[0] || '';
 
   useEffect(() => {
     // Check if user is logged in to pre-fill their info
@@ -408,35 +422,106 @@ function CheckoutForm() {
               <Package className="w-5 h-5 text-gray-400" /> Order Summary
             </h3>
 
-            <div className="flex items-start gap-4 mb-6">
-              {product.image_url ? (
-                <img src={product.image_url} alt={product.name} className="w-20 h-20 object-cover rounded-xl shadow-lg border border-white/10" />
+            {/* Product Switcher Dropdown */}
+            {allProducts.length > 0 && (
+              <div className="mb-4">
+                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
+                  পণ্য / প্যাকেজ নির্বাচন করুন
+                </label>
+                <select
+                  value={selectedProductId}
+                  onChange={handleProductChange}
+                  className="block w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500 text-sm cursor-pointer shadow-inner"
+                >
+                  {allProducts.map((p) => (
+                    <option key={p.id} value={p.id} className="bg-gray-900 text-white">
+                      {p.name} — ৳{p.price}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            {/* Main Picture Display (Large & Clear) */}
+            <div className="relative w-full h-48 sm:h-64 rounded-2xl overflow-hidden bg-black/60 border border-white/10 group shadow-2xl flex items-center justify-center mb-3">
+              {currentDisplayImage ? (
+                <img
+                  src={currentDisplayImage}
+                  alt={product.name}
+                  className="w-full h-full object-contain p-2 sm:p-3 transition-transform duration-300 group-hover:scale-105"
+                />
               ) : (
-                <div className={`w-20 h-20 rounded-xl shadow-lg border border-white/10 flex items-center justify-center bg-gradient-to-br ${product.color_from || 'from-gray-800'} ${product.color_to || 'to-black'}`}>
-                  <Package className="w-8 h-8 text-white/50" />
+                <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${product.color_from || 'from-gray-800'} ${product.color_to || 'to-black'}`}>
+                  <Package className="w-12 h-12 text-white/40 mb-2" />
+                  <span className="text-xs text-gray-400 font-bold">{product.name}</span>
                 </div>
               )}
-              <div className="flex-1">
-                <span className="text-[10px] font-bold text-blue-400 uppercase tracking-wider bg-blue-500/10 px-2 py-1 rounded mb-2 inline-block">
+
+              {/* Category Badge overlay on top left */}
+              <div className="absolute top-2.5 left-2.5 z-10">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider bg-black/75 backdrop-blur-md text-[#ccff00] border border-[#ccff00]/30 px-2.5 py-1 rounded-full shadow-lg">
                   {product.category || 'Package'}
                 </span>
-
-                {allProducts.length > 0 && (
-                  <select
-                    value={selectedProductId}
-                    onChange={handleProductChange}
-                    className="block w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white font-bold mb-2 focus:outline-none focus:border-blue-500 text-sm appearance-none cursor-pointer"
-                  >
-                    {allProducts.map((p) => (
-                      <option key={p.id} value={p.id} className="bg-gray-900">
-                        {p.name} - ৳{p.price}
-                      </option>
-                    ))}
-                  </select>
-                )}
-
-                <p className="text-xs text-gray-400 line-clamp-2">{product.description}</p>
               </div>
+
+              {/* Photo counter on top right */}
+              {allProductImages.length > 1 && (
+                <div className="absolute top-2.5 right-2.5 z-10">
+                  <span className="text-[10px] font-bold bg-black/75 backdrop-blur-md text-white/90 border border-white/20 px-2 py-0.5 rounded-full shadow-lg">
+                    {Math.max(1, allProductImages.indexOf(currentDisplayImage) + 1)} / {allProductImages.length}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            {/* Thumbnail Strip (৪-৫ টি ছোট আইকন - Click to change main picture) */}
+            {allProductImages.length > 1 && (
+              <div className="mb-4">
+                <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 scrollbar-thin">
+                  {allProductImages.map((imgUrl, idx) => {
+                    const isSelected = imgUrl === currentDisplayImage;
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        onClick={() => setSelectedGalleryImg(imgUrl)}
+                        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all p-1 bg-black/50 shrink-0 cursor-pointer ${
+                          isSelected
+                            ? 'border-[#B3E600] ring-2 ring-[#B3E600]/40 scale-105 shadow-md shadow-[#B3E600]/25'
+                            : 'border-white/10 hover:border-white/30 opacity-60 hover:opacity-100'
+                        }`}
+                        title={`ছবি ${idx + 1} দেখুন`}
+                      >
+                        <img
+                          src={imgUrl}
+                          alt={`${product.name} thumbnail ${idx + 1}`}
+                          className="w-full h-full object-contain rounded-lg"
+                        />
+                      </button>
+                    );
+                  })}
+                </div>
+                <p className="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
+                  <span>💡 যেকোনো ছবিতে ক্লিক করে বড় করে দেখুন</span>
+                </p>
+              </div>
+            )}
+
+            {/* Product Title & Info */}
+            <div className="mb-4 bg-white/[0.02] border border-white/5 rounded-2xl p-3.5">
+              <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
+                {product.name}
+              </h4>
+              {product.description && (
+                <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                  {product.description}
+                </p>
+              )}
+              {product.validity && (
+                <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
+                  <span>মেয়াদ: {product.validity}</span>
+                </div>
+              )}
             </div>
 
             <div className="space-y-3 mb-6 border-t border-white/10 pt-6">

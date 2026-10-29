@@ -71,7 +71,9 @@ export default function Home() {
                       features: pkg.features || [],
                       colorFrom: pkg.color_from || 'from-blue-500/50',
                       colorTo: pkg.color_to || 'to-blue-500/10',
-                      isPopular: pkg.is_popular
+                      isPopular: pkg.is_popular,
+                      imageUrl: pkg.image_url,
+                      galleryImages: pkg.gallery_images
                     }}
                   />
                 ))}
@@ -124,6 +126,7 @@ export default function Home() {
                         price: tool.price,
                         category: tool.category,
                         imageUrl: tool.image_url || '',
+                        galleryImages: tool.gallery_images,
                         validity: tool.validity || '30 Days'
                       }}
                     />

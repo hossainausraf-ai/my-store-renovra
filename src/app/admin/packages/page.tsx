@@ -14,6 +14,7 @@ import {
   Loader2
 } from 'lucide-react';
 import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
+import ProductGalleryManager from '@/components/admin/ProductGalleryManager';
 
 type Product = {
   id: string;
@@ -23,6 +24,7 @@ type Product = {
   price: number;
   category: string;
   image_url: string;
+  gallery_images?: string[];
   features: string[];
   badge_text: string;
   color_from: string;
@@ -46,6 +48,8 @@ export default function AdminPackagesPage() {
     description: '',
     price: '',
     category: '',
+    image_url: '',
+    gallery_images: [] as string[],
     badge_text: 'Popular',
     features: '',
     color_from: 'from-blue-500/50',
@@ -79,7 +83,7 @@ export default function AdminPackagesPage() {
 
   const resetForm = () => {
     setFormData({
-      name: '', description: '', price: '', category: '', badge_text: 'Popular', 
+      name: '', description: '', price: '', category: '', image_url: '', gallery_images: [], badge_text: 'Popular', 
       features: '', color_from: 'from-blue-500/50', color_to: 'to-blue-500/10', is_popular: false
     });
     setIsAdding(false);
@@ -92,6 +96,8 @@ export default function AdminPackagesPage() {
       description: product.description || '',
       price: product.price.toString(),
       category: product.category || '',
+      image_url: product.image_url || '',
+      gallery_images: product.gallery_images || [],
       badge_text: product.badge_text || '',
       features: product.features ? product.features.join('\n') : '',
       color_from: product.color_from || 'from-blue-500/50',
@@ -119,6 +125,8 @@ export default function AdminPackagesPage() {
       description: formData.description,
       price: parseFloat(formData.price) || 0,
       category: formData.category,
+      image_url: formData.image_url,
+      gallery_images: formData.gallery_images,
       badge_text: formData.badge_text,
       features: featuresArray,
       color_from: formData.color_from,
@@ -313,6 +321,16 @@ export default function AdminPackagesPage() {
                 value={formData.color_to}
                 onChange={e => setFormData({ ...formData, color_to: e.target.value })}
                 className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            {/* Product Gallery Manager (Main + 4-5 Thumbnails) */}
+            <div className="sm:col-span-2 lg:col-span-3">
+              <ProductGalleryManager
+                imageUrl={formData.image_url}
+                onImageUrlChange={(url) => setFormData(prev => ({ ...prev, image_url: url }))}
+                galleryImages={formData.gallery_images}
+                onGalleryImagesChange={(imgs) => setFormData(prev => ({ ...prev, gallery_images: imgs }))}
               />
             </div>
 
