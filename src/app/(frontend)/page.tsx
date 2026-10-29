@@ -1,7 +1,6 @@
 'use client';
 
 import PackageCard from '@/components/home/PackageCard';
-import DigitalProductCard from '@/components/home/DigitalProductCard';
 import SingleToolCard from '@/components/home/SingleToolCard';
 import ToolsMarquee from '@/components/home/ToolsMarquee';
 import HeroSection from '@/components/home/HeroSection';
@@ -26,9 +25,12 @@ export default function Home() {
       .catch(e => console.warn('Frontend products load fallback:', e));
   }, []);
 
-  // Normalize and deduplicate categories
+  const subscriptions = products.filter(p => p.product_type === 'subscription');
+  const allSingleTools = products.filter(p => p.product_type === 'single_tool');
+
+  // Normalize and deduplicate categories specifically for Single Tools (The Arsenal)
   const categoryMap = new Map<string, string>();
-  products.forEach(p => {
+  allSingleTools.forEach(p => {
     const raw = (p.category || '').trim();
     if (!raw) return;
     const lower = raw.toLowerCase();
@@ -38,13 +40,9 @@ export default function Home() {
   });
   const categories = ['All', ...Array.from(categoryMap.values())];
 
-  const filteredProducts = activeCategory.toLowerCase() === 'all'
-    ? products
-    : products.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
-
-  const subscriptions = filteredProducts.filter(p => p.product_type === 'subscription');
-  const digitalProducts = filteredProducts.filter(p => p.product_type === 'digital');
-  const singleTools = filteredProducts.filter(p => p.product_type === 'single_tool');
+  const singleTools = activeCategory.toLowerCase() === 'all'
+    ? allSingleTools
+    : allSingleTools.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-24">
@@ -148,38 +146,7 @@ export default function Home() {
               </div>
             )}
 
-            {/* Digital Products Section */}
-            {digitalProducts.length > 0 && (
-              <div className="mb-16 sm:mb-24">
-                {singleTools.length > 0 && (
-                  <div className="text-center mb-8 sm:mb-12">
-                    <p className="text-purple-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Templates & Assets</p>
-                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Digital Products</h2>
-                    <p className="text-xs sm:text-base text-gray-400">Exclusive e-books, templates, and design resources.</p>
-                  </div>
-                )}
-                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
-                  {digitalProducts.map((product) => (
-                    <DigitalProductCard
-                      key={product.id}
-                      product={{
-                        id: product.id,
-                        name: product.name,
-                        description: product.description,
-                        price: product.price,
-                        category: product.category,
-                        imageUrl: product.image_url || '',
-                        galleryImages: product.gallery_images
-                      }}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-
-
-
-            {products.length === 0 && (
+            {allSingleTools.length === 0 && (
               <div className="text-center py-20 text-gray-400">
                 কোনো প্রোডাক্ট পাওয়া যায়নি। অ্যাডমিন প্যানেল থেকে অ্যাড করুন অথবা SQL ফাইলটি রান করুন।
               </div>
