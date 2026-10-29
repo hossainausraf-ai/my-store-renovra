@@ -137,7 +137,7 @@ export default function HeroSection() {
             <div className="flex flex-wrap gap-2 mb-6 relative z-20">
               <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-medium text-gray-300 shadow-xl">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                Trusted by 15K+
+                Trusted by 1200+
               </div>
             </div>
 

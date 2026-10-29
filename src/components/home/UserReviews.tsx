@@ -192,11 +192,11 @@ export default function UserReviews() {
         </div>
 
         <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3">
-          Loved by 15,000+ Creators & Students
+          Loved by 1,200+ Creators & Students
         </h2>
         
         <p className="text-gray-400 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto">
-          দেখুন হাজারো ফ্রিল্যান্সার, কন্টেন্ট ক্রিয়েটর এবং শিক্ষার্থীরা Renovra সম্পর্কে কী বলছেন।
+          দেখুন ১২০০+ ফ্রিল্যান্সার, কন্টেন্ট ক্রিয়েটর এবং শিক্ষার্থীরা Renovra সম্পর্কে কী বলছেন।
         </p>
       </div>
 
