@@ -1,103 +1,224 @@
-import React from 'react';
+'use client';
 
-const REVIEWS = [
+import React from 'react';
+import { ThumbsUp, Globe, MoreHorizontal, Sparkles, Star } from 'lucide-react';
+
+interface ReviewItem {
+  id: string;
+  name: string;
+  avatar: string;
+  date: string;
+  content: string;
+  verifiedBrand: string;
+}
+
+const row1Reviews: ReviewItem[] = [
   {
-    id: 1,
-    name: 'Anik Rahman',
-    role: 'Digital Marketer, Dhaka',
-    review: 'Renovra থেকে ChatGPT Plus আর Canva Pro নিয়েছি। অর্ডার করার ৫ মিনিটের মাথায় এক্সেস পেয়েছি। প্রতি মাসে হাজার হাজার টাকা বেঁচে যাচ্ছে!',
-    rating: 5,
-    initials: 'AR',
-    color: 'bg-[#ccff00] text-black',
+    id: 'r1-1',
+    name: 'Michael Carter',
+    avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
+    date: 'March 14, 2026',
+    content: 'Honestly the cheapest way to access ChatGPT Plus and Canva Pro together. Support replied in seconds.',
+    verifiedBrand: 'Renovra'
   },
   {
-    id: 2,
+    id: 'r1-2',
+    name: 'Mehedi Hasan Rocky',
+    avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80',
+    date: 'April 8, 2026',
+    content: 'Alhamdulillah excellent service quality. Highly recommended. 100% trusted service provider in BD.',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r1-3',
+    name: 'Priya Sharma',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    date: 'February 24, 2026',
+    content: 'I bought the Envato & Freepik package. All downloads work flawlessly without any limits. Wonderful team!',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r1-4',
     name: 'Tanvir Ahmed',
-    role: 'Freelance Designer, Chittagong',
-    review: 'Envato Elements আর ডিজাইন এসেটস সার্ভিসটা অসাধারণ! কোনো লগইন প্রবলেম হলে WhatsApp-এ সাথে সাথে রেসপন্স পাওয়া যায়।',
-    rating: 5,
-    initials: 'TA',
-    color: 'bg-emerald-500 text-white',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
+    date: 'January 19, 2026',
+    content: 'Freelancing er jonno Semrush aar Envato niyechi. Fast activation ebong 24/7 WhatsApp help. Best decision!',
+    verifiedBrand: 'Renovra'
   },
   {
-    id: 3,
-    name: 'Nusrat Jahan',
-    role: 'Content Creator, Sylhet',
-    review: 'Monica AI Pro আর AI রাইটিং বান্ডেলটা আমার ডেইলি কনটেন্ট ক্রিয়েশনে লাইফসেভার। ১০০% জেনুইন ও ট্রাস্টেড সার্ভিস!',
-    rating: 5,
-    initials: 'NJ',
-    color: 'bg-cyan-500 text-white',
+    id: 'r1-5',
+    name: 'Sarah Jenkins',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80',
+    date: 'May 2, 2026',
+    content: 'Super fast activation. Got my Claude 3.5 Sonnet and Leonardo AI setup within 3 minutes of ordering.',
+    verifiedBrand: 'Renovra'
   },
   {
-    id: 4,
-    name: 'Sabbir Hossain',
-    role: 'SEO Specialist, Rajshahi',
-    review: 'এসইও এবং প্রিমিয়াম টুলসের জন্য সেরা ও সাশ্রয়ী প্ল্যাটফর্ম। bKash আর বাংলা কিউআর দিয়ে পেমেন্ট করাও অনেক সহজ।',
-    rating: 5,
-    initials: 'SH',
-    color: 'bg-purple-500 text-white',
-  },
-  {
-    id: 5,
-    name: 'Farhana Akter',
-    role: 'UI/UX Designer, Dhaka',
-    review: 'কুইক ভিউ ফিচার আর ইনস্ট্যান্ট এক্টিভেশন দারুণ। প্রিমিয়াম টুলস এত কম খরচে পাওয়ার সুবিধা সত্যি প্রশংসনীয়।',
-    rating: 5,
-    initials: 'FA',
-    color: 'bg-pink-500 text-white',
+    id: 'r1-6',
+    name: 'Asif Mahmud',
+    avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=120&auto=format&fit=crop&q=80',
+    date: 'March 18, 2026',
+    content: 'Academic thesis er jonno Paperpal aar Scite AI khub dorkar chilo. Khub kom dam e peyechi, onnek bhalo!',
+    verifiedBrand: 'Renovra'
   }
 ];
 
-export default function UserReviews() {
-  // Duplicate reviews to create a seamless infinite scrolling loop
-  const displayReviews = [...REVIEWS, ...REVIEWS];
+const row2Reviews: ReviewItem[] = [
+  {
+    id: 'r2-1',
+    name: 'Nayan Ali',
+    avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80',
+    date: 'March 30, 2026',
+    content: 'Udemy aar Kittl ekshathe pelam ekta plan e. Support team khub helpful. Joss service!',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r2-2',
+    name: 'Ananya Iyer',
+    avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80',
+    date: 'March 2, 2026',
+    content: 'The Canva Pro access is genuine, no logout issues. Customer support is available 24/7 which is amazing.',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r2-3',
+    name: 'David Brown',
+    avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80',
+    date: 'November 18, 2025',
+    content: 'Subscribed to the All-in-One plan. Semrush, Ahrefs, ChatGPT — all working perfectly. Five stars!',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r2-4',
+    name: 'Rashedul Islam',
+    avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&auto=format&fit=crop&q=80',
+    date: 'April 12, 2026',
+    content: 'bKash diye payment kore 2 min er moddhe instant access pelam. WhatsApp support response speed osadharon!',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r2-5',
+    name: 'Elena Rostova',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
+    date: 'February 11, 2026',
+    content: 'The best tools ecosystem for content creators and marketers. Huge money saver every single month.',
+    verifiedBrand: 'Renovra'
+  },
+  {
+    id: 'r2-6',
+    name: 'Fariha Zaman',
+    avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80',
+    date: 'March 22, 2026',
+    content: 'Amar agency team er jonno agency bundle niyechi. Shob graphic & video editing tools seamlessly kaj korche.',
+    verifiedBrand: 'Renovra'
+  }
+];
 
+function ReviewCard({ review }: { review: ReviewItem }) {
   return (
-    <section className="py-20 px-4 bg-transparent border-t border-white/5 relative overflow-hidden">
+    <div className="w-[310px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-2xl p-4 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
+      <div>
+        {/* Top Header: Avatar + Name + Recommends + Date */}
+        <div className="flex items-start gap-3">
+          <img
+            src={review.avatar}
+            alt={review.name}
+            className="w-10 h-10 rounded-full object-cover border border-white/15 shrink-0 shadow-md"
+            loading="lazy"
+          />
 
-      <div className="text-center max-w-3xl mx-auto mb-16 relative z-10">
-        <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">Hear From Our Happy Users</h2>
-        <p className="text-gray-400 text-lg">
-          See what developers, students, and creators are saying about their experience with our platform.
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <span className="font-bold text-white text-xs sm:text-sm tracking-tight truncate">
+                {review.name}
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
+                <ThumbsUp className="w-3 h-3 text-emerald-400 fill-emerald-400 shrink-0" />
+                <span>recommends</span>
+                <strong className="text-white font-semibold">{review.verifiedBrand}.</strong>
+              </span>
+            </div>
+
+            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-gray-500 mt-0.5">
+              <span>{review.date}</span>
+              <span>•</span>
+              <Globe className="w-2.5 h-2.5" />
+            </div>
+          </div>
+
+          <div className="text-gray-500 hover:text-gray-300 cursor-pointer shrink-0 ml-1">
+            <MoreHorizontal className="w-4 h-4" />
+          </div>
+        </div>
+
+        {/* Review Text */}
+        <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mt-3 mb-4">
+          {review.content}
         </p>
       </div>
 
-      {/* Scrolling Container */}
-      <div className="max-w-4xl mx-auto h-[600px] overflow-hidden relative" style={{ maskImage: 'linear-gradient(to bottom, transparent, black 10%, black 90%, transparent)' }}>
+      {/* Bottom Tag Pill */}
+      <div className="pt-2 border-t border-white/5 flex items-center justify-between">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-medium text-gray-300">
+          <span className="w-2 h-2 rounded-full bg-[#ccff00] shadow-[0_0_8px_#ccff00]" />
+          <span>{review.verifiedBrand}</span>
+        </div>
 
-        <div className="flex flex-col gap-6 animate-marquee-vertical hover:[animation-play-state:paused]">
-          {displayReviews.map((item, index) => (
-            <div
-              key={`${item.id}-${index}`}
-              className="bg-[var(--surface)] backdrop-blur-sm border border-white/5 rounded-2xl p-6 transition-all duration-300 hover:bg-white/10 hover:border-white/20"
-            >
-              <div className="flex items-start gap-4">
-                {/* Avatar */}
-                <div className={`w-12 h-12 rounded-full ${item.color} flex items-center justify-center text-white font-bold text-sm shrink-0 shadow-lg`}>
-                  {item.initials}
-                </div>
+        <div className="flex items-center gap-0.5 text-amber-400">
+          {[...Array(5)].map((_, i) => (
+            <Star key={i} className="w-3 h-3 fill-amber-400" />
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
-                <div className="flex-1">
-                  {/* Rating Stars */}
-                  <div className="flex gap-1 mb-2">
-                    {[...Array(item.rating)].map((_, i) => (
-                      <svg key={i} xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="#F59E0B" stroke="#F59E0B" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
-                      </svg>
-                    ))}
-                  </div>
+export default function UserReviews() {
+  const loopRow1 = [...row1Reviews, ...row1Reviews];
+  const loopRow2 = [...row2Reviews, ...row2Reviews];
 
-                  {/* Review Text */}
-                  <p className="text-gray-300 mb-4 text-lg">"{item.review}"</p>
+  return (
+    <section className="py-16 sm:py-24 bg-transparent border-t border-white/5 relative overflow-hidden w-full">
+      
+      {/* Background Ambient Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-blue-600/10 via-[#ccff00]/5 to-purple-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
-                  {/* User Info */}
-                  <div>
-                    <h4 className="text-white font-bold">{item.name}</h4>
-                    <p className="text-gray-500 text-sm">{item.role}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
+      {/* Section Header */}
+      <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 px-4">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-[#ccff00] mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
+          <Sparkles className="w-3 h-3" />
+          <span>কাস্টমার রিভিউ • 100% Genuine</span>
+        </div>
+
+        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3">
+          Loved by 15,000+ Creators & Students
+        </h2>
+        
+        <p className="text-gray-400 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto">
+          দেখুন হাজারো ফ্রিল্যান্সার, কন্টেন্ট ক্রিয়েটর এবং শিক্ষার্থীরা Renovra সম্পর্কে কী বলছেন।
+        </p>
+      </div>
+
+      {/* Two-Row Marquee Loop Carousel */}
+      <div 
+        className="relative w-full overflow-hidden space-y-4 sm:space-y-5"
+        style={{
+          maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
+          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
+        }}
+      >
+        {/* Row 1: Right to Left (animate-marquee-left) */}
+        <div className="flex gap-3.5 sm:gap-5 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused] py-1">
+          {loopRow1.map((rev, idx) => (
+            <ReviewCard key={`r1-${rev.id}-${idx}`} review={rev} />
+          ))}
+        </div>
+
+        {/* Row 2: Left to Right (animate-marquee-right) */}
+        <div className="flex gap-3.5 sm:gap-5 w-max animate-marquee-right hover:[animation-play-state:paused] active:[animation-play-state:paused] py-1">
+          {loopRow2.map((rev, idx) => (
+            <ReviewCard key={`r2-${rev.id}-${idx}`} review={rev} />
           ))}
         </div>
       </div>
