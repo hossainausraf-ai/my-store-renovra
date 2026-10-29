@@ -84,30 +84,30 @@ export default function WhyChooseUs() {
           </p>
         </div>
 
-        {/* Mobile View: 3 Compact Cards Visible at Once in Continuous Loop Carousel (Right to Left) */}
+        {/* Mobile View: 2 Compact Cards Visible at Once in Continuous Loop Carousel (Right to Left) */}
         <div 
           className="block md:hidden overflow-hidden w-full relative py-2 -mx-3 px-3"
           style={{ 
-            maskImage: 'linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)'
+            maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
           }}
         >
-          <div className="flex gap-2 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
+          <div className="flex gap-3 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
             {[...FEATURES, ...FEATURES].map((feature, idx) => (
               <div
                 key={`mobile-${feature.id}-${idx}`}
-                className="w-[114px] sm:w-[130px] shrink-0 bg-[var(--surface)] relative border border-white/10 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 shadow-md flex flex-col justify-between"
+                className="w-[168px] sm:w-[185px] shrink-0 bg-[var(--surface)] relative border border-white/10 rounded-2xl p-3.5 shadow-lg flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-8 h-8 rounded-lg bg-green-400 flex items-center justify-center mb-2 shadow-[0_0_12px_rgba(74,222,128,0.3)] [&>div>svg]:w-4 [&>div>svg]:h-4">
+                  <div className="w-8 h-8 rounded-xl bg-green-400 flex items-center justify-center mb-2 shadow-[0_0_15px_rgba(74,222,128,0.3)] [&>div>svg]:w-4 [&>div>svg]:h-4">
                     <div className="text-green-950 flex items-center justify-center">
                       {feature.icon}
                     </div>
                   </div>
-                  <h3 className="text-[11px] sm:text-xs font-bold text-white mb-1 leading-snug line-clamp-2 min-h-[1.7rem]">
+                  <h3 className="text-xs font-bold text-white mb-1 leading-snug line-clamp-1">
                     {feature.title}
                   </h3>
-                  <p className="text-gray-400 leading-snug text-[8.5px] sm:text-[9.5px] line-clamp-3">
+                  <p className="text-gray-400 leading-snug text-[10.5px] line-clamp-2">
                     {feature.description}
                   </p>
                 </div>
