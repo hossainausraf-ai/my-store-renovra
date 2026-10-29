@@ -211,7 +211,7 @@ export default function UserReviews() {
           <span>কাস্টমার রিভিউ • 100% Genuine</span>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3">
+        <h2 className="text-lg min-[380px]:text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3 whitespace-nowrap">
           Loved by 1,200+ Creators & Students
         </h2>
         
