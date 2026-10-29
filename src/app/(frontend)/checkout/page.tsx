@@ -29,16 +29,41 @@ import { useCart } from '@/context/CartContext';
 function CheckoutForm() {
   const searchParams = useSearchParams();
   const pkgId = searchParams.get('pkgId') || '';
+  const isFromCartParam = searchParams.get('cart') === 'true';
+
   const {
     items: cartItems,
     subtotal: cartSubtotal,
     appliedCoupon: cartCoupon,
+    discountAmount: cartDiscountAmount,
+    finalTotal: cartFinalTotal,
     clearCart
   } = useCart();
-  const isCartCheckout = searchParams.get('cart') === 'true' && cartItems.length > 0;
-  
-  const [product, setProduct] = useState<any>(null);
-  const [isLoadingProduct, setIsLoadingProduct] = useState(true);
+
+  const shouldSelectCartInitially = (isFromCartParam || (!pkgId && cartItems.length > 0)) && cartItems.length > 0;
+
+  const createCartProduct = (items: typeof cartItems, subtotal: number) => {
+    const totalCount = items.reduce((sum, i) => sum + i.quantity, 0);
+    return {
+      id: 'cart-order',
+      product_type: 'subscription',
+      name: `Shopping Cart (${totalCount}টি আইটেম)`,
+      description: items.map(i => `${i.name} (x${i.quantity})`).join(', '),
+      price: subtotal,
+      category: 'Shopping Cart',
+      validity: '1 Month',
+      features: items.map(i => `${i.name} (x${i.quantity}) - ৳${i.price * i.quantity}`),
+      image_url: items[0]?.imageUrl || '',
+      gallery_images: items.map(i => i.imageUrl).filter(Boolean) as string[],
+      color_from: 'from-[#ccff00]/40',
+      color_to: 'to-emerald-500/20'
+    };
+  };
+
+  const [product, setProduct] = useState<any>(
+    shouldSelectCartInitially ? createCartProduct(cartItems, cartSubtotal) : null
+  );
+  const [isLoadingProduct, setIsLoadingProduct] = useState(!shouldSelectCartInitially);
 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [customerName, setCustomerName] = useState('');
@@ -63,7 +88,9 @@ function CheckoutForm() {
 
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [allProducts, setAllProducts] = useState<any[]>(defaultProducts);
-  const [selectedProductId, setSelectedProductId] = useState<string>(pkgId || defaultProducts[0]?.id || '');
+  const [selectedProductId, setSelectedProductId] = useState<string>(
+    pkgId ? pkgId : (shouldSelectCartInitially ? 'cart-order' : (defaultProducts[0]?.id || ''))
+  );
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string>('');
 
@@ -96,6 +123,37 @@ function CheckoutForm() {
   ].filter((img, idx, arr) => img && arr.indexOf(img) === idx) : []) as string[];
 
   const currentDisplayImage = selectedGalleryImg || product?.image_url || allProductImages[0] || '';
+
+  // Synchronize cart product if selectedProductId is 'cart-order'
+  useEffect(() => {
+    if (selectedProductId === 'cart-order' && cartItems.length > 0) {
+      setProduct(createCartProduct(cartItems, cartSubtotal));
+      setIsLoadingProduct(false);
+    }
+  }, [cartItems, cartSubtotal, selectedProductId]);
+
+  // When coming with cart=true or without pkgId, activate cart once cartItems arrives
+  useEffect(() => {
+    if ((isFromCartParam || (!pkgId && cartItems.length > 0)) && cartItems.length > 0 && selectedProductId !== 'cart-order' && !pkgId) {
+      setSelectedProductId('cart-order');
+      setProduct(createCartProduct(cartItems, cartSubtotal));
+      setIsLoadingProduct(false);
+    }
+  }, [isFromCartParam, pkgId, cartItems.length, selectedProductId]);
+
+  // Auto-apply cart coupon if cart is selected
+  useEffect(() => {
+    if (selectedProductId === 'cart-order' && cartCoupon && !appliedCoupon) {
+      setAppliedCoupon({
+        code: cartCoupon.code,
+        discountType: cartCoupon.discount_type,
+        discountValue: cartCoupon.discount_value,
+        discountAmount: cartDiscountAmount,
+        finalPrice: cartFinalTotal
+      });
+      setCouponSuccess(`কুপন কোড ${cartCoupon.code} কার্ট থেকে সফলভাবে যুক্ত হয়েছে!`);
+    }
+  }, [selectedProductId, cartCoupon, appliedCoupon, cartDiscountAmount, cartFinalTotal]);
 
   useEffect(() => {
     // Check if user is logged in to pre-fill their info
@@ -138,9 +196,11 @@ function CheckoutForm() {
             setProduct(prodList[0]);
             setSelectedProductId(prodList[0]?.id || '');
           }
-        } else if (prodList.length > 0) {
-          setProduct(prodList[0]);
-          setSelectedProductId(prodList[0].id);
+        } else if (!isFromCartParam && cartItems.length === 0) {
+          if (prodList.length > 0) {
+            setProduct(prodList[0]);
+            setSelectedProductId(prodList[0].id);
+          }
         }
       })
       .catch(e => {
@@ -150,26 +210,11 @@ function CheckoutForm() {
           if (found) setProduct(found);
         }
       })
-      .finally(() => setIsLoadingProduct(false));
-  }, [pkgId]);
+      .finally(() => {
+        setIsLoadingProduct(false);
+      });
+  }, [pkgId, isFromCartParam, cartItems.length]);
 
-  // Handle Cart Checkout
-  useEffect(() => {
-    if (isCartCheckout && cartItems.length > 0) {
-      const cartProduct = {
-        id: 'cart-order',
-        name: `Shopping Cart (${cartItems.length} Items: ${cartItems.map(i => i.name).slice(0, 3).join(', ')}${cartItems.length > 3 ? '...' : ''})`,
-        price: cartSubtotal,
-        category: 'Shopping Cart',
-        validity: '1 Month',
-        features: cartItems.map(i => `${i.name} (x${i.quantity}) - ৳${i.price * i.quantity}`),
-        image_url: cartItems[0]?.imageUrl || ''
-      };
-      setProduct(cartProduct);
-      setSelectedProductId('cart-order');
-      setIsLoadingProduct(false);
-    }
-  }, [isCartCheckout, cartItems, cartSubtotal]);
 
   const validateCouponCode = async (codeToValidate: string, currentProd: any) => {
     if (!codeToValidate || !codeToValidate.trim()) {
@@ -231,11 +276,27 @@ function CheckoutForm() {
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;
     setSelectedProductId(id);
-    const found = allProducts.find(p => p.id === id);
-    if (found) {
-      setProduct(found);
-      if (appliedCoupon) {
-        validateCouponCode(appliedCoupon.code, found);
+    if (id === 'cart-order') {
+      const cartProd = createCartProduct(cartItems, cartSubtotal);
+      setProduct(cartProd);
+      if (cartCoupon) {
+        setAppliedCoupon({
+          code: cartCoupon.code,
+          discountType: cartCoupon.discount_type,
+          discountValue: cartCoupon.discount_value,
+          discountAmount: cartDiscountAmount,
+          finalPrice: cartFinalTotal
+        });
+      } else if (appliedCoupon) {
+        validateCouponCode(appliedCoupon.code, cartProd);
+      }
+    } else {
+      const found = allProducts.find(p => p.id === id);
+      if (found) {
+        setProduct(found);
+        if (appliedCoupon) {
+          validateCouponCode(appliedCoupon.code, found);
+        }
       }
     }
   };
@@ -275,7 +336,14 @@ function CheckoutForm() {
       formData.append('whatsapp', whatsappNumber || phone);
       formData.append('customerName', customerName);
       formData.append('packageId', selectedProductId);
-      formData.append('packageName', product?.name || 'Product');
+      
+      if (selectedProductId === 'cart-order') {
+        const itemNames = cartItems.map(i => `${i.name} (x${i.quantity})`).join(', ');
+        formData.append('packageName', `Shopping Cart (${cartItems.length} Tools: ${itemNames})`);
+      } else {
+        formData.append('packageName', product?.name || 'Product');
+      }
+
       formData.append('price', String(finalPrice));
       formData.append('originalPrice', String(originalPrice));
       if (appliedCoupon) {
@@ -298,7 +366,7 @@ function CheckoutForm() {
         setSubmittedOrderId(data.orderId);
         setSubmittedTrxId(data.trxId);
         setIsSubmitted(true);
-        if (isCartCheckout) {
+        if (selectedProductId === 'cart-order' || isFromCartParam) {
           clearCart();
         }
       } else {
@@ -313,6 +381,21 @@ function CheckoutForm() {
   };
 
   const handleDownloadInvoice = () => {
+    const isCart = selectedProductId === 'cart-order' && cartItems.length > 0;
+    const itemsTableRows = isCart
+      ? cartItems.map(i => `
+          <tr class="item">
+            <td>${i.name} (x${i.quantity}) [${i.validity || '1 Month'}]</td>
+            <td>৳ ${i.price * i.quantity}</td>
+          </tr>
+        `).join('')
+      : `
+          <tr class="item">
+            <td>${product?.name}</td>
+            <td>৳ ${originalPrice}</td>
+          </tr>
+        `;
+
     const invoiceContent = `
       <html>
         <head>
@@ -355,10 +438,7 @@ function CheckoutForm() {
                 <td>Item</td>
                 <td>Price</td>
               </tr>
-              <tr class="item">
-                <td>${product?.name}</td>
-                <td>৳ ${originalPrice}</td>
-              </tr>
+              ${itemsTableRows}
               ${appliedCoupon ? `
               <tr class="item" style="color: #059669;">
                 <td>Coupon Discount (${appliedCoupon.code})</td>
@@ -565,106 +645,198 @@ function CheckoutForm() {
             </h3>
 
             {/* Product Switcher Dropdown */}
-            {allProducts.length > 0 && (
-              <div className="mb-4">
-                <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5">
-                  পণ্য / প্যাকেজ নির্বাচন করুন
-                </label>
-                <select
-                  value={selectedProductId}
-                  onChange={handleProductChange}
-                  className="block w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-blue-500 text-sm cursor-pointer shadow-inner"
-                >
-                  {allProducts.map((p) => (
-                    <option key={p.id} value={p.id} className="bg-gray-900 text-white">
-                      {p.name} — ৳{p.price}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-
-            {/* Main Picture Display (Large & Clear) */}
-            <div className="relative w-full h-48 sm:h-64 rounded-2xl overflow-hidden bg-black/60 border border-white/10 group shadow-2xl flex items-center justify-center mb-3">
-              {currentDisplayImage ? (
-                <img
-                  src={currentDisplayImage}
-                  alt={product.name}
-                  className="w-full h-full object-contain p-2 sm:p-3 transition-transform duration-300 group-hover:scale-105"
-                />
-              ) : (
-                <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${product.color_from || 'from-gray-800'} ${product.color_to || 'to-black'}`}>
-                  <Package className="w-12 h-12 text-white/40 mb-2" />
-                  <span className="text-xs text-gray-400 font-bold">{product.name}</span>
-                </div>
-              )}
-
-              {/* Category Badge overlay on top left */}
-              <div className="absolute top-2.5 left-2.5 z-10">
-                <span className="text-[10px] font-extrabold uppercase tracking-wider bg-black/75 backdrop-blur-md text-[#ccff00] border border-[#ccff00]/30 px-2.5 py-1 rounded-full shadow-lg">
-                  {product.category || 'Package'}
-                </span>
-              </div>
-
-              {/* Photo counter on top right */}
-              {allProductImages.length > 1 && (
-                <div className="absolute top-2.5 right-2.5 z-10">
-                  <span className="text-[10px] font-bold bg-black/75 backdrop-blur-md text-white/90 border border-white/20 px-2 py-0.5 rounded-full shadow-lg">
-                    {Math.max(1, allProductImages.indexOf(currentDisplayImage) + 1)} / {allProductImages.length}
+            <div className="mb-4">
+              <label className="block text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
+                <span>পণ্য / প্যাকেজ নির্বাচন করুন</span>
+                {selectedProductId === 'cart-order' && (
+                  <span className="text-[10px] text-[#ccff00] font-extrabold flex items-center gap-1 bg-[#ccff00]/10 border border-[#ccff00]/20 px-2 py-0.5 rounded-full">
+                    <ShoppingBag className="w-3 h-3" /> কার্ট সিলেক্টেড
                   </span>
-                </div>
-              )}
+                )}
+              </label>
+              <select
+                value={selectedProductId}
+                onChange={handleProductChange}
+                className="block w-full bg-black/40 border border-white/10 rounded-xl px-3.5 py-2.5 text-white font-bold focus:outline-none focus:border-[#ccff00] text-sm cursor-pointer shadow-inner"
+              >
+                {cartItems.length > 0 && (
+                  <option value="cart-order" className="bg-gray-900 text-[#ccff00] font-extrabold">
+                    🛒 আপনার কার্ট ({cartItems.length}টি টুলস) — ৳{cartSubtotal}
+                  </option>
+                )}
+                {allProducts.some(p => p.product_type === 'subscription' || !p.product_type) && (
+                  <optgroup label="প্যাকেজ ও সাবস্ক্রিপশন" className="bg-gray-900 text-gray-400 font-bold">
+                    {allProducts.filter(p => p.product_type === 'subscription' || !p.product_type).map((p) => (
+                      <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
+                        {p.name} — ৳{p.price}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                {allProducts.some(p => p.product_type === 'single_tool') && (
+                  <optgroup label="সিঙ্গেল এআই টুলস" className="bg-gray-900 text-gray-400 font-bold">
+                    {allProducts.filter(p => p.product_type === 'single_tool').map((p) => (
+                      <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
+                        {p.name} — ৳{p.price}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+                {allProducts.some(p => p.product_type === 'digital') && (
+                  <optgroup label="ডিজিটাল প্রোডাক্টস" className="bg-gray-900 text-gray-400 font-bold">
+                    {allProducts.filter(p => p.product_type === 'digital').map((p) => (
+                      <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
+                        {p.name} — ৳{p.price}
+                      </option>
+                    ))}
+                  </optgroup>
+                )}
+              </select>
             </div>
 
-            {/* Thumbnail Strip (৪-৫ টি ছোট আইকন - Click to change main picture) */}
-            {allProductImages.length > 1 && (
-              <div className="mb-4">
-                <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 scrollbar-thin">
-                  {allProductImages.map((imgUrl, idx) => {
-                    const isSelected = imgUrl === currentDisplayImage;
-                    return (
-                      <button
-                        key={idx}
-                        type="button"
-                        onClick={() => setSelectedGalleryImg(imgUrl)}
-                        className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all p-1 bg-black/50 shrink-0 cursor-pointer ${
-                          isSelected
-                            ? 'border-[#B3E600] ring-2 ring-[#B3E600]/40 scale-105 shadow-md shadow-[#B3E600]/25'
-                            : 'border-white/10 hover:border-white/30 opacity-60 hover:opacity-100'
-                        }`}
-                        title={`ছবি ${idx + 1} দেখুন`}
+            {/* Cart Items List or Single Product Display */}
+            {selectedProductId === 'cart-order' ? (
+              <div className="mb-4 space-y-3">
+                <div className="flex items-center justify-between pb-2 border-b border-white/10">
+                  <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <ShoppingBag className="w-4 h-4 text-[#ccff00]" />
+                    কার্টে থাকা পণ্যসমূহ ({cartItems.length}টি)
+                  </span>
+                  <Link href="/#single-tools" className="text-[11px] text-[#ccff00] hover:underline font-bold">
+                    + আরও টুল যোগ করুন
+                  </Link>
+                </div>
+
+                {cartItems.length === 0 ? (
+                  <div className="p-4 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-center">
+                    <p className="text-xs text-amber-300 font-medium mb-2">আপনার কার্ট বর্তমানে খালি আছে।</p>
+                    <Link href="/#single-tools" className="inline-block text-xs font-bold bg-[#ccff00] text-black px-3 py-1.5 rounded-lg">
+                      টুলস ব্রাউজ করুন
+                    </Link>
+                  </div>
+                ) : (
+                  <div className="space-y-2 max-h-64 overflow-y-auto pr-1">
+                    {cartItems.map((item) => (
+                      <div
+                        key={item.id}
+                        className="p-2.5 rounded-2xl bg-black/40 border border-white/10 hover:border-white/20 transition-all flex items-center gap-3"
                       >
-                        <img
-                          src={imgUrl}
-                          alt={`${product.name} thumbnail ${idx + 1}`}
-                          className="w-full h-full object-contain rounded-lg"
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-                <p className="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
-                  <span>💡 যেকোনো ছবিতে ক্লিক করে বড় করে দেখুন</span>
-                </p>
+                        <div className="w-11 h-11 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center overflow-hidden shrink-0">
+                          {item.imageUrl ? (
+                            <img src={item.imageUrl} alt={item.name} className="w-full h-full object-contain p-1" />
+                          ) : (
+                            <div className="w-full h-full bg-[#ccff00]/10 flex items-center justify-center text-[#ccff00] font-black text-xs">
+                              {item.name.charAt(0)}
+                            </div>
+                          )}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <h4 className="text-xs font-bold text-white truncate">{item.name}</h4>
+                          <div className="flex items-center gap-2 text-[10px] text-gray-400 mt-0.5">
+                            <span className="px-1.5 py-0.5 rounded bg-white/5 border border-white/10 text-gray-300 font-medium">
+                              {item.validity || '1 Month'}
+                            </span>
+                            <span>পরিমাণ: {item.quantity}টি</span>
+                          </div>
+                        </div>
+                        <div className="text-right shrink-0">
+                          <span className="text-xs font-extrabold text-[#ccff00]">
+                            ৳{item.price * item.quantity}
+                          </span>
+                          {item.quantity > 1 && (
+                            <p className="text-[9px] text-gray-500">(৳{item.price} each)</p>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
-            )}
+            ) : (
+              <>
+                {/* Main Picture Display (Large & Clear) */}
+                <div className="relative w-full h-48 sm:h-64 rounded-2xl overflow-hidden bg-black/60 border border-white/10 group shadow-2xl flex items-center justify-center mb-3">
+                  {currentDisplayImage ? (
+                    <img
+                      src={currentDisplayImage}
+                      alt={product.name}
+                      className="w-full h-full object-contain p-2 sm:p-3 transition-transform duration-300 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className={`w-full h-full flex flex-col items-center justify-center bg-gradient-to-br ${product.color_from || 'from-gray-800'} ${product.color_to || 'to-black'}`}>
+                      <Package className="w-12 h-12 text-white/40 mb-2" />
+                      <span className="text-xs text-gray-400 font-bold">{product.name}</span>
+                    </div>
+                  )}
 
-            {/* Product Title & Info */}
-            <div className="mb-4 bg-white/[0.02] border border-white/5 rounded-2xl p-3.5">
-              <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
-                {product.name}
-              </h4>
-              {product.description && (
-                <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
-                  {product.description}
-                </p>
-              )}
-              {product.validity && (
-                <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
-                  <span>মেয়াদ: {product.validity}</span>
+                  {/* Category Badge overlay on top left */}
+                  <div className="absolute top-2.5 left-2.5 z-10">
+                    <span className="text-[10px] font-extrabold uppercase tracking-wider bg-black/75 backdrop-blur-md text-[#ccff00] border border-[#ccff00]/30 px-2.5 py-1 rounded-full shadow-lg">
+                      {product.category || 'Package'}
+                    </span>
+                  </div>
+
+                  {/* Photo counter on top right */}
+                  {allProductImages.length > 1 && (
+                    <div className="absolute top-2.5 right-2.5 z-10">
+                      <span className="text-[10px] font-bold bg-black/75 backdrop-blur-md text-white/90 border border-white/20 px-2 py-0.5 rounded-full shadow-lg">
+                        {Math.max(1, allProductImages.indexOf(currentDisplayImage) + 1)} / {allProductImages.length}
+                      </span>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+
+                {/* Thumbnail Strip (৪-৫ টি ছোট আইকন - Click to change main picture) */}
+                {allProductImages.length > 1 && (
+                  <div className="mb-4">
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5 scrollbar-thin">
+                      {allProductImages.map((imgUrl, idx) => {
+                        const isSelected = imgUrl === currentDisplayImage;
+                        return (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setSelectedGalleryImg(imgUrl)}
+                            className={`w-12 h-12 sm:w-14 sm:h-14 rounded-xl overflow-hidden border-2 transition-all p-1 bg-black/50 shrink-0 cursor-pointer ${
+                              isSelected
+                                ? 'border-[#B3E600] ring-2 ring-[#B3E600]/40 scale-105 shadow-md shadow-[#B3E600]/25'
+                                : 'border-white/10 hover:border-white/30 opacity-60 hover:opacity-100'
+                            }`}
+                            title={`ছবি ${idx + 1} দেখুন`}
+                          >
+                            <img
+                              src={imgUrl}
+                              alt={`${product.name} thumbnail ${idx + 1}`}
+                              className="w-full h-full object-contain rounded-lg"
+                            />
+                          </button>
+                        );
+                      })}
+                    </div>
+                    <p className="text-[10px] text-gray-500 mt-1 flex items-center gap-1">
+                      <span>💡 যেকোনো ছবিতে ক্লিক করে বড় করে দেখুন</span>
+                    </p>
+                  </div>
+                )}
+
+                {/* Product Title & Info */}
+                <div className="mb-4 bg-white/[0.02] border border-white/5 rounded-2xl p-3.5">
+                  <h4 className="text-base sm:text-lg font-bold text-white leading-snug">
+                    {product.name}
+                  </h4>
+                  {product.description && (
+                    <p className="text-xs text-gray-400 mt-1 line-clamp-2 leading-relaxed">
+                      {product.description}
+                    </p>
+                  )}
+                  {product.validity && (
+                    <div className="mt-2 inline-flex items-center gap-1.5 text-[11px] font-bold text-green-400 bg-green-500/10 border border-green-500/20 px-2.5 py-0.5 rounded-full">
+                      <span>মেয়াদ: {product.validity}</span>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
 
             {/* Coupon Code Input & Applied State */}
             <div className="border-t border-white/10 pt-4 pb-2">
