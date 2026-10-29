@@ -89,7 +89,7 @@ VALUES
 INSERT OR IGNORE INTO products (id, product_type, name, description, price, category, image_url, features, badge_text, validity, order_idx)
 VALUES
 ('tool-chatgpt', 'single_tool', 'ChatGPT Plus (GPT-4o)', 'Get access to GPT-4o, DALL-E 3, code interpreter and custom GPTs.', 350, 'AI Writing & Code', 'https://i.ibb.co/L5Qx6T2/chatgpt.png', '["GPT-4o & o1 access","Image & file analysis","Fast response speed"]', 'Top Rated', '1 Month', 0),
-('tool-canva', 'single_tool', 'Canva Pro Direct Invite', '100M+ premium graphics, templates, brand kit and Magic Studio AI.', 150, 'Graphics & Design', 'https://i.ibb.co/8g6wXW4/canva.png', '["100M+ Premium photos & videos","Background remover","Brand kits & resize"]', 'Best Seller', '1 Year', 1),
+('tool-canva', 'single_tool', 'Canva Pro Direct Invite', '100M+ premium graphics, templates, brand kit and Magic Studio AI.', 150, 'Graphics & Design', 'https://i.ibb.co/8g6wXW4/canva.png', '["100M+ Premium photos & videos","Background remover","Brand kits & resize"]', 'Best Seller', '1 Month', 1),
 ('tool-envato', 'single_tool', 'Envato Elements', 'Unlimited downloads of themes, templates, stock footage and audio.', 450, 'Design Assets', 'https://i.ibb.co/808bFqJ/envato.png', '["Themes, templates, graphics","Commercial license","Daily high speed download"]', 'Essential', '1 Month', 2),
 ('tool-monica', 'single_tool', 'Monica AI Pro', 'All-in-one AI assistant powered by GPT-4, Claude 3.5 and Gemini Pro.', 390, 'AI Assistant', 'https://i.ibb.co/311WqS5/monica.png', '["GPT-4 & Claude 3.5 in sidebar","Web page summarizer","Image generator"]', 'Trending', '1 Month', 3);
 

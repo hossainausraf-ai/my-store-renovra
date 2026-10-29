@@ -94,8 +94,8 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
 
   if (!isOpen || !item) return null;
 
-  const rawValidity = item.validity || (item.type === 'digital' ? 'Lifetime Access' : '30 Days');
-  const cleanValidity = rawValidity.length > 25 ? '30 Days' : rawValidity;
+  const rawValidity = item.validity || '1 Month';
+  const cleanValidity = rawValidity.length > 25 ? '1 Month' : rawValidity;
   const periodText = item.period 
     ? (item.period.startsWith('/') ? item.period : `/${item.period}`)
     : (item.type === 'digital' ? 'One-time' : '/ month');

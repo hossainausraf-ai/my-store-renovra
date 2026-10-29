@@ -367,7 +367,7 @@ export default function AdminSingleToolsPage() {
               <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">মেয়াদ (Validity)</label>
               <input
                 type="text"
-                placeholder="যেমন: 30 Days বা 1 Year"
+                placeholder="যেমন: 1 Month বা 30 Days"
                 value={formData.validity}
                 onChange={e => setFormData({ ...formData, validity: e.target.value })}
                 className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"

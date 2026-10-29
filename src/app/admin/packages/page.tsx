@@ -343,7 +343,7 @@ export default function AdminPackagesPage() {
               </div>
               <textarea
                 rows={4}
-                placeholder={"যেমন:\nChatGPT Plus GPT-4o\nCanva Pro 1 Year\nEnvato Elements Daily Download\n24/7 Priority Support"}
+                placeholder={"যেমন:\nChatGPT Plus GPT-4o\nCanva Pro 1 Month\nEnvato Elements Daily Download\n24/7 Priority Support"}
                 value={formData.features}
                 onChange={e => setFormData({ ...formData, features: e.target.value })}
                 className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-blue-500 font-sans leading-relaxed"

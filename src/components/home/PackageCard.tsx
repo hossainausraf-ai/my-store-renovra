@@ -33,7 +33,7 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
     galleryImages: pkg.galleryImages,
     features: pkg.features || [],
     isPopular: pkg.isPopular,
-    validity: '30 Days / Monthly Access'
+    validity: '1 Month'
   };
 
   return (

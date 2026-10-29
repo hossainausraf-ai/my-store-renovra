@@ -23,15 +23,15 @@ export default function DigitalProductCard({ product }: { product: DigitalProduc
     name: product.name,
     type: 'digital',
     price: product.price,
-    period: 'one-time',
+    period: 'month',
     category: product.category || 'Digital Asset',
     imageUrl: product.imageUrl,
     galleryImages: product.galleryImages,
     description: product.description,
-    validity: 'Lifetime Access',
+    validity: '1 Month',
     features: [
       'Instant digital delivery to your account / email',
-      'Full lifetime access with future updates',
+      'Full 1 Month access with latest updates',
       'Commercial usage license included',
       'Dedicated 24/7 technical support'
     ]

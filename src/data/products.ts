@@ -120,7 +120,7 @@ export const defaultProducts: Product[] = [
     image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
     features: ['100M+ Premium photos & videos', 'Background remover', 'Brand kits & resize'],
     badge_text: 'Best Seller',
-    validity: '1 Year'
+    validity: '1 Month'
   },
   {
     id: 'tool-envato',

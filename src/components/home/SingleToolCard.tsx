@@ -22,9 +22,9 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Normalize validity to prevent long sentences from breaking layout
-  const rawValidity = tool.validity || '30 Days';
-  const cleanValidity = rawValidity.length > 20 ? '30 Days' : rawValidity;
-  const periodText = cleanValidity.toLowerCase().includes('year') ? '/ yr' : '/ mo';
+  const rawValidity = tool.validity || '1 Month';
+  const cleanValidity = rawValidity.length > 20 ? '1 Month' : rawValidity;
+  const periodText = '/ mo';
 
   // Fallback initial
   const toolInitial = tool.name ? tool.name.charAt(0).toUpperCase() : 'T';
@@ -34,7 +34,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
     name: tool.name,
     type: 'single_tool',
     price: tool.price,
-    period: cleanValidity.toLowerCase().includes('year') ? '/ year' : '/ month',
+    period: '/ month',
     category: tool.category,
     imageUrl: tool.imageUrl,
     galleryImages: tool.galleryImages,

@@ -84,6 +84,12 @@ export default function Home() {
       </div>
 
       <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-8 sm:mt-16 px-2.5 sm:px-4">
+        {/* Section Header */}
+        <div className="text-center mb-6 sm:mb-10">
+          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">The Arsenal</p>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Premium tools, zero setup.</h2>
+          <p className="text-xs sm:text-base text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
+        </div>
 
         {/* Category Filters */}
         <div className="flex flex-wrap justify-center gap-1.5 sm:gap-3 mb-8 sm:mb-12">
@@ -108,12 +114,6 @@ export default function Home() {
             {/* Single Premium Tools Section */}
             {singleTools.length > 0 && (
               <div className="mb-16 sm:mb-24">
-                <div className="text-center mb-8 sm:mb-12">
-                  <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">The Arsenal</p>
-                  <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Premium tools, zero setup.</h2>
-                  <p className="text-xs sm:text-base text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
-                </div>
-
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
                   {singleTools.map((tool) => (
                     <SingleToolCard
@@ -125,7 +125,7 @@ export default function Home() {
                         category: tool.category,
                         imageUrl: tool.image_url || '',
                         galleryImages: tool.gallery_images,
-                        validity: tool.validity || '30 Days'
+                        validity: tool.validity || '1 Month'
                       }}
                     />
                   ))}
