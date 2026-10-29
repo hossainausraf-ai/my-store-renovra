@@ -14,8 +14,10 @@ import {
   Calendar,
   Clock,
   Zap,
-  Sparkles
+  Sparkles,
+  GripVertical
 } from 'lucide-react';
+import { DragDropContext, Droppable, Draggable, DropResult } from '@hello-pangea/dnd';
 import { optimizeImageClient, formatBytes } from '@/lib/image-optimizer';
 import ProductGalleryManager from '@/components/admin/ProductGalleryManager';
 
@@ -259,6 +261,34 @@ export default function AdminSingleToolsPage() {
     tool.category.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination) return;
+    if (result.source.index === result.destination.index) return;
+    
+    const items = Array.from(tools);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+    
+    setTools(items);
+
+    try {
+      const res = await fetch('/api/products/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ orderedIds: items.map(t => t.id) })
+      });
+      const data = await res.json();
+      if (data.success) {
+        showNotification('success', 'টুলসের ক্রম সফলভাবে আপডেট হয়েছে!');
+      } else {
+        showNotification('error', 'ক্রম পরিবর্তন সংরক্ষণ করতে সমস্যা হয়েছে!');
+      }
+    } catch (e) {
+      console.error('Error reordering tools:', e);
+      showNotification('error', 'সার্ভারে সংযোগ করা যায়নি।');
+    }
+  };
+
   return (
     <div className="p-4 lg:p-8 max-w-[1400px] mx-auto space-y-8">
 
@@ -406,83 +436,123 @@ export default function AdminSingleToolsPage() {
         </div>
       )}
 
-      {/* Search Input */}
-      <div className="relative max-w-md">
-        <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
-        <input
-          type="text"
-          placeholder="টুল খুঁজুন..."
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
-        />
+      {/* Search Input & Helper Note */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="relative max-w-md w-full">
+          <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500" />
+          <input
+            type="text"
+            placeholder="টুল খুঁজুন..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"
+          />
+        </div>
+        <div className="text-xs text-gray-400 flex items-center gap-1.5 bg-white/5 border border-white/10 px-3.5 py-2 rounded-xl">
+          <GripVertical className="w-4 h-4 text-[#ccff00]" />
+          <span>টুলসের ক্রম আগে-পরে নিতে ⠿ আইকনটি ধরে ড্র্যাগ করুন</span>
+        </div>
       </div>
 
-      {/* Tools Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {isLoading ? (
-          <div className="col-span-full py-20 text-center text-gray-500 flex flex-col items-center gap-3">
-            <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-            টুলস লোড হচ্ছে...
-          </div>
-        ) : filteredTools.length === 0 ? (
-          <div className="col-span-full py-20 text-center text-gray-500 border border-dashed border-white/10 rounded-2xl bg-black/10">
-            কোনো টুল পাওয়া যায়নি। নতুন টুল যোগ করতে "+ নতুন টুল যোগ করুন" বাটনে চাপুন।
-          </div>
-        ) : (
-          filteredTools.map((tool) => (
-            <div
-              key={tool.id}
-              className="bg-[var(--surface)] border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between group hover:border-white/20 hover:shadow-2xl transition-all"
+      {/* Drag & Drop Single Tools Grid */}
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="single-tools-list" direction="horizontal">
+          {(provided) => (
+            <div 
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
             >
-              <div>
-                <div className="flex items-start justify-between mb-4">
-                  <div className="w-14 h-14 rounded-2xl bg-white/10 p-2.5 flex items-center justify-center border border-white/10 overflow-hidden shadow-inner">
-                    {tool.image_url ? (
-                      <img src={tool.image_url} alt={tool.name} className="max-w-full max-h-full object-contain" />
-                    ) : (
-                      <Wrench className="w-7 h-7 text-gray-400" />
+              {isLoading ? (
+                <div className="col-span-full py-20 text-center text-gray-500 flex flex-col items-center gap-3">
+                  <div className="w-8 h-8 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  টুলস লোড হচ্ছে...
+                </div>
+              ) : filteredTools.length === 0 ? (
+                <div className="col-span-full py-20 text-center text-gray-500 border border-dashed border-white/10 rounded-2xl bg-black/10">
+                  কোনো টুল পাওয়া যায়নি। নতুন টুল যোগ করতে "+ নতুন টুল যোগ করুন" বাটনে চাপুন।
+                </div>
+              ) : (
+                filteredTools.map((tool, index) => (
+                  <Draggable key={tool.id} draggableId={tool.id} index={index} isDragDisabled={searchQuery.length > 0}>
+                    {(provided, snapshot) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        style={{
+                          ...provided.draggableProps.style,
+                          ...(snapshot.isDragging ? { opacity: 0.85, zIndex: 100 } : {})
+                        }}
+                        className={`bg-[var(--surface)] border border-white/10 rounded-2xl p-5 shadow-xl flex flex-col justify-between group hover:border-white/20 hover:shadow-2xl transition-all ${
+                          snapshot.isDragging ? 'shadow-blue-500/30 shadow-2xl border-blue-500/60 ring-2 ring-blue-500/30 scale-105' : ''
+                        }`}
+                      >
+                        <div>
+                          <div className="flex items-start justify-between mb-4">
+                            <div className="w-14 h-14 rounded-2xl bg-white/10 p-2.5 flex items-center justify-center border border-white/10 overflow-hidden shadow-inner">
+                              {tool.image_url ? (
+                                <img src={tool.image_url} alt={tool.name} className="max-w-full max-h-full object-contain" />
+                              ) : (
+                                <Wrench className="w-7 h-7 text-gray-400" />
+                              )}
+                            </div>
+
+                            <div className="flex items-center gap-2">
+                              <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-1 rounded-full">
+                                {tool.category || 'Tool'}
+                              </span>
+
+                              {/* Drag Handle */}
+                              <div
+                                {...provided.dragHandleProps}
+                                className="p-1.5 bg-black/40 hover:bg-white/10 rounded-lg border border-white/10 text-white/40 hover:text-[#ccff00] cursor-grab active:cursor-grabbing transition-colors"
+                                title="টুলটির ক্রম আগে-পরে নিতে ড্র্যাগ করুন (Drag to reorder)"
+                              >
+                                <GripVertical className="w-4 h-4" />
+                              </div>
+                            </div>
+                          </div>
+
+                          <h3 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{tool.name}</h3>
+                          <p className="text-xs text-gray-400 line-clamp-2 mb-4">{tool.description || 'No description'}</p>
+
+                          <div className="flex items-center gap-2 text-xs text-green-400 bg-green-950/30 border border-green-800/30 px-3 py-1.5 rounded-lg mb-4 w-fit">
+                            <Clock className="w-3.5 h-3.5" />
+                            <span>মেয়াদ: {tool.validity || '30 Days'}</span>
+                          </div>
+                        </div>
+
+                        <div className="flex items-center justify-between pt-4 border-t border-white/5">
+                          <div className="text-xl font-bold text-white">
+                            ৳{tool.price}
+                          </div>
+                          <div className="flex gap-2">
+                            <button
+                              onClick={() => handleEditClick(tool)}
+                              className="p-2 text-blue-400 hover:text-white hover:bg-blue-500/20 rounded-lg transition-colors cursor-pointer"
+                              title="Edit tool"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              onClick={() => handleDelete(tool.id)}
+                              className="p-2 text-red-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors cursor-pointer"
+                              title="Delete tool"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
                     )}
-                  </div>
-                  <span className="text-[10px] font-bold text-cyan-400 uppercase tracking-wider bg-cyan-950/60 border border-cyan-800/40 px-2.5 py-1 rounded-full">
-                    {tool.category || 'Tool'}
-                  </span>
-                </div>
-
-                <h3 className="text-lg font-bold text-white mb-1 group-hover:text-blue-400 transition-colors">{tool.name}</h3>
-                <p className="text-xs text-gray-400 line-clamp-2 mb-4">{tool.description || 'No description'}</p>
-
-                <div className="flex items-center gap-2 text-xs text-green-400 bg-green-950/30 border border-green-800/30 px-3 py-1.5 rounded-lg mb-4 w-fit">
-                  <Clock className="w-3.5 h-3.5" />
-                  <span>মেয়াদ: {tool.validity || '30 Days'}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-white/5">
-                <div className="text-xl font-bold text-white">
-                  ৳{tool.price}
-                </div>
-                <div className="flex gap-2">
-                  <button
-                    onClick={() => handleEditClick(tool)}
-                    className="p-2 text-blue-400 hover:text-white hover:bg-blue-500/20 rounded-lg transition-colors cursor-pointer"
-                    title="Edit tool"
-                  >
-                    <Pencil className="w-4 h-4" />
-                  </button>
-                  <button
-                    onClick={() => handleDelete(tool.id)}
-                    className="p-2 text-red-400 hover:text-white hover:bg-red-500/20 rounded-lg transition-colors cursor-pointer"
-                    title="Delete tool"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </button>
-                </div>
-              </div>
+                  </Draggable>
+                ))
+              )}
+              {provided.placeholder}
             </div>
-          ))
-        )}
-      </div>
+          )}
+        </Droppable>
+      </DragDropContext>
     </div>
   );
 }
