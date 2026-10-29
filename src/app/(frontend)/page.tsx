@@ -62,7 +62,7 @@ export default function Home() {
             <div className="mb-12 sm:mb-16">
               <div className="text-center mb-6 sm:mb-8">
                 <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 sm:mb-2">Pricing</p>
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-3 text-white">Choose a plan that's right for you</h2>
+                <h2 className="text-base min-[360px]:text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1.5 sm:mb-3 text-white whitespace-nowrap">Choose a plan that's right for you</h2>
                 <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
               </div>
 
