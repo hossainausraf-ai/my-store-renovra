@@ -46,15 +46,15 @@ export default function Home() {
       </div>
 
       {/* Subscriptions Section (Moved below Hero) */}
-      <div className="max-w-7xl mx-auto w-full mt-14 sm:mt-24 px-2.5 sm:px-4 scroll-mt-24" id="packages">
+      <div className="max-w-7xl mx-auto w-full mt-2 sm:mt-6 px-2.5 sm:px-4 scroll-mt-24" id="packages">
         {isLoading ? (
           <div className="text-center py-20 text-gray-400">লোড হচ্ছে...</div>
         ) : (
           subscriptions.length > 0 && (
-            <div className="mb-14 sm:mb-20">
-              <div className="text-center mb-8 sm:mb-12">
-                <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Pricing</p>
-                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Choose a plan that's right for you</h2>
+            <div className="mb-12 sm:mb-16">
+              <div className="text-center mb-6 sm:mb-8">
+                <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 sm:mb-2">Pricing</p>
+                <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-3 text-white">Choose a plan that's right for you</h2>
                 <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
               </div>
 
