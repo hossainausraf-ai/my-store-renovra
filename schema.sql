@@ -121,5 +121,8 @@ INSERT OR IGNORE INTO coupons (id, code, discount_type, discount_value, applicab
 VALUES 
 ('cpn-welcome', 'WELCOME10', 'percentage', 10, 'all', 0, 1, CURRENT_TIMESTAMP),
 ('cpn-save50', 'SAVE50', 'fixed', 50, 'all', 300, 1, CURRENT_TIMESTAMP),
-('cpn-pro20', 'PRO20', 'percentage', 20, 'subscription', 400, 1, CURRENT_TIMESTAMP);
+('cpn-pro20', 'PRO20', 'percentage', 20, 'subscription', 400, 1, CURRENT_TIMESTAMP),
+('cpn-tool15', 'TOOL15', 'percentage', 15, 'single_tool', 100, 1, CURRENT_TIMESTAMP),
+('cpn-special100', 'SPECIAL100', 'fixed', 100, 'all', 500, 1, CURRENT_TIMESTAMP),
+('cpn-demo50', 'DEMO50', 'percentage', 50, 'all', 100, 1, CURRENT_TIMESTAMP);
 
