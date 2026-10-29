@@ -14,23 +14,23 @@ export interface Product {
   is_popular?: boolean;
   validity?: string;
   download_url?: string;
+  order_idx?: number;
 }
 
 export const defaultProducts: Product[] = [
-  // --- 15 Official Subscriptions / Packages from PDF ---
   {
-    id: "pkg-ai-starter",
-    product_type: "subscription",
-    name: "AI Starter Package",
-    description: "Essential AI tools bundle for students, freelancers, office employees & online learners.",
-    price: 199,
-    category: "AI & Writing",
-    image_url: "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-starter",
+    "product_type": "subscription",
+    "name": "AI Starter Package",
+    "description": "Essential AI tools bundle for students, freelancers, office employees & online learners.",
+    "price": 199,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=800&auto=format&fit=crop&q=80",
       "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg"
     ],
-    features: [
+    "features": [
       "ChatGPT (GPT-4o Access)",
       "Grammarly Premium",
       "QuillBot Premium",
@@ -38,24 +38,24 @@ export const defaultProducts: Product[] = [
       "Instant Dashboard Access",
       "30 Days Replacement Warranty"
     ],
-    badge_text: "Starter Choice",
-    color_from: "from-blue-500/50",
-    color_to: "to-blue-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Starter Choice",
+    "color_from": "from-blue-500/50",
+    "color_to": "to-blue-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-student-pro",
-    product_type: "subscription",
-    name: "AI Student Pro Package",
-    description: "Top academic & research AI tools for university students, thesis writers & researchers.",
-    price: 399,
-    category: "Academic & Research",
-    image_url: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-student-pro",
+    "product_type": "subscription",
+    "name": "AI Student Pro Package",
+    "description": "Top academic & research AI tools for university students, thesis writers & researchers.",
+    "price": 399,
+    "category": "Academic & Research",
+    "image_url": "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1523240795612-9a054b0db644?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus",
       "Perplexity AI Pro",
       "Grammarly Premium",
@@ -64,24 +64,24 @@ export const defaultProducts: Product[] = [
       "Scite AI Research Assistant",
       "30 Days Full Warranty"
     ],
-    badge_text: "Student Favorite",
-    color_from: "from-emerald-500/50",
-    color_to: "to-teal-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Student Favorite",
+    "color_from": "from-emerald-500/50",
+    "color_to": "to-teal-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-content-creator",
-    product_type: "subscription",
-    name: "AI Content Creator Package",
-    description: "Powerhouse copywriting & content generation tools for bloggers, YouTubers & creators.",
-    price: 599,
-    category: "Content Creation",
-    image_url: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-content-creator",
+    "product_type": "subscription",
+    "name": "AI Content Creator Package",
+    "description": "Powerhouse copywriting & content generation tools for bloggers, YouTubers & creators.",
+    "price": 599,
+    "category": "Content Creation",
+    "image_url": "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1499750310107-5fef28a66643?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus",
       "Hix AI Full Suite",
       "Jasper AI Writer",
@@ -90,24 +90,24 @@ export const defaultProducts: Product[] = [
       "Rewritefy Content Humanizer",
       "24/7 WhatsApp Support"
     ],
-    badge_text: "Best Value",
-    color_from: "from-purple-500/50",
-    color_to: "to-indigo-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Best Value",
+    "color_from": "from-purple-500/50",
+    "color_to": "to-indigo-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-research-pro",
-    product_type: "subscription",
-    name: "AI Research Pro Package",
-    description: "Advanced research, citation & plagiarism checking suite for PhD scholars & analysts.",
-    price: 699,
-    category: "Academic & Research",
-    image_url: "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-research-pro",
+    "product_type": "subscription",
+    "name": "AI Research Pro Package",
+    "description": "Advanced research, citation & plagiarism checking suite for PhD scholars & analysts.",
+    "price": 699,
+    "category": "Academic & Research",
+    "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus",
       "Perplexity AI Pro",
       "Scite AI Citation & Index",
@@ -116,24 +116,24 @@ export const defaultProducts: Product[] = [
       "Grammarly Premium",
       "30 Days Replacement Guarantee"
     ],
-    badge_text: "Research Pro",
-    color_from: "from-cyan-500/50",
-    color_to: "to-blue-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "Research Pro",
+    "color_from": "from-cyan-500/50",
+    "color_to": "to-blue-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-business-professional",
-    product_type: "subscription",
-    name: "Business Professional AI Package",
-    description: "Executive AI suite for business owners, corporate managers, founders & consultants.",
-    price: 799,
-    category: "Business & Productivity",
-    image_url: "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-business-professional",
+    "product_type": "subscription",
+    "name": "Business Professional AI Package",
+    "description": "Executive AI suite for business owners, corporate managers, founders & consultants.",
+    "price": 799,
+    "category": "Business & Productivity",
+    "image_url": "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus",
       "Grok AI Supercomputer",
       "Grammarly Business",
@@ -141,24 +141,24 @@ export const defaultProducts: Product[] = [
       "Perplexity AI Pro",
       "Priority Account Support"
     ],
-    badge_text: "Business Choice",
-    color_from: "from-amber-500/50",
-    color_to: "to-yellow-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "Business Choice",
+    "color_from": "from-amber-500/50",
+    "color_to": "to-yellow-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-marketing-copy",
-    product_type: "subscription",
-    name: "AI Marketing Copy Package",
-    description: "High-converting ad copy, landing pages & sales funnel copywriting tools.",
-    price: 699,
-    category: "Copywriting & Ads",
-    image_url: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-marketing-copy",
+    "product_type": "subscription",
+    "name": "AI Marketing Copy Package",
+    "description": "High-converting ad copy, landing pages & sales funnel copywriting tools.",
+    "price": 699,
+    "category": "Copywriting & Ads",
+    "image_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "Jasper AI Copywriter",
       "Wordhero Copy Engine",
       "Hix AI All-in-One",
@@ -167,24 +167,24 @@ export const defaultProducts: Product[] = [
       "Rewritefy Humanizer",
       "Instant Activation"
     ],
-    badge_text: "Marketing Special",
-    color_from: "from-pink-500/50",
-    color_to: "to-rose-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "Marketing Special",
+    "color_from": "from-pink-500/50",
+    "color_to": "to-rose-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-writer-premium",
-    product_type: "subscription",
-    name: "AI Writer Premium Package",
-    description: "Unrestricted 8-tool ultimate writing stack for professional bloggers & writing agencies.",
-    price: 999,
-    category: "Writing & SEO",
-    image_url: "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-writer-premium",
+    "product_type": "subscription",
+    "name": "AI Writer Premium Package",
+    "description": "Unrestricted 8-tool ultimate writing stack for professional bloggers & writing agencies.",
+    "price": 999,
+    "category": "Writing & SEO",
+    "image_url": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus (GPT-4o)",
       "Grok AI",
       "Perplexity AI Pro",
@@ -195,25 +195,25 @@ export const defaultProducts: Product[] = [
       "QuillBot Premium",
       "Full 30 Days Warranty"
     ],
-    badge_text: "Writer Ultimate",
-    color_from: "from-violet-500/50",
-    color_to: "to-purple-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Writer Ultimate",
+    "color_from": "from-violet-500/50",
+    "color_to": "to-purple-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-designer-pro",
-    product_type: "subscription",
-    name: "AI Designer Pro Package",
-    description: "Complete creative design suite with unlimited stock assets and premium AI art tools.",
-    price: 799,
-    category: "Design & Graphics",
-    image_url: "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-designer-pro",
+    "product_type": "subscription",
+    "name": "AI Designer Pro Package",
+    "description": "Complete creative design suite with unlimited stock assets and premium AI art tools.",
+    "price": 799,
+    "category": "Design & Graphics",
+    "image_url": "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=800&auto=format&fit=crop&q=80",
       "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg"
     ],
-    features: [
+    "features": [
       "Leonardo AI (Image Generation)",
       "ArtSpace AI",
       "Canva Pro Direct Invite",
@@ -222,24 +222,24 @@ export const defaultProducts: Product[] = [
       "Envato Elements (Unlimited)",
       "Photoroom Pro Background Remover"
     ],
-    badge_text: "Designer Choice",
-    color_from: "from-fuchsia-500/50",
-    color_to: "to-pink-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Designer Choice",
+    "color_from": "from-fuchsia-500/50",
+    "color_to": "to-pink-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ecommerce-design",
-    product_type: "subscription",
-    name: "Product & E-Commerce Design Package",
-    description: "Create viral product mockups, ad banners & catalog designs for online shops.",
-    price: 699,
-    category: "E-Commerce & Shop",
-    image_url: "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ecommerce-design",
+    "product_type": "subscription",
+    "name": "Product & E-Commerce Design Package",
+    "description": "Create viral product mockups, ad banners & catalog designs for online shops.",
+    "price": 699,
+    "category": "E-Commerce & Shop",
+    "image_url": "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "Leonardo AI (Product Photos)",
       "Photoroom Pro",
       "Canva Pro",
@@ -248,24 +248,24 @@ export const defaultProducts: Product[] = [
       "Freepik Premium",
       "Instant 1-Click Access"
     ],
-    badge_text: "E-commerce Special",
-    color_from: "from-orange-500/50",
-    color_to: "to-amber-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "E-commerce Special",
+    "color_from": "from-orange-500/50",
+    "color_to": "to-amber-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-social-media-growth",
-    product_type: "subscription",
-    name: "Social Media Growth Package",
-    description: "All tools to design, write, edit videos & grow social media channels rapidly.",
-    price: 799,
-    category: "Social Media",
-    image_url: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-social-media-growth",
+    "product_type": "subscription",
+    "name": "Social Media Growth Package",
+    "description": "All tools to design, write, edit videos & grow social media channels rapidly.",
+    "price": 799,
+    "category": "Social Media",
+    "image_url": "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1611162617474-5b21e879e113?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "Canva Pro",
       "Leonardo AI",
       "ChatGPT Plus",
@@ -274,24 +274,24 @@ export const defaultProducts: Product[] = [
       "Envato Elements",
       "24/7 WhatsApp Support"
     ],
-    badge_text: "Social Media",
-    color_from: "from-sky-500/50",
-    color_to: "to-blue-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "Social Media",
+    "color_from": "from-sky-500/50",
+    "color_to": "to-blue-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ai-video-creator",
-    product_type: "subscription",
-    name: "AI Video Creator Package",
-    description: "Next-gen cinematic AI video generators, voiceovers & video editing suite.",
-    price: 1499,
-    category: "Video & Animation",
-    image_url: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ai-video-creator",
+    "product_type": "subscription",
+    "name": "AI Video Creator Package",
+    "description": "Next-gen cinematic AI video generators, voiceovers & video editing suite.",
+    "price": 1499,
+    "category": "Video & Animation",
+    "image_url": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "VEO 3 (Google AI Video)",
       "Leonardo AI (Motion Video)",
       "CapCut Pro",
@@ -300,24 +300,24 @@ export const defaultProducts: Product[] = [
       "Epidemic Sound (Copyright-Free Music)",
       "High Speed Access"
     ],
-    badge_text: "Video Creator",
-    color_from: "from-red-500/50",
-    color_to: "to-orange-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Video Creator",
+    "color_from": "from-red-500/50",
+    "color_to": "to-orange-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-youtube-automation",
-    product_type: "subscription",
-    name: "YouTube Automation Package",
-    description: "Complete toolset for faceless YouTube channels & automated video production.",
-    price: 1499,
-    category: "YouTube & Video",
-    image_url: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-youtube-automation",
+    "product_type": "subscription",
+    "name": "YouTube Automation Package",
+    "description": "Complete toolset for faceless YouTube channels & automated video production.",
+    "price": 1499,
+    "category": "YouTube & Video",
+    "image_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus (Scriptwriting)",
       "VEO 3 (AI Video Clips)",
       "Leonardo AI (Thumbnails & Art)",
@@ -326,24 +326,24 @@ export const defaultProducts: Product[] = [
       "Epidemic Sound (SFX & Music)",
       "Canva Pro (Thumbnails)"
     ],
-    badge_text: "YouTube Pro",
-    color_from: "from-red-600/50",
-    color_to: "to-rose-600/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "YouTube Pro",
+    "color_from": "from-red-600/50",
+    "color_to": "to-rose-600/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-seo-growth",
-    product_type: "subscription",
-    name: "SEO Growth Package",
-    description: "Dominate Google search results with the world's leading SEO intelligence tools.",
-    price: 999,
-    category: "SEO & Ranking",
-    image_url: "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-seo-growth",
+    "product_type": "subscription",
+    "name": "SEO Growth Package",
+    "description": "Dominate Google search results with the world's leading SEO intelligence tools.",
+    "price": 999,
+    "category": "SEO & Ranking",
+    "image_url": "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "Semrush Guru Access",
       "Moz Pro",
       "Ubersuggest Lifetime",
@@ -352,24 +352,24 @@ export const defaultProducts: Product[] = [
       "SEOptimer Audit Tool",
       "Grammarly Premium"
     ],
-    badge_text: "SEO Master",
-    color_from: "from-emerald-500/50",
-    color_to: "to-green-500/10",
-    is_popular: false,
-    validity: "30 Days"
+    "badge_text": "SEO Master",
+    "color_from": "from-emerald-500/50",
+    "color_to": "to-green-500/10",
+    "is_popular": false,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-freelancer-complete",
-    product_type: "subscription",
-    name: "Freelancer Complete Package",
-    description: "The ultimate freelance bundle for Fiverr, Upwork & global client projects.",
-    price: 1299,
-    category: "Freelancing",
-    image_url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-freelancer-complete",
+    "product_type": "subscription",
+    "name": "Freelancer Complete Package",
+    "description": "The ultimate freelance bundle for Fiverr, Upwork & global client projects.",
+    "price": 1299,
+    "category": "Freelancing",
+    "image_url": "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus (GPT-4o)",
       "Leonardo AI",
       "Canva Pro",
@@ -380,24 +380,24 @@ export const defaultProducts: Product[] = [
       "Semrush Access",
       "30 Days Full Replacement Warranty"
     ],
-    badge_text: "Freelancer All-in-One",
-    color_from: "from-indigo-500/50",
-    color_to: "to-purple-500/10",
-    is_popular: true,
-    validity: "30 Days"
+    "badge_text": "Freelancer All-in-One",
+    "color_from": "from-indigo-500/50",
+    "color_to": "to-purple-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: "pkg-ultimate-ai-creator",
-    product_type: "subscription",
-    name: "Ultimate AI Creator Bundle",
-    description: "The most comprehensive master bundle with 13+ flagship AI & digital marketing tools.",
-    price: 2499,
-    category: "Full Agency Suite",
-    image_url: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80",
-    gallery_images: [
+    "id": "pkg-ultimate-ai-creator",
+    "product_type": "subscription",
+    "name": "Ultimate AI Creator Bundle",
+    "description": "The most comprehensive master bundle with 13+ flagship AI & digital marketing tools.",
+    "price": 2499,
+    "category": "Full Agency Suite",
+    "image_url": "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80",
+    "gallery_images": [
       "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=800&auto=format&fit=crop&q=80"
     ],
-    features: [
+    "features": [
       "ChatGPT Plus (GPT-4o & o1)",
       "Grok AI",
       "Perplexity AI Pro",
@@ -413,92 +413,800 @@ export const defaultProducts: Product[] = [
       "VidIQ Boost",
       "VIP Dedicated Account & Priority Support"
     ],
-    badge_text: "Ultimate Powerhouse",
-    color_from: "from-yellow-500/50",
-    color_to: "to-amber-500/10",
-    is_popular: true,
-    validity: "30 Days"
-  },
-
-  // --- Single Tools ---
-  {
-    id: 'tool-chatgpt',
-    product_type: 'single_tool',
-    name: 'ChatGPT Plus (GPT-4o)',
-    description: 'Get access to GPT-4o, DALL-E 3, code interpreter and custom GPTs.',
-    price: 350,
-    category: 'AI Writing & Code',
-    image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
-    features: ['GPT-4o & o1 access', 'Image & file analysis', 'Fast response speed'],
-    badge_text: 'Top Rated',
-    validity: '1 Month'
+    "badge_text": "Ultimate Powerhouse",
+    "color_from": "from-yellow-500/50",
+    "color_to": "to-amber-500/10",
+    "is_popular": true,
+    "validity": "30 Days"
   },
   {
-    id: 'tool-canva',
-    product_type: 'single_tool',
-    name: 'Canva Pro Direct Invite',
-    description: '100M+ premium graphics, templates, brand kit and Magic Studio AI.',
-    price: 150,
-    category: 'Graphics & Design',
-    image_url: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
-    features: ['100M+ Premium photos & videos', 'Background remover', 'Brand kits & resize'],
-    badge_text: 'Best Seller',
-    validity: '1 Month'
+    "id": "tool-claude",
+    "product_type": "single_tool",
+    "name": "Claude AI (Sonnet 3.5)",
+    "description": "Claude 3.5 Sonnet leading AI model for coding, writing & long-context research.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Top Rated",
+    "validity": "1 Month",
+    "order_idx": 1
   },
   {
-    id: 'tool-envato',
-    product_type: 'single_tool',
-    name: 'Envato Elements',
-    description: 'Unlimited downloads of themes, templates, stock footage and audio.',
-    price: 450,
-    category: 'Design Assets',
-    image_url: 'https://cdn.worldvectorlogo.com/logos/envato.svg',
-    features: ['Themes, templates, graphics', 'Commercial license', 'Daily high speed download'],
-    badge_text: 'Essential',
-    validity: '1 Month'
+    "id": "tool-dmeai",
+    "product_type": "single_tool",
+    "name": "DmeAI / DimeAI",
+    "description": "Smart automated AI assistant and article drafting assistant.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 2
   },
   {
-    id: 'tool-monica',
-    product_type: 'single_tool',
-    name: 'Monica AI Pro',
-    description: 'All-in-one AI assistant powered by GPT-4, Claude 3.5 and Gemini Pro.',
-    price: 390,
-    category: 'AI Assistant',
-    image_url: 'https://monica.im/favicon.ico',
-    features: ['GPT-4 & Claude 3.5 in sidebar', 'Web page summarizer', 'Image generator'],
-    badge_text: 'Trending',
-    validity: '1 Month'
-  },
-
-  // --- Digital Products ---
-  {
-    id: 'digital-ai-prompts',
-    product_type: 'digital',
-    name: '10,000+ Ultimate ChatGPT Prompts Pack',
-    description: 'Curated prompt collection for marketing, copywriting, coding, SEO & business growth.',
-    price: 250,
-    category: 'Templates & Prompts',
-    image_url: 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80',
-    download_url: 'https://drive.google.com'
+    "id": "tool-artspace",
+    "product_type": "single_tool",
+    "name": "Artspace AI (Image-Gen)",
+    "description": "Next-generation generative art canvas and prompt generator for artists.",
+    "price": 400,
+    "category": "Design & Creative",
+    "image_url": "https://artspace.ai/favicon.ico",
+    "gallery_images": [
+      "https://artspace.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 3
   },
   {
-    id: 'digital-canva-templates',
-    product_type: 'digital',
-    name: '500+ Social Media Editable Canva Templates',
-    description: 'Ready-to-use aesthetic templates for Facebook, Instagram, LinkedIn and YouTube.',
-    price: 299,
-    category: 'Design Assets',
-    image_url: 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80',
-    download_url: 'https://drive.google.com'
+    "id": "tool-leonardo",
+    "product_type": "single_tool",
+    "name": "Leonardo AI",
+    "description": "Production-quality creative visual assets with fine-tuned AI models.",
+    "price": 400,
+    "category": "Design & Creative",
+    "image_url": "https://leonardo.ai/favicon.ico",
+    "gallery_images": [
+      "https://leonardo.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Popular",
+    "validity": "1 Month",
+    "order_idx": 4
   },
   {
-    id: 'digital-web-templates',
-    product_type: 'digital',
-    name: 'SaaS & Agency Landing Page UI Kit (Figma)',
-    description: 'High-converting Figma UI kit with 50+ components, dark mode, and design system.',
-    price: 490,
-    category: 'UI/UX Kits',
-    image_url: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80',
-    download_url: 'https://drive.google.com'
+    "id": "tool-grok",
+    "product_type": "single_tool",
+    "name": "Grok AI (Only Text)",
+    "description": "Real-time conversational AI powered by xAI with unfiltered reasoning.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023_%28white%29.png",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023_%28white%29.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 5
+  },
+  {
+    "id": "tool-heygen",
+    "product_type": "single_tool",
+    "name": "HeyGen AI (Best Humanoid)",
+    "description": "Create photorealistic AI avatar spokesperson videos in 120+ languages.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://assets-global.website-files.com/63fdcbe48aa020c0a5493507/649e492bbd2986f34e6d4aa2_favicon.png",
+    "gallery_images": [
+      "https://assets-global.website-files.com/63fdcbe48aa020c0a5493507/649e492bbd2986f34e6d4aa2_favicon.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Trending",
+    "validity": "1 Month",
+    "order_idx": 6
+  },
+  {
+    "id": "tool-semrush",
+    "product_type": "single_tool",
+    "name": "Semrush",
+    "description": "Industry standard SEO keyword research, competitor analysis & backlink tool.",
+    "price": 350,
+    "category": "All SEO & Analytics",
+    "image_url": "https://cdn.worldvectorlogo.com/logos/semrush-1.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/semrush-1.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Essential",
+    "validity": "1 Month",
+    "order_idx": 7
+  },
+  {
+    "id": "tool-perplexity",
+    "product_type": "single_tool",
+    "name": "Perplexity AI",
+    "description": "AI-powered answer engine with real-time web citations and sources.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 8
+  },
+  {
+    "id": "tool-canva",
+    "product_type": "single_tool",
+    "name": "Canva Pro",
+    "description": "100M+ premium graphics, brand kits, background remover & Magic Studio.",
+    "price": 300,
+    "category": "Design & Creative",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Best Seller",
+    "validity": "1 Month",
+    "order_idx": 9
+  },
+  {
+    "id": "tool-grammarly",
+    "product_type": "single_tool",
+    "name": "Grammarly",
+    "description": "AI communication assistant for mistake-free writing, tone & grammar fixes.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Grammarly_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/e/eb/Grammarly_logo.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 10
+  },
+  {
+    "id": "tool-hixai",
+    "product_type": "single_tool",
+    "name": "Hix AI",
+    "description": "All-in-one AI writing copilot for blogs, emails, essays and social copy.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://hix.ai/favicon.ico",
+    "gallery_images": [
+      "https://hix.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 11
+  },
+  {
+    "id": "tool-envato",
+    "product_type": "single_tool",
+    "name": "Envato Elements",
+    "description": "Unlimited downloads of stock videos, audio, WordPress themes & graphics.",
+    "price": 400,
+    "category": "Design & Creative",
+    "image_url": "https://cdn.worldvectorlogo.com/logos/envato.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/envato.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Essential",
+    "validity": "1 Month",
+    "order_idx": 12
+  },
+  {
+    "id": "tool-chatgpt",
+    "product_type": "single_tool",
+    "name": "ChatGPT",
+    "description": "OpenAI GPT-4o, DALL-E 3 image generation & custom GPT access.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Top Choice",
+    "validity": "1 Month",
+    "order_idx": 13
+  },
+  {
+    "id": "tool-article-gen",
+    "product_type": "single_tool",
+    "name": "One-Click Article Generator",
+    "description": "Generate 2,500+ word SEO-optimized long-form articles in a single click.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 14
+  },
+  {
+    "id": "tool-boolvideo",
+    "product_type": "single_tool",
+    "name": "Bool Video",
+    "description": "AI video generator that turns product URLs into high-converting video ads.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 15
+  },
+  {
+    "id": "tool-linguix",
+    "product_type": "single_tool",
+    "name": "Linguix",
+    "description": "AI-based writing assistant and paraphraser with instant vocabulary boost.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://linguix.com/favicon.ico",
+    "gallery_images": [
+      "https://linguix.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 16
+  },
+  {
+    "id": "tool-indexification",
+    "product_type": "single_tool",
+    "name": "Indexification",
+    "description": "Fast high-percentage backlink indexer tool for Google search rankings.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 17
+  },
+  {
+    "id": "tool-smaily",
+    "product_type": "single_tool",
+    "name": "Smaily",
+    "description": "Automated email marketing campaign creator and AI newsletter optimizer.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 18
+  },
+  {
+    "id": "tool-wordflow",
+    "product_type": "single_tool",
+    "name": "Wordflow",
+    "description": "Automated keyword ranking and content clustering workflow tool.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 19
+  },
+  {
+    "id": "tool-taplio",
+    "product_type": "single_tool",
+    "name": "Taplio",
+    "description": "The all-in-one AI LinkedIn growth and content scheduling platform.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://taplio.com/favicon.ico",
+    "gallery_images": [
+      "https://taplio.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Trending",
+    "validity": "1 Month",
+    "order_idx": 20
+  },
+  {
+    "id": "tool-peastai",
+    "product_type": "single_tool",
+    "name": "Peast AI",
+    "description": "AI-powered creative writing and prompt engineering environment.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 21
+  },
+  {
+    "id": "tool-nichescraper",
+    "product_type": "single_tool",
+    "name": "Niche Scraper",
+    "description": "Dropshipping product research spy tool with winning product spy features.",
+    "price": 400,
+    "category": "E-Commerce & Dropshipping",
+    "image_url": "https://nichescraper.com/favicon.ico",
+    "gallery_images": [
+      "https://nichescraper.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 22
+  },
+  {
+    "id": "tool-audioblock",
+    "product_type": "single_tool",
+    "name": "Audio Block (Storyblocks)",
+    "description": "Unlimited royalty-free music, sound effects and loops for video creators.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 23
+  },
+  {
+    "id": "tool-invideo",
+    "product_type": "single_tool",
+    "name": "InVideo",
+    "description": "Generate complete scripted YouTube, TikTok & Reels videos with AI.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://invideo.io/favicon.ico",
+    "gallery_images": [
+      "https://invideo.io/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 24
+  },
+  {
+    "id": "tool-writecream",
+    "product_type": "single_tool",
+    "name": "Writecream",
+    "description": "Personalized cold emails, LinkedIn icebreakers and podcast audio AI.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://writecream.com/favicon.ico",
+    "gallery_images": [
+      "https://writecream.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 25
+  },
+  {
+    "id": "tool-beautifulai",
+    "product_type": "single_tool",
+    "name": "Beautiful AI",
+    "description": "Smart presentation maker that automatically adapts design principles.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://www.beautiful.ai/favicon.ico",
+    "gallery_images": [
+      "https://www.beautiful.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 26
+  },
+  {
+    "id": "tool-fameclips",
+    "product_type": "single_tool",
+    "name": "FameClips",
+    "description": "Extract viral short-form clips from long videos with automated subtitles.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 27
+  },
+  {
+    "id": "tool-leadpal",
+    "product_type": "single_tool",
+    "name": "LeadPal",
+    "description": "Smart verified lead generation and email opt-in funnel tool.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 28
+  },
+  {
+    "id": "tool-quillbot",
+    "product_type": "single_tool",
+    "name": "QuillBot Premium",
+    "description": "World's most popular paraphrasing tool, summarizer and grammar fixer.",
+    "price": 250,
+    "category": "AI & Writing",
+    "image_url": "https://quillbot.com/favicon.ico",
+    "gallery_images": [
+      "https://quillbot.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Popular",
+    "validity": "1 Month",
+    "order_idx": 29
+  },
+  {
+    "id": "tool-paperpal",
+    "product_type": "single_tool",
+    "name": "Paperpal Academic AI",
+    "description": "Real-time subject-specific academic writing assistance for thesis writers.",
+    "price": 350,
+    "category": "AI & Writing",
+    "image_url": "https://paperpal.com/favicon.ico",
+    "gallery_images": [
+      "https://paperpal.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 30
+  },
+  {
+    "id": "tool-sciteai",
+    "product_type": "single_tool",
+    "name": "Scite AI Research",
+    "description": "Discover and evaluate scientific papers with Smart Citations data.",
+    "price": 350,
+    "category": "AI & Writing",
+    "image_url": "https://scite.ai/favicon.ico",
+    "gallery_images": [
+      "https://scite.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 31
+  },
+  {
+    "id": "tool-capcut",
+    "product_type": "single_tool",
+    "name": "CapCut Pro",
+    "description": "Pro video editing with AI auto-captions, background removal & VFX.",
+    "price": 350,
+    "category": "Audio & Video",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Capcut-icon.png",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/a/af/Capcut-icon.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Top Choice",
+    "validity": "1 Month",
+    "order_idx": 32
+  },
+  {
+    "id": "tool-freepik",
+    "product_type": "single_tool",
+    "name": "Freepik Premium",
+    "description": "Millions of premium vectors, PSD mockups, stock photos & icons.",
+    "price": 350,
+    "category": "Design & Creative",
+    "image_url": "https://cdn.worldvectorlogo.com/logos/freepik-1.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/freepik-1.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 33
+  },
+  {
+    "id": "tool-veo3",
+    "product_type": "single_tool",
+    "name": "VEO 3 (Google AI Video)",
+    "description": "Next-gen cinematic high-definition AI video generator.",
+    "price": 650,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Next-Gen",
+    "validity": "1 Month",
+    "order_idx": 34
+  },
+  {
+    "id": "tool-vidiq",
+    "product_type": "single_tool",
+    "name": "VidIQ Boost",
+    "description": "Boost YouTube video views with keyword analysis and SEO competitor stats.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://vidiq.com/favicon.ico",
+    "gallery_images": [
+      "https://vidiq.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 35
+  },
+  {
+    "id": "tool-kittl",
+    "product_type": "single_tool",
+    "name": "Kittl Graphic Design",
+    "description": "Advanced graphic design tool for apparel, merch, vintage labels & fonts.",
+    "price": 350,
+    "category": "Design & Creative",
+    "image_url": "https://kittl.com/favicon.ico",
+    "gallery_images": [
+      "https://kittl.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 36
+  },
+  {
+    "id": "tool-photoroom",
+    "product_type": "single_tool",
+    "name": "Photoroom Pro",
+    "description": "Studio-quality product photography with automated AI background replacement.",
+    "price": 300,
+    "category": "Design & Creative",
+    "image_url": "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 37
+  },
+  {
+    "id": "tool-jasper",
+    "product_type": "single_tool",
+    "name": "Jasper AI",
+    "description": "Enterprise marketing AI platform for on-brand copy, blogs and ad campaigns.",
+    "price": 450,
+    "category": "AI & Writing",
+    "image_url": "https://www.jasper.ai/favicon.ico",
+    "gallery_images": [
+      "https://www.jasper.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 38
+  },
+  {
+    "id": "digital-ai-prompts",
+    "product_type": "digital",
+    "name": "10,000+ Ultimate ChatGPT Prompts Pack",
+    "description": "Curated prompt collection for marketing, copywriting, coding, SEO & business growth.",
+    "price": 250,
+    "category": "Templates & Prompts",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80",
+    "download_url": "https://drive.google.com"
+  },
+  {
+    "id": "digital-canva-templates",
+    "product_type": "digital",
+    "name": "500+ Social Media Editable Canva Templates",
+    "description": "Ready-to-use aesthetic templates for Facebook, Instagram, LinkedIn and YouTube.",
+    "price": 299,
+    "category": "Design Assets",
+    "image_url": "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80",
+    "download_url": "https://drive.google.com"
+  },
+  {
+    "id": "digital-web-templates",
+    "product_type": "digital",
+    "name": "SaaS & Agency Landing Page UI Kit (Figma)",
+    "description": "High-converting Figma UI kit with 50+ components, dark mode, and design system.",
+    "price": 490,
+    "category": "UI/UX Kits",
+    "image_url": "https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80",
+    "download_url": "https://drive.google.com"
   }
 ];

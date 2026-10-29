@@ -9,10 +9,14 @@ import WhyChooseUs from '@/components/home/WhyChooseUs';
 import HowItWorksVideos from '@/components/home/HowItWorksVideos';
 import { defaultProducts } from '@/data/products';
 import { useEffect, useState } from 'react';
+import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
+
+const INITIAL_VISIBLE_TOOLS = 12;
 
 export default function Home() {
   const [products, setProducts] = useState<any[]>(defaultProducts);
   const [activeCategory, setActiveCategory] = useState('All');
+  const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_TOOLS);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -107,7 +111,10 @@ export default function Home() {
               return (
                 <button
                   key={cat}
-                  onClick={() => setActiveCategory(cat)}
+                  onClick={() => {
+                    setActiveCategory(cat);
+                    setVisibleCount(INITIAL_VISIBLE_TOOLS);
+                  }}
                   className={`px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105'
@@ -129,7 +136,7 @@ export default function Home() {
             {singleTools.length > 0 && (
               <div className="mb-16 sm:mb-24">
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
-                  {singleTools.map((tool) => (
+                  {singleTools.slice(0, visibleCount).map((tool) => (
                     <SingleToolCard
                       key={tool.id}
                       tool={{
@@ -144,6 +151,37 @@ export default function Home() {
                     />
                   ))}
                 </div>
+
+                {/* Show More / Show Less Button */}
+                {singleTools.length > visibleCount && (
+                  <div className="text-center mt-10 sm:mt-14">
+                    <button
+                      type="button"
+                      onClick={() => setVisibleCount(singleTools.length)}
+                      className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-[#1E293B] hover:bg-[#283548] border border-white/15 hover:border-[#ccff00] text-white hover:text-[#ccff00] font-bold text-xs sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#ccff00]" />
+                      <span>Show More Tools (আরও {singleTools.length - visibleCount}টি টুলস দেখুন)</span>
+                      <ChevronDown className="w-4 h-4 text-[#ccff00] group-hover:translate-y-0.5 transition-transform" />
+                    </button>
+                  </div>
+                )}
+
+                {visibleCount >= singleTools.length && singleTools.length > INITIAL_VISIBLE_TOOLS && (
+                  <div className="text-center mt-10 sm:mt-14">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setVisibleCount(INITIAL_VISIBLE_TOOLS);
+                        document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
+                      }}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-medium text-xs sm:text-sm transition-all cursor-pointer"
+                    >
+                      <span>Show Less (কম দেখান)</span>
+                      <ChevronUp className="w-4 h-4" />
+                    </button>
+                  </div>
+                )}
               </div>
             )}
 

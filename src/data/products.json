@@ -401,68 +401,764 @@
     "validity": "30 Days"
   },
   {
-    "id": "tool-chatgpt",
+    "id": "tool-claude",
     "product_type": "single_tool",
-    "name": "ChatGPT Plus (GPT-4o)",
-    "description": "Get access to GPT-4o, DALL-E 3, code interpreter and custom GPTs.",
-    "price": 350,
-    "category": "AI Writing & Code",
-    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+    "name": "Claude AI (Sonnet 3.5)",
+    "description": "Claude 3.5 Sonnet leading AI model for coding, writing & long-context research.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg"
+    ],
     "features": [
-      "GPT-4o & o1 access",
-      "Image & file analysis",
-      "Fast response speed"
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
     ],
     "badge_text": "Top Rated",
-    "validity": "1 Month"
+    "validity": "1 Month",
+    "order_idx": 1
+  },
+  {
+    "id": "tool-dmeai",
+    "product_type": "single_tool",
+    "name": "DmeAI / DimeAI",
+    "description": "Smart automated AI assistant and article drafting assistant.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 2
+  },
+  {
+    "id": "tool-artspace",
+    "product_type": "single_tool",
+    "name": "Artspace AI (Image-Gen)",
+    "description": "Next-generation generative art canvas and prompt generator for artists.",
+    "price": 400,
+    "category": "Design & Creative",
+    "image_url": "https://artspace.ai/favicon.ico",
+    "gallery_images": [
+      "https://artspace.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 3
+  },
+  {
+    "id": "tool-leonardo",
+    "product_type": "single_tool",
+    "name": "Leonardo AI",
+    "description": "Production-quality creative visual assets with fine-tuned AI models.",
+    "price": 400,
+    "category": "Design & Creative",
+    "image_url": "https://leonardo.ai/favicon.ico",
+    "gallery_images": [
+      "https://leonardo.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Popular",
+    "validity": "1 Month",
+    "order_idx": 4
+  },
+  {
+    "id": "tool-grok",
+    "product_type": "single_tool",
+    "name": "Grok AI (Only Text)",
+    "description": "Real-time conversational AI powered by xAI with unfiltered reasoning.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023_%28white%29.png",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/5/57/X_logo_2023_%28white%29.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 5
+  },
+  {
+    "id": "tool-heygen",
+    "product_type": "single_tool",
+    "name": "HeyGen AI (Best Humanoid)",
+    "description": "Create photorealistic AI avatar spokesperson videos in 120+ languages.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://assets-global.website-files.com/63fdcbe48aa020c0a5493507/649e492bbd2986f34e6d4aa2_favicon.png",
+    "gallery_images": [
+      "https://assets-global.website-files.com/63fdcbe48aa020c0a5493507/649e492bbd2986f34e6d4aa2_favicon.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Trending",
+    "validity": "1 Month",
+    "order_idx": 6
+  },
+  {
+    "id": "tool-semrush",
+    "product_type": "single_tool",
+    "name": "Semrush",
+    "description": "Industry standard SEO keyword research, competitor analysis & backlink tool.",
+    "price": 350,
+    "category": "All SEO & Analytics",
+    "image_url": "https://cdn.worldvectorlogo.com/logos/semrush-1.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/semrush-1.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Essential",
+    "validity": "1 Month",
+    "order_idx": 7
+  },
+  {
+    "id": "tool-perplexity",
+    "product_type": "single_tool",
+    "name": "Perplexity AI",
+    "description": "AI-powered answer engine with real-time web citations and sources.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/1/1d/Perplexity_AI_logo.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 8
   },
   {
     "id": "tool-canva",
     "product_type": "single_tool",
-    "name": "Canva Pro Direct Invite",
-    "description": "100M+ premium graphics, templates, brand kit and Magic Studio AI.",
-    "price": 150,
-    "category": "Graphics & Design",
+    "name": "Canva Pro",
+    "description": "100M+ premium graphics, brand kits, background remover & Magic Studio.",
+    "price": 300,
+    "category": "Design & Creative",
     "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg"
+    ],
     "features": [
-      "100M+ Premium photos & videos",
-      "Background remover",
-      "Brand kits & resize"
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
     ],
     "badge_text": "Best Seller",
-    "validity": "1 Month"
+    "validity": "1 Month",
+    "order_idx": 9
+  },
+  {
+    "id": "tool-grammarly",
+    "product_type": "single_tool",
+    "name": "Grammarly",
+    "description": "AI communication assistant for mistake-free writing, tone & grammar fixes.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/e/eb/Grammarly_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/e/eb/Grammarly_logo.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 10
+  },
+  {
+    "id": "tool-hixai",
+    "product_type": "single_tool",
+    "name": "Hix AI",
+    "description": "All-in-one AI writing copilot for blogs, emails, essays and social copy.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://hix.ai/favicon.ico",
+    "gallery_images": [
+      "https://hix.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 11
   },
   {
     "id": "tool-envato",
     "product_type": "single_tool",
     "name": "Envato Elements",
-    "description": "Unlimited downloads of themes, templates, stock footage and audio.",
-    "price": 450,
-    "category": "Design Assets",
+    "description": "Unlimited downloads of stock videos, audio, WordPress themes & graphics.",
+    "price": 400,
+    "category": "Design & Creative",
     "image_url": "https://cdn.worldvectorlogo.com/logos/envato.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/envato.svg"
+    ],
     "features": [
-      "Themes, templates, graphics",
-      "Commercial license",
-      "Daily high speed download"
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
     ],
     "badge_text": "Essential",
-    "validity": "1 Month"
+    "validity": "1 Month",
+    "order_idx": 12
   },
   {
-    "id": "tool-monica",
+    "id": "tool-chatgpt",
     "product_type": "single_tool",
-    "name": "Monica AI Pro",
-    "description": "All-in-one AI assistant powered by GPT-4, Claude 3.5 and Gemini Pro.",
-    "price": 390,
-    "category": "AI Assistant",
-    "image_url": "https://monica.im/favicon.ico",
+    "name": "ChatGPT",
+    "description": "OpenAI GPT-4o, DALL-E 3 image generation & custom GPT access.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg"
+    ],
     "features": [
-      "GPT-4 & Claude 3.5 in sidebar",
-      "Web page summarizer",
-      "Image generator"
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Top Choice",
+    "validity": "1 Month",
+    "order_idx": 13
+  },
+  {
+    "id": "tool-article-gen",
+    "product_type": "single_tool",
+    "name": "One-Click Article Generator",
+    "description": "Generate 2,500+ word SEO-optimized long-form articles in a single click.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1455390582262-044cdead277a?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 14
+  },
+  {
+    "id": "tool-boolvideo",
+    "product_type": "single_tool",
+    "name": "Bool Video",
+    "description": "AI video generator that turns product URLs into high-converting video ads.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 15
+  },
+  {
+    "id": "tool-linguix",
+    "product_type": "single_tool",
+    "name": "Linguix",
+    "description": "AI-based writing assistant and paraphraser with instant vocabulary boost.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://linguix.com/favicon.ico",
+    "gallery_images": [
+      "https://linguix.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 16
+  },
+  {
+    "id": "tool-indexification",
+    "product_type": "single_tool",
+    "name": "Indexification",
+    "description": "Fast high-percentage backlink indexer tool for Google search rankings.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1562577309-4932fdd64cd1?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 17
+  },
+  {
+    "id": "tool-smaily",
+    "product_type": "single_tool",
+    "name": "Smaily",
+    "description": "Automated email marketing campaign creator and AI newsletter optimizer.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 18
+  },
+  {
+    "id": "tool-wordflow",
+    "product_type": "single_tool",
+    "name": "Wordflow",
+    "description": "Automated keyword ranking and content clustering workflow tool.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1456513080510-7bf3a84b82f8?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 19
+  },
+  {
+    "id": "tool-taplio",
+    "product_type": "single_tool",
+    "name": "Taplio",
+    "description": "The all-in-one AI LinkedIn growth and content scheduling platform.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://taplio.com/favicon.ico",
+    "gallery_images": [
+      "https://taplio.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
     ],
     "badge_text": "Trending",
-    "validity": "1 Month"
+    "validity": "1 Month",
+    "order_idx": 20
+  },
+  {
+    "id": "tool-peastai",
+    "product_type": "single_tool",
+    "name": "Peast AI",
+    "description": "AI-powered creative writing and prompt engineering environment.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 21
+  },
+  {
+    "id": "tool-nichescraper",
+    "product_type": "single_tool",
+    "name": "Niche Scraper",
+    "description": "Dropshipping product research spy tool with winning product spy features.",
+    "price": 400,
+    "category": "E-Commerce & Dropshipping",
+    "image_url": "https://nichescraper.com/favicon.ico",
+    "gallery_images": [
+      "https://nichescraper.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 22
+  },
+  {
+    "id": "tool-audioblock",
+    "product_type": "single_tool",
+    "name": "Audio Block (Storyblocks)",
+    "description": "Unlimited royalty-free music, sound effects and loops for video creators.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 23
+  },
+  {
+    "id": "tool-invideo",
+    "product_type": "single_tool",
+    "name": "InVideo",
+    "description": "Generate complete scripted YouTube, TikTok & Reels videos with AI.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://invideo.io/favicon.ico",
+    "gallery_images": [
+      "https://invideo.io/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 24
+  },
+  {
+    "id": "tool-writecream",
+    "product_type": "single_tool",
+    "name": "Writecream",
+    "description": "Personalized cold emails, LinkedIn icebreakers and podcast audio AI.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://writecream.com/favicon.ico",
+    "gallery_images": [
+      "https://writecream.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 25
+  },
+  {
+    "id": "tool-beautifulai",
+    "product_type": "single_tool",
+    "name": "Beautiful AI",
+    "description": "Smart presentation maker that automatically adapts design principles.",
+    "price": 400,
+    "category": "AI & Writing",
+    "image_url": "https://www.beautiful.ai/favicon.ico",
+    "gallery_images": [
+      "https://www.beautiful.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 26
+  },
+  {
+    "id": "tool-fameclips",
+    "product_type": "single_tool",
+    "name": "FameClips",
+    "description": "Extract viral short-form clips from long videos with automated subtitles.",
+    "price": 400,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 27
+  },
+  {
+    "id": "tool-leadpal",
+    "product_type": "single_tool",
+    "name": "LeadPal",
+    "description": "Smart verified lead generation and email opt-in funnel tool.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1551836022-d5d88e9218df?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 28
+  },
+  {
+    "id": "tool-quillbot",
+    "product_type": "single_tool",
+    "name": "QuillBot Premium",
+    "description": "World's most popular paraphrasing tool, summarizer and grammar fixer.",
+    "price": 250,
+    "category": "AI & Writing",
+    "image_url": "https://quillbot.com/favicon.ico",
+    "gallery_images": [
+      "https://quillbot.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Popular",
+    "validity": "1 Month",
+    "order_idx": 29
+  },
+  {
+    "id": "tool-paperpal",
+    "product_type": "single_tool",
+    "name": "Paperpal Academic AI",
+    "description": "Real-time subject-specific academic writing assistance for thesis writers.",
+    "price": 350,
+    "category": "AI & Writing",
+    "image_url": "https://paperpal.com/favicon.ico",
+    "gallery_images": [
+      "https://paperpal.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 30
+  },
+  {
+    "id": "tool-sciteai",
+    "product_type": "single_tool",
+    "name": "Scite AI Research",
+    "description": "Discover and evaluate scientific papers with Smart Citations data.",
+    "price": 350,
+    "category": "AI & Writing",
+    "image_url": "https://scite.ai/favicon.ico",
+    "gallery_images": [
+      "https://scite.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 31
+  },
+  {
+    "id": "tool-capcut",
+    "product_type": "single_tool",
+    "name": "CapCut Pro",
+    "description": "Pro video editing with AI auto-captions, background removal & VFX.",
+    "price": 350,
+    "category": "Audio & Video",
+    "image_url": "https://upload.wikimedia.org/wikipedia/commons/a/af/Capcut-icon.png",
+    "gallery_images": [
+      "https://upload.wikimedia.org/wikipedia/commons/a/af/Capcut-icon.png"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Top Choice",
+    "validity": "1 Month",
+    "order_idx": 32
+  },
+  {
+    "id": "tool-freepik",
+    "product_type": "single_tool",
+    "name": "Freepik Premium",
+    "description": "Millions of premium vectors, PSD mockups, stock photos & icons.",
+    "price": 350,
+    "category": "Design & Creative",
+    "image_url": "https://cdn.worldvectorlogo.com/logos/freepik-1.svg",
+    "gallery_images": [
+      "https://cdn.worldvectorlogo.com/logos/freepik-1.svg"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 33
+  },
+  {
+    "id": "tool-veo3",
+    "product_type": "single_tool",
+    "name": "VEO 3 (Google AI Video)",
+    "description": "Next-gen cinematic high-definition AI video generator.",
+    "price": 650,
+    "category": "Audio & Video",
+    "image_url": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Next-Gen",
+    "validity": "1 Month",
+    "order_idx": 34
+  },
+  {
+    "id": "tool-vidiq",
+    "product_type": "single_tool",
+    "name": "VidIQ Boost",
+    "description": "Boost YouTube video views with keyword analysis and SEO competitor stats.",
+    "price": 400,
+    "category": "All SEO & Analytics",
+    "image_url": "https://vidiq.com/favicon.ico",
+    "gallery_images": [
+      "https://vidiq.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 35
+  },
+  {
+    "id": "tool-kittl",
+    "product_type": "single_tool",
+    "name": "Kittl Graphic Design",
+    "description": "Advanced graphic design tool for apparel, merch, vintage labels & fonts.",
+    "price": 350,
+    "category": "Design & Creative",
+    "image_url": "https://kittl.com/favicon.ico",
+    "gallery_images": [
+      "https://kittl.com/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 36
+  },
+  {
+    "id": "tool-photoroom",
+    "product_type": "single_tool",
+    "name": "Photoroom Pro",
+    "description": "Studio-quality product photography with automated AI background replacement.",
+    "price": 300,
+    "category": "Design & Creative",
+    "image_url": "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=200",
+    "gallery_images": [
+      "https://images.unsplash.com/photo-1556742049-0a67c5574f73?w=200"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 37
+  },
+  {
+    "id": "tool-jasper",
+    "product_type": "single_tool",
+    "name": "Jasper AI",
+    "description": "Enterprise marketing AI platform for on-brand copy, blogs and ad campaigns.",
+    "price": 450,
+    "category": "AI & Writing",
+    "image_url": "https://www.jasper.ai/favicon.ico",
+    "gallery_images": [
+      "https://www.jasper.ai/favicon.ico"
+    ],
+    "features": [
+      "Instant Access",
+      "30 Days Warranty",
+      "24/7 Support"
+    ],
+    "badge_text": "Premium",
+    "validity": "1 Month",
+    "order_idx": 38
   },
   {
     "id": "digital-ai-prompts",
