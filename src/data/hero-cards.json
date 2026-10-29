@@ -1,0 +1,62 @@
+[
+  {
+    "id": "hero-envato",
+    "name": "Envato Elements",
+    "logo_url": "https://cdn.worldvectorlogo.com/logos/envato.svg",
+    "features": [
+      "Unlimited downloads",
+      "Templates, graphics, fonts",
+      "Video & audio assets",
+      "Commercial license",
+      "New items weekly",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🚀", "😍", "❤️", "🔥", "✨"],
+    "order_idx": 0
+  },
+  {
+    "id": "hero-canva",
+    "name": "Canva Pro",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
+    "features": [
+      "100M+ premium assets",
+      "Magic Studio AI tools",
+      "Background remover",
+      "Brand kits & resize",
+      "100GB cloud storage",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🎨", "✨", "🔥", "💖", "👑"],
+    "order_idx": 1
+  },
+  {
+    "id": "hero-chatgpt",
+    "name": "ChatGPT Plus",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
+    "features": [
+      "GPT-4o & o1 models",
+      "Unlimited prompts",
+      "Image & file uploads",
+      "Custom GPTs access",
+      "Priority response speed",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🤖", "⚡", "🧠", "💡", "🚀"],
+    "order_idx": 2
+  },
+  {
+    "id": "hero-monica",
+    "name": "Monica AI",
+    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg",
+    "features": [
+      "GPT-4, Claude & Gemini",
+      "AI chat on any webpage",
+      "Image generation included",
+      "Translator & writer",
+      "Cross-device sync",
+      "Instant access after purchase"
+    ],
+    "emojis": ["😍", "🚀", "❤️", "🌟", "📌"],
+    "order_idx": 3
+  }
+]

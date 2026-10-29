@@ -68,6 +68,7 @@ const LOCAL_PRODUCTS_PATH = path.join(process.cwd(), 'src', 'data', 'products.js
 const LOCAL_SETTINGS_PATH = path.join(process.cwd(), 'src', 'data', 'settings.json');
 const LOCAL_USERS_PATH = path.join(process.cwd(), 'src', 'data', 'users.json');
 const LOCAL_COUPONS_PATH = path.join(process.cwd(), 'src', 'data', 'coupons.json');
+const LOCAL_HERO_CARDS_PATH = path.join(process.cwd(), 'src', 'data', 'hero-cards.json');
 
 function loadLocalCoupons(): Coupon[] {
   try {
@@ -759,4 +760,164 @@ export async function dbValidateCoupon(
     finalPrice
   };
 }
+
+// ========================================================
+// HERO CARDS MANAGEMENT METHODS
+// ========================================================
+
+export interface HeroCard {
+  id: string;
+  name: string;
+  logo_url: string;
+  features: string[];
+  emojis: string[];
+  order_idx?: number;
+  created_at?: string;
+}
+
+function loadLocalHeroCards(): HeroCard[] {
+  try {
+    if (fs.existsSync(LOCAL_HERO_CARDS_PATH)) {
+      const raw = fs.readFileSync(LOCAL_HERO_CARDS_PATH, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.warn('Fallback: reading local hero cards failed', e);
+  }
+  return [];
+}
+
+function saveLocalHeroCards(cards: HeroCard[]) {
+  try {
+    fs.writeFileSync(LOCAL_HERO_CARDS_PATH, JSON.stringify(cards, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Fallback: saving local hero cards failed', e);
+  }
+}
+
+export async function dbGetHeroCards(): Promise<HeroCard[]> {
+  if (isD1Configured()) {
+    try {
+      await queryD1(`
+        CREATE TABLE IF NOT EXISTS hero_cards (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          logo_url TEXT,
+          features TEXT,
+          emojis TEXT,
+          order_idx INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      const rows = await queryD1('SELECT * FROM hero_cards ORDER BY order_idx ASC, created_at DESC');
+      if (rows && rows.length > 0) {
+        return rows.map((r: any) => ({
+          ...r,
+          features: typeof r.features === 'string' ? JSON.parse(r.features || '[]') : (r.features || []),
+          emojis: typeof r.emojis === 'string' ? JSON.parse(r.emojis || '[]') : (r.emojis || []),
+          order_idx: Number(r.order_idx || 0)
+        }));
+      }
+    } catch (err) {
+      console.warn('D1 GetHeroCards Error (falling back to local):', err);
+    }
+  }
+  return loadLocalHeroCards();
+}
+
+export async function dbSaveHeroCard(card: Omit<HeroCard, 'created_at'> & { created_at?: string }): Promise<HeroCard> {
+  const id = card.id || `hero_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const featuresJson = JSON.stringify(card.features || []);
+  const emojisJson = JSON.stringify(card.emojis || []);
+  const orderIdx = card.order_idx !== undefined ? Number(card.order_idx) : 0;
+  
+  const savedCard: HeroCard = {
+    id,
+    name: card.name.trim(),
+    logo_url: card.logo_url || '',
+    features: card.features || [],
+    emojis: card.emojis || [],
+    order_idx: orderIdx,
+    created_at: card.created_at || new Date().toISOString()
+  };
+
+  if (isD1Configured()) {
+    try {
+      await queryD1(`
+        CREATE TABLE IF NOT EXISTS hero_cards (
+          id TEXT PRIMARY KEY,
+          name TEXT NOT NULL,
+          logo_url TEXT,
+          features TEXT,
+          emojis TEXT,
+          order_idx INTEGER DEFAULT 0,
+          created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+      `);
+      await queryD1(
+        `INSERT INTO hero_cards (id, name, logo_url, features, emojis, order_idx)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET
+           name = excluded.name,
+           logo_url = excluded.logo_url,
+           features = excluded.features,
+           emojis = excluded.emojis,
+           order_idx = excluded.order_idx`,
+        [id, savedCard.name, savedCard.logo_url, featuresJson, emojisJson, orderIdx]
+      );
+    } catch (err) {
+      console.warn('D1 SaveHeroCard Error (falling back to local):', err);
+    }
+  }
+
+  const local = loadLocalHeroCards();
+  const idx = local.findIndex(c => c.id === id);
+  if (idx >= 0) {
+    local[idx] = savedCard;
+  } else {
+    local.push(savedCard);
+  }
+  saveLocalHeroCards(local);
+  return savedCard;
+}
+
+export async function dbDeleteHeroCard(id: string): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      await queryD1('DELETE FROM hero_cards WHERE id = ?', [id]);
+    } catch (err) {
+      console.warn('D1 DeleteHeroCard Error:', err);
+    }
+  }
+  const local = loadLocalHeroCards().filter(c => c.id !== id);
+  saveLocalHeroCards(local);
+  return true;
+}
+
+export async function dbReorderHeroCards(orderedIds: string[]): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      for (let i = 0; i < orderedIds.length; i++) {
+        await queryD1('UPDATE hero_cards SET order_idx = ? WHERE id = ?', [i, orderedIds[i]]);
+      }
+    } catch (err) {
+      console.warn('D1 ReorderHeroCards Error:', err);
+    }
+  }
+  const local = loadLocalHeroCards();
+  const map = new Map(local.map(c => [c.id, c]));
+  const reordered: HeroCard[] = [];
+  for (let i = 0; i < orderedIds.length; i++) {
+    const c = map.get(orderedIds[i]);
+    if (c) {
+      reordered.push({ ...c, order_idx: i });
+    }
+  }
+  for (const c of local) {
+    if (!orderedIds.includes(c.id)) reordered.push(c);
+  }
+  saveLocalHeroCards(reordered);
+  return true;
+}
+
 

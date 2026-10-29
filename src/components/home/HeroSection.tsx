@@ -76,8 +76,25 @@ type ToolCard = {
 export default function HeroSection() {
   const [wordIndex, setWordIndex] = useState(0);
   const [cardIndex, setCardIndex] = useState(0);
-  const [toolCards] = useState<ToolCard[]>(defaultToolCards);
+  const [toolCards, setToolCards] = useState<ToolCard[]>(defaultToolCards);
   const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    fetch('/api/hero-cards')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && Array.isArray(data.cards) && data.cards.length > 0) {
+          setToolCards(data.cards.map((c: any) => ({
+            id: c.id,
+            name: c.name,
+            logo: c.logo_url || c.logo || '',
+            features: Array.isArray(c.features) ? c.features : JSON.parse(c.features || '[]'),
+            emojis: Array.isArray(c.emojis) ? c.emojis : JSON.parse(c.emojis || '[]')
+          })));
+        }
+      })
+      .catch(e => console.warn('Hero cards load fallback:', e));
+  }, []);
 
   useEffect(() => {
     const wordInterval = setInterval(() => {
