@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { ShieldCheck, Play, ArrowRight, CheckCircle2, Zap, ChevronLeft, ChevronRight } from 'lucide-react';
 
-const changingWords = ['Creators.', 'Agencies.', 'Freelancers.', 'Designers.', 'Marketers.'];
+const changingWords = ['Students.', 'Creators.', 'Freelancers.', 'Designers.', 'Agencies.'];
 
 const defaultToolCards = [
   {
@@ -151,8 +151,8 @@ export default function HeroSection() {
               </span>
             </h1>
 
-            <p className="text-sm sm:text-base text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed">
-              Get instant access to ChatGPT Plus, Canva Pro, Envato Elements, Claude & 100+ top software subscriptions at up to 90% discount with instant activation and 24/7 warranty.
+            <p className="text-xs sm:text-base text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed">
+              Get instant access to ChatGPT, Canva Pro & 100+ premium AI tools at up to 90% off with 24/7 warranty.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-10 sm:mb-12">
