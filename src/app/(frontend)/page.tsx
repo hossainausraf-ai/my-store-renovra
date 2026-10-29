@@ -133,6 +133,35 @@ export default function Home() {
               </div>
             )}
 
+            {/* Digital Products Section */}
+            {digitalProducts.length > 0 && (
+              <div className="mb-16 sm:mb-24">
+                {singleTools.length > 0 && (
+                  <div className="text-center mb-8 sm:mb-12">
+                    <p className="text-purple-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Templates & Assets</p>
+                    <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Digital Products</h2>
+                    <p className="text-xs sm:text-base text-gray-400">Exclusive e-books, templates, and design resources.</p>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
+                  {digitalProducts.map((product) => (
+                    <DigitalProductCard
+                      key={product.id}
+                      product={{
+                        id: product.id,
+                        name: product.name,
+                        description: product.description,
+                        price: product.price,
+                        category: product.category,
+                        imageUrl: product.image_url || '',
+                        galleryImages: product.gallery_images
+                      }}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
 
 
             {products.length === 0 && (

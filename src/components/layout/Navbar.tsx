@@ -132,9 +132,6 @@ export default function Navbar() {
             {/* Desktop Right Side & Empty Mobile Right side placeholder to balance flex-between */}
             <div className="flex items-center space-x-4">
               <div className="hidden md:flex items-center space-x-4">
-                <Link href="/track" className="text-gray-300 hover:text-white font-medium text-sm transition-colors">
-                  Track Order
-                </Link>
                 <StarBorder
                   as={Link}
                   href={currentUser ? "/dashboard" : "/login"}

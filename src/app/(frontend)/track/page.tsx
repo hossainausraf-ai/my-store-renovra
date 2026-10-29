@@ -117,7 +117,7 @@ function TrackOrderContent() {
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="আপনার মোবাইল নম্বর (যেমন: 017xxxxxxxx) বা TrxID লিখুন"
+              placeholder="অর্ডার আইডি (যেমন: RNV-123456), মোবাইল নম্বর বা TrxID লিখুন"
               className="w-full bg-[#1F2937]/60 border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-sm sm:text-base"
             />
           </div>

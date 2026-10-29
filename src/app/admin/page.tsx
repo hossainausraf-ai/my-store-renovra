@@ -27,6 +27,10 @@ type Payment = {
   package_id: string;
   status: string;
   proof_url?: string;
+  customer_name?: string;
+  product_name?: string;
+  price?: number;
+  whatsapp?: string;
 };
 
 export default function AdminDashboard() {
@@ -95,10 +99,12 @@ export default function AdminDashboard() {
 
   const filteredPayments = payments.filter(p => {
     const matchesFilter = activeFilter === 'All' || p.status === activeFilter.toLowerCase();
-    const productName = products.find(prod => prod.id === p.package_id)?.name || p.package_id;
+    const productName = p.product_name || products.find(prod => prod.id === p.package_id)?.name || p.package_id || '';
     const searchLower = searchQuery.toLowerCase();
     const matchesSearch = (p.trx_id && p.trx_id.toLowerCase().includes(searchLower)) || 
                           p.user_phone.toLowerCase().includes(searchLower) ||
+                          (p.customer_name && p.customer_name.toLowerCase().includes(searchLower)) ||
+                          (p.id && p.id.toLowerCase().includes(searchLower)) ||
                           productName.toLowerCase().includes(searchLower);
     return matchesFilter && matchesSearch;
   });
@@ -277,13 +283,16 @@ export default function AdminDashboard() {
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                           <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center text-blue-500 text-xs font-bold shrink-0">
-                            {payment.user_phone.substring(0, 2)}
+                            {payment.customer_name ? payment.customer_name.substring(0, 2).toUpperCase() : payment.user_phone.substring(0, 2)}
                           </div>
                           <div>
-                            <span className="font-medium text-gray-300 block">{payment.user_phone}</span>
+                            {payment.customer_name && (
+                              <span className="font-bold text-white block text-sm leading-tight">{payment.customer_name}</span>
+                            )}
+                            <span className="font-medium text-gray-400 block text-xs">{payment.user_phone}</span>
                             {payment.user_phone && (
                               <a
-                                href={`https://wa.me/${payment.user_phone.replace(/[^0-9]/g, '')}`}
+                                href={`https://wa.me/${(payment.whatsapp || payment.user_phone).replace(/[^0-9]/g, '')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
                                 className="inline-flex items-center gap-1 text-[11px] text-green-400 hover:text-green-300 transition mt-0.5"
@@ -301,8 +310,8 @@ export default function AdminDashboard() {
                           <div className="w-10 h-10 rounded-lg bg-black/40 border border-white/5 flex items-center justify-center shrink-0">
                             <Package className="w-5 h-5 text-gray-500" />
                           </div>
-                          <span className="font-medium text-gray-300 truncate max-w-[150px]" title={products.find(p => p.id === payment.package_id)?.name || payment.package_id}>
-                            {products.find(p => p.id === payment.package_id)?.name || 'Unknown Package'}
+                          <span className="font-medium text-gray-200 truncate max-w-[180px]" title={payment.product_name || products.find(p => p.id === payment.package_id)?.name || payment.package_id}>
+                            {payment.product_name || products.find(p => p.id === payment.package_id)?.name || 'Product'}
                           </span>
                         </div>
                       </td>
@@ -310,22 +319,27 @@ export default function AdminDashboard() {
                       {/* Payment */}
                       <td className="px-6 py-4">
                         <div className="flex flex-col">
-                          <span className={`text-sm font-semibold ${isApproved ? 'text-green-500' : isPending ? 'text-yellow-500' : 'text-red-500'}`}>
-                            {isApproved ? 'Paid' : isPending ? 'Unpaid' : 'Refunded'}
-                          </span>
-                          <span className="text-xs text-gray-500 mt-1 uppercase">
+                          <div className="flex items-center gap-1.5">
+                            <span className={`text-sm font-semibold ${isApproved ? 'text-green-500' : isPending ? 'text-yellow-500' : 'text-red-500'}`}>
+                              {isApproved ? 'Paid' : isPending ? 'Unpaid' : 'Refunded'}
+                            </span>
+                            {payment.price !== undefined && (
+                              <span className="text-sm font-bold text-white font-mono">৳{payment.price}</span>
+                            )}
+                          </div>
+                          <span className="text-xs text-gray-500 mt-0.5 uppercase font-medium">
                             {payment.payment_method}
                           </span>
                           {payment.proof_url && payment.proof_url !== 'FREE_TRIAL' && (
                             <button 
                               onClick={() => setSelectedProof(payment.proof_url!)} 
-                              className="text-xs text-blue-400 hover:text-blue-300 underline text-left mt-2"
+                              className="text-xs text-blue-400 hover:text-blue-300 underline text-left mt-1.5"
                             >
                               View Proof
                             </button>
                           )}
                           {payment.proof_url === 'FREE_TRIAL' && (
-                            <span className="text-xs text-green-400 mt-2 font-semibold">Free Order</span>
+                            <span className="text-xs text-green-400 mt-1 font-semibold">Free Order</span>
                           )}
                         </div>
                       </td>
