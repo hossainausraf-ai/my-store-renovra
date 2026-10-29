@@ -35,10 +35,16 @@ yarn-error.log*
 !.env.example
 
 # vercel
+# local source media
+/Videos/
+
 .vercel
 
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local source media
+/Videos/
 
 .vercel

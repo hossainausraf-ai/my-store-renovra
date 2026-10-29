@@ -6,6 +6,7 @@ import ToolsMarquee from '@/components/home/ToolsMarquee';
 import HeroSection from '@/components/home/HeroSection';
 import UserReviews from '@/components/home/UserReviews';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
+import HowItWorksVideos from '@/components/home/HowItWorksVideos';
 import { defaultProducts } from '@/data/products';
 import { useEffect, useState } from 'react';
 
@@ -154,6 +155,9 @@ export default function Home() {
           </>
         )}
       </div>
+
+      {/* How It Works Video Section */}
+      <HowItWorksVideos />
 
       {/* Why Choose Us Section */}
       <WhyChooseUs />
