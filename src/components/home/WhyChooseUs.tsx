@@ -74,38 +74,40 @@ const FEATURES = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-24 px-4 bg-transparent w-full">
+    <section className="py-14 sm:py-24 px-3 sm:px-4 bg-transparent w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
-          <p className="text-green-500 text-xs font-bold tracking-[0.2em] uppercase mb-3">Elevate Your Workflow</p>
-          <h2 className="text-3xl md:text-5xl font-bold tracking-tight mb-4 text-white">Why Choose Our Subscription?</h2>
-          <p className="text-gray-400 text-lg max-w-2xl mx-auto">
+        <div className="text-center mb-8 sm:mb-16">
+          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Elevate Your Workflow</p>
+          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Why Choose Our Subscription?</h2>
+          <p className="text-gray-400 text-xs sm:text-lg max-w-2xl mx-auto">
             We've engineered a platform that focuses on <strong className="text-white">real productivity</strong>, saving you both time and money.
           </p>
         </div>
 
-        {/* Mobile View: Continuous Seamless Loop Carousel (Right to Left) */}
+        {/* Mobile View: 3 Compact Cards Visible at Once in Continuous Loop Carousel (Right to Left) */}
         <div 
-          className="block md:hidden overflow-hidden w-full relative py-2 -mx-4 px-4"
+          className="block md:hidden overflow-hidden w-full relative py-2 -mx-3 px-3"
           style={{ 
-            maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
+            maskImage: 'linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 4%, black 96%, transparent 100%)'
           }}
         >
-          <div className="flex gap-4 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
+          <div className="flex gap-2 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
             {[...FEATURES, ...FEATURES].map((feature, idx) => (
               <div
                 key={`mobile-${feature.id}-${idx}`}
-                className="w-[260px] shrink-0 bg-[var(--surface)] relative border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col justify-between"
+                className="w-[114px] sm:w-[130px] shrink-0 bg-[var(--surface)] relative border border-white/10 rounded-xl sm:rounded-2xl p-2.5 sm:p-3 shadow-md flex flex-col justify-between"
               >
                 <div>
-                  <div className="w-12 h-12 rounded-xl bg-green-400 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(74,222,128,0.35)]">
-                    <div className="text-green-950 scale-95">
+                  <div className="w-8 h-8 rounded-lg bg-green-400 flex items-center justify-center mb-2 shadow-[0_0_12px_rgba(74,222,128,0.3)] [&>div>svg]:w-4 [&>div>svg]:h-4">
+                    <div className="text-green-950 flex items-center justify-center">
                       {feature.icon}
                     </div>
                   </div>
-                  <h3 className="text-base font-bold text-white mb-2 leading-snug">{feature.title}</h3>
-                  <p className="text-gray-400 leading-relaxed text-xs">
+                  <h3 className="text-[11px] sm:text-xs font-bold text-white mb-1 leading-snug line-clamp-2 min-h-[1.7rem]">
+                    {feature.title}
+                  </h3>
+                  <p className="text-gray-400 leading-snug text-[8.5px] sm:text-[9.5px] line-clamp-3">
                     {feature.description}
                   </p>
                 </div>
