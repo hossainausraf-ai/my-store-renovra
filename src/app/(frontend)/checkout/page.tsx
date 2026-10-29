@@ -142,6 +142,12 @@ function CheckoutForm() {
       return;
     }
 
+    if (!customerName.trim()) {
+      setError('দয়া করে আপনার নাম লিখুন।');
+      setIsLoading(false);
+      return;
+    }
+
     if (!phone) {
       setError('দয়া করে আপনার ফোন নম্বর দিন।');
       setIsLoading(false);
@@ -221,6 +227,7 @@ function CheckoutForm() {
             <table>
               <tr class="details">
                 <td colspan="2">
+                  ${customerName ? `<strong>Customer Name:</strong> ${customerName}<br>` : ''}
                   <strong>Customer Phone:</strong> ${phone}<br>
                   <strong>WhatsApp:</strong> ${whatsappNumber || phone}<br>
                   <strong>Payment Method:</strong> ${paymentMethod.toUpperCase()}<br>
@@ -285,6 +292,12 @@ function CheckoutForm() {
             <span>Order ID:</span>
             <span className="text-white font-mono font-bold">{submittedOrderId}</span>
           </div>
+          {customerName && (
+            <div className="flex justify-between text-gray-400">
+              <span>Customer Name:</span>
+              <span className="text-white font-bold">{customerName}</span>
+            </div>
+          )}
           <div className="flex justify-between text-gray-400">
             <span>Product:</span>
             <span className="text-white font-bold">{product?.name}</span>
@@ -303,7 +316,7 @@ function CheckoutForm() {
         <div className="flex flex-col sm:flex-row gap-3 mb-6 max-w-md mx-auto">
           <a
             href={`https://wa.me/${(siteSettings?.support_whatsapp || '8801766392692').replace(/[^0-9]/g, '')}?text=${encodeURIComponent(
-              `Hello, I just ordered "${product?.name}" (Order ID: ${submittedOrderId}, Phone: ${phone}). Please verify my payment.`
+              `Hello, I just ordered "${product?.name}" (Order ID: ${submittedOrderId}, Name: ${customerName || 'N/A'}, Phone: ${phone}). Please verify my payment.`
             )}`}
             target="_blank"
             rel="noopener noreferrer"
@@ -694,6 +707,21 @@ function CheckoutForm() {
             )}
 
             <div className="space-y-5">
+              {/* Customer Name */}
+              <div>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5">
+                  আপনার নাম <span className="text-red-400">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  placeholder="আপনার পুরো নাম লিখুন"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-600 text-sm"
+                />
+              </div>
+
               {/* Phone Number */}
               <div>
                 <label className="block text-sm font-medium text-gray-300 mb-1.5">
