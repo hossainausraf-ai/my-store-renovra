@@ -11,6 +11,9 @@ export interface TelegramOrderPayload {
   proofBuffer?: Buffer;
   proofFileName?: string;
   notes?: string;
+  couponCode?: string;
+  discountAmount?: number;
+  originalPrice?: number;
 }
 
 export async function sendTelegramOrderNotification(payload: TelegramOrderPayload) {
@@ -35,8 +38,8 @@ export async function sendTelegramOrderNotification(payload: TelegramOrderPayloa
 🚨 <b>নতুন অর্ডার এসেছে! (New Order)</b>
 ━━━━━━━━━━━━━━━━━━━━━━
 📦 <b>পণ্য/প্যাকেজ:</b> ${escapeHtml(payload.productName)}
-💵 <b>মূল্য:</b> ৳ ${payload.price}
-💳 <b>পেমেন্ট মেথড:</b> ${escapeHtml(payload.paymentMethod.toUpperCase())}
+💵 <b>মূল্য:</b> ৳ ${payload.price}${payload.originalPrice && payload.originalPrice !== payload.price ? ` <s>(৳ ${payload.originalPrice})</s>` : ''}
+${payload.couponCode ? `🎟️ <b>কুপন কোড:</b> <code>${escapeHtml(payload.couponCode)}</code> (ছাড়: -৳ ${payload.discountAmount || 0})\n` : ''}💳 <b>পেমেন্ট মেথড:</b> ${escapeHtml(payload.paymentMethod.toUpperCase())}
 🔢 <b>TrxID:</b> <code>${escapeHtml(payload.trxId)}</code>
 
 👤 <b>কাস্টমার তথ্য:</b>
@@ -79,7 +82,7 @@ ${payload.customerName ? `🧑 <b>নাম:</b> ${escapeHtml(payload.customerNa
       formData.append('reply_markup', JSON.stringify(replyMarkup));
 
       // Append image as a Blob
-      const blob = new Blob([payload.proofBuffer]);
+      const blob = new Blob([new Uint8Array(payload.proofBuffer)]);
       formData.append('photo', blob, payload.proofFileName || 'payment_proof.jpg');
 
       const response = await fetch(`https://api.telegram.org/bot${botToken}/sendPhoto`, {

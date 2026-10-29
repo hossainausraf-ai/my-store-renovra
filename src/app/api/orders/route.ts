@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { addOrder, getAllOrders, updateOrderStatus, deleteOrder } from '@/lib/orders-store';
 import { sendTelegramOrderNotification } from '@/lib/telegram';
+import { dbIncrementCouponUsage } from '@/lib/d1';
 
 export async function GET() {
   const orders = getAllOrders();
@@ -20,6 +21,9 @@ export async function POST(req: NextRequest) {
     let manualTrxId = '';
     let proofFile: File | null = null;
     let proofUrl = '';
+    let couponCode = '';
+    let discountAmount = 0;
+    let originalPrice = 0;
 
     if (contentType.includes('application/json')) {
       const json = await req.json();
@@ -32,6 +36,9 @@ export async function POST(req: NextRequest) {
       paymentMethod = json.paymentMethod || 'bkash';
       manualTrxId = json.trxId || '';
       proofUrl = json.proofUrl || '';
+      couponCode = (json.couponCode || json.coupon_code || '').trim().toUpperCase();
+      discountAmount = Number(json.discountAmount || json.discount_amount) || 0;
+      originalPrice = Number(json.originalPrice || json.original_price) || price;
     } else {
       const formData = await req.formData();
       phone = (formData.get('phone') as string) || '';
@@ -43,6 +50,9 @@ export async function POST(req: NextRequest) {
       paymentMethod = (formData.get('paymentMethod') as string) || 'bkash';
       manualTrxId = (formData.get('trxId') as string) || '';
       proofFile = formData.get('proof') as File | null;
+      couponCode = ((formData.get('couponCode') || formData.get('coupon_code') || '') as string).trim().toUpperCase();
+      discountAmount = Number(formData.get('discountAmount') || formData.get('discount_amount')) || 0;
+      originalPrice = Number(formData.get('originalPrice') || formData.get('original_price')) || price;
     }
 
     if (!phone) {
@@ -85,9 +95,21 @@ export async function POST(req: NextRequest) {
       proof_url: proofUrl,
       customer_name: customerName,
       whatsapp,
+      coupon_code: couponCode || undefined,
+      discount_amount: discountAmount || undefined,
+      original_price: originalPrice || undefined,
     });
 
-    // 2. Send Telegram Notification (Primary instant alert)
+    // 2. Increment coupon usage count if applied
+    if (couponCode) {
+      try {
+        await dbIncrementCouponUsage(couponCode);
+      } catch (err) {
+        console.warn('Failed to increment coupon usage:', err);
+      }
+    }
+
+    // 3. Send Telegram Notification (Primary instant alert)
     const telegramResult = await sendTelegramOrderNotification({
       orderId,
       customerName,
@@ -99,6 +121,9 @@ export async function POST(req: NextRequest) {
       trxId,
       proofBuffer,
       proofFileName,
+      couponCode: couponCode || undefined,
+      discountAmount: discountAmount || undefined,
+      originalPrice: originalPrice || undefined,
     });
 
     return NextResponse.json({

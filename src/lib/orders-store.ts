@@ -14,6 +14,9 @@ export interface StoredOrder {
   proof_url?: string;
   customer_name?: string;
   whatsapp?: string;
+  coupon_code?: string;
+  discount_amount?: number;
+  original_price?: number;
 }
 
 // In-memory cache for fast lookup and serverless fallback

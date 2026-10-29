@@ -1,0 +1,39 @@
+[
+  {
+    "id": "cpn-welcome",
+    "code": "WELCOME10",
+    "discount_type": "percentage",
+    "discount_value": 10,
+    "applicable_to": "all",
+    "min_order_amount": 0,
+    "usage_limit": 500,
+    "used_count": 0,
+    "is_active": true,
+    "created_at": "2026-10-01T00:00:00.000Z"
+  },
+  {
+    "id": "cpn-save50",
+    "code": "SAVE50",
+    "discount_type": "fixed",
+    "discount_value": 50,
+    "applicable_to": "all",
+    "min_order_amount": 300,
+    "usage_limit": 200,
+    "used_count": 0,
+    "is_active": true,
+    "created_at": "2026-10-01T00:00:00.000Z"
+  },
+  {
+    "id": "cpn-pro20",
+    "code": "PRO20",
+    "discount_type": "percentage",
+    "discount_value": 20,
+    "applicable_to": "subscription",
+    "min_order_amount": 400,
+    "max_discount_amount": 300,
+    "usage_limit": 100,
+    "used_count": 0,
+    "is_active": true,
+    "created_at": "2026-10-01T00:00:00.000Z"
+  }
+]

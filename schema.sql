@@ -99,3 +99,27 @@ VALUES
 ('digital-ai-prompts', 'digital', '10,000+ Ultimate ChatGPT Prompts Pack', 'Curated prompt collection for marketing, copywriting, coding, SEO & business growth.', 250, 'Templates & Prompts', 'https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=600&auto=format&fit=crop&q=80', 'https://drive.google.com', 0),
 ('digital-canva-templates', 'digital', '500+ Social Media Editable Canva Templates', 'Ready-to-use aesthetic templates for Facebook, Instagram, LinkedIn and YouTube.', 299, 'Design Assets', 'https://images.unsplash.com/photo-1626785774573-4b799315345d?w=600&auto=format&fit=crop&q=80', 'https://drive.google.com', 1),
 ('digital-web-templates', 'digital', 'SaaS & Agency Landing Page UI Kit (Figma)', 'High-converting Figma UI kit with 50+ components, dark mode, and design system.', 490, 'UI/UX Kits', 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?w=600&auto=format&fit=crop&q=80', 'https://drive.google.com', 2);
+
+-- 5. COUPONS TABLE
+CREATE TABLE IF NOT EXISTS coupons (
+    id TEXT PRIMARY KEY,
+    code TEXT NOT NULL UNIQUE,
+    discount_type TEXT NOT NULL, -- 'percentage' or 'fixed'
+    discount_value REAL NOT NULL,
+    applicable_to TEXT NOT NULL DEFAULT 'all', -- 'all', 'subscription', 'single_tool', 'digital', or product_id
+    min_order_amount REAL DEFAULT 0,
+    max_discount_amount REAL DEFAULT 0,
+    usage_limit INTEGER DEFAULT 0,
+    used_count INTEGER DEFAULT 0,
+    expiry_date TEXT,
+    is_active INTEGER DEFAULT 1,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Seed Starter Coupons
+INSERT OR IGNORE INTO coupons (id, code, discount_type, discount_value, applicable_to, min_order_amount, is_active, created_at)
+VALUES 
+('cpn-welcome', 'WELCOME10', 'percentage', 10, 'all', 0, 1, CURRENT_TIMESTAMP),
+('cpn-save50', 'SAVE50', 'fixed', 50, 'all', 300, 1, CURRENT_TIMESTAMP),
+('cpn-pro20', 'PRO20', 'percentage', 20, 'subscription', 400, 1, CURRENT_TIMESTAMP);
+

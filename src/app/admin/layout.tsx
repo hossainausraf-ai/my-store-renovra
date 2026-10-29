@@ -22,7 +22,8 @@ import {
   X,
   Wrench,
   Images,
-  Layers
+  Layers,
+  TicketPercent
 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
@@ -77,6 +78,7 @@ export default function AdminLayout({
     { name: 'Single Tools', href: '/admin/single-tools', icon: Wrench },
     { name: 'Tool Logos', href: '/admin/tools', icon: Images },
     { name: 'Hero Cards', href: '/admin/hero-cards', icon: Layers },
+    { name: 'Coupons & Discounts', href: '/admin/coupons', icon: TicketPercent },
   ];
 
   const otherItems = [

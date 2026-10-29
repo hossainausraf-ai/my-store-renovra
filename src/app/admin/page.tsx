@@ -31,6 +31,9 @@ type Payment = {
   product_name?: string;
   price?: number;
   whatsapp?: string;
+  coupon_code?: string;
+  discount_amount?: number;
+  original_price?: number;
 };
 
 export default function AdminDashboard() {
@@ -330,6 +333,13 @@ export default function AdminDashboard() {
                           <span className="text-xs text-gray-500 mt-0.5 uppercase font-medium">
                             {payment.payment_method}
                           </span>
+                          {payment.coupon_code && (
+                            <div className="mt-1 flex items-center gap-1">
+                              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                                🎟️ {payment.coupon_code} (-৳{payment.discount_amount || 0})
+                              </span>
+                            </div>
+                          )}
                           {payment.proof_url && payment.proof_url !== 'FREE_TRIAL' && (
                             <button 
                               onClick={() => setSelectedProof(payment.proof_url!)} 

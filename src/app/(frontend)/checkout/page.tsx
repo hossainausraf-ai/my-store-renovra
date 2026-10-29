@@ -18,7 +18,10 @@ import {
   Smartphone,
   QrCode,
   Copy,
-  Check
+  Check,
+  TicketPercent,
+  Tag,
+  Loader2
 } from 'lucide-react';
 
 function CheckoutForm() {
@@ -54,6 +57,23 @@ function CheckoutForm() {
   const [selectedProductId, setSelectedProductId] = useState<string>(pkgId || defaultProducts[0]?.id || '');
   const [siteSettings, setSiteSettings] = useState<any>(defaultSettings);
   const [selectedGalleryImg, setSelectedGalleryImg] = useState<string>('');
+
+  // Coupon states
+  const [couponInput, setCouponInput] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState<{
+    code: string;
+    discountType: 'percentage' | 'fixed';
+    discountValue: number;
+    discountAmount: number;
+    finalPrice: number;
+  } | null>(null);
+  const [isCheckingCoupon, setIsCheckingCoupon] = useState(false);
+  const [couponError, setCouponError] = useState('');
+  const [couponSuccess, setCouponSuccess] = useState('');
+
+  const originalPrice = product ? Number(product.price) || 0 : 0;
+  const discountAmount = appliedCoupon ? appliedCoupon.discountAmount : 0;
+  const finalPrice = appliedCoupon ? appliedCoupon.finalPrice : originalPrice;
 
   useEffect(() => {
     if (product) {
@@ -124,11 +144,73 @@ function CheckoutForm() {
       .finally(() => setIsLoadingProduct(false));
   }, [pkgId]);
 
+  const validateCouponCode = async (codeToValidate: string, currentProd: any) => {
+    if (!codeToValidate || !codeToValidate.trim()) {
+      setCouponError('দয়া করে একটি কুপন কোড লিখুন।');
+      return;
+    }
+    if (!currentProd) return;
+
+    setIsCheckingCoupon(true);
+    setCouponError('');
+    setCouponSuccess('');
+
+    try {
+      const res = await fetch('/api/coupons/validate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          code: codeToValidate.trim().toUpperCase(),
+          productId: currentProd.id,
+          productType: currentProd.product_type || 'subscription',
+          price: Number(currentProd.price) || 0
+        })
+      });
+
+      const data = await res.json();
+      if (data.valid && data.coupon) {
+        setAppliedCoupon({
+          code: data.coupon.code,
+          discountType: data.coupon.discount_type,
+          discountValue: data.coupon.discount_value,
+          discountAmount: data.discountAmount,
+          finalPrice: data.finalPrice
+        });
+        setCouponSuccess(data.message || `কুপন কোড ${data.coupon.code} সফলভাবে প্রয়োগ হয়েছে!`);
+      } else {
+        setAppliedCoupon(null);
+        setCouponError(data.message || 'অবৈধ বা অপ্রযোজ্য কুপন কোড।');
+      }
+    } catch (err) {
+      console.error('Coupon validation error:', err);
+      setCouponError('কুপন যাচাইকরণে ত্রুটি হয়েছে।');
+    } finally {
+      setIsCheckingCoupon(false);
+    }
+  };
+
+  const handleApplyCoupon = (e: React.FormEvent) => {
+    e.preventDefault();
+    validateCouponCode(couponInput, product);
+  };
+
+  const handleRemoveCoupon = () => {
+    setAppliedCoupon(null);
+    setCouponInput('');
+    setCouponError('');
+    setCouponSuccess('');
+  };
+
   const handleProductChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const id = e.target.value;
     setSelectedProductId(id);
     const found = allProducts.find(p => p.id === id);
-    if (found) setProduct(found);
+    if (found) {
+      setProduct(found);
+      if (appliedCoupon) {
+        validateCouponCode(appliedCoupon.code, found);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -154,7 +236,7 @@ function CheckoutForm() {
       return;
     }
 
-    if (product && product.price > 0 && !proofFile && !trxIdInput) {
+    if (finalPrice > 0 && !proofFile && !trxIdInput) {
       setError('দয়া করে পেমেন্টের স্ক্রিনশট আপলোড করুন অথবা TrxID লিখুন।');
       setIsLoading(false);
       return;
@@ -167,7 +249,12 @@ function CheckoutForm() {
       formData.append('customerName', customerName);
       formData.append('packageId', selectedProductId);
       formData.append('packageName', product?.name || 'Product');
-      formData.append('price', String(product?.price || 0));
+      formData.append('price', String(finalPrice));
+      formData.append('originalPrice', String(originalPrice));
+      if (appliedCoupon) {
+        formData.append('couponCode', appliedCoupon.code);
+        formData.append('discountAmount', String(discountAmount));
+      }
       formData.append('paymentMethod', paymentMethod);
       formData.append('trxId', trxIdInput);
       if (currentUser?.id) formData.append('userId', currentUser.id);
@@ -240,11 +327,17 @@ function CheckoutForm() {
               </tr>
               <tr class="item">
                 <td>${product?.name}</td>
-                <td>৳ ${product?.price}</td>
+                <td>৳ ${originalPrice}</td>
               </tr>
+              ${appliedCoupon ? `
+              <tr class="item" style="color: #059669;">
+                <td>Coupon Discount (${appliedCoupon.code})</td>
+                <td>- ৳ ${discountAmount}</td>
+              </tr>
+              ` : ''}
               <tr class="total">
                 <td></td>
-                <td>Total: ৳ ${product?.price}</td>
+                <td>Total: ৳ ${finalPrice}</td>
               </tr>
             </table>
           </div>
@@ -302,9 +395,15 @@ function CheckoutForm() {
             <span>Product:</span>
             <span className="text-white font-bold">{product?.name}</span>
           </div>
+          {appliedCoupon && (
+            <div className="flex justify-between text-emerald-400">
+              <span>Applied Coupon:</span>
+              <span className="font-mono font-bold">{appliedCoupon.code} (-৳{discountAmount})</span>
+            </div>
+          )}
           <div className="flex justify-between text-gray-400">
             <span>Amount:</span>
-            <span className="text-white font-bold">৳ {product?.price}</span>
+            <span className="text-white font-bold">৳ {finalPrice}</span>
           </div>
           <div className="flex justify-between text-gray-400">
             <span>TrxID:</span>
@@ -537,25 +636,123 @@ function CheckoutForm() {
               )}
             </div>
 
-            <div className="space-y-3 mb-6 border-t border-white/10 pt-6">
+            {/* Coupon Code Input & Applied State */}
+            <div className="border-t border-white/10 pt-4 pb-2">
+              <label className="block text-xs font-bold text-gray-300 mb-2 flex items-center justify-between">
+                <span className="flex items-center gap-1.5">
+                  <TicketPercent className="w-4 h-4 text-blue-400" />
+                  ডিসকাউন্ট কুপন (Coupon)
+                </span>
+                {appliedCoupon && (
+                  <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">
+                    প্রযুক্ত হয়েছে
+                  </span>
+                )}
+              </label>
+
+              {!appliedCoupon ? (
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <div className="relative flex-1">
+                      <Tag className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+                      <input
+                        type="text"
+                        placeholder="কুপন কোড (যেমন: WELCOME10)"
+                        value={couponInput}
+                        onChange={(e) => {
+                          setCouponInput(e.target.value.toUpperCase().replace(/\s+/g, ''));
+                          setCouponError('');
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                            validateCouponCode(couponInput, product);
+                          }
+                        }}
+                        className="w-full pl-9 pr-3 py-2 bg-black/40 border border-white/10 rounded-xl text-white font-mono text-xs focus:outline-none focus:border-blue-500 transition-colors placeholder:text-gray-600 uppercase"
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleApplyCoupon}
+                      disabled={isCheckingCoupon || !couponInput.trim()}
+                      className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white font-bold text-xs rounded-xl transition-all shadow-md shrink-0 flex items-center gap-1.5 cursor-pointer"
+                    >
+                      {isCheckingCoupon ? (
+                        <>
+                          <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                          <span>যাচাই হচ্ছে...</span>
+                        </>
+                      ) : (
+                        <span>প্রয়োগ করুন</span>
+                      )}
+                    </button>
+                  </div>
+
+                  {couponError && (
+                    <p className="text-[11px] text-red-400 font-medium flex items-center gap-1 pt-0.5">
+                      <X className="w-3 h-3 shrink-0" /> {couponError}
+                    </p>
+                  )}
+                </div>
+              ) : (
+                <div className="bg-emerald-500/10 border border-emerald-500/30 rounded-xl p-3 flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <div className="flex items-center gap-2">
+                      <span className="font-mono font-bold text-emerald-400 text-sm">{appliedCoupon.code}</span>
+                      <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300">
+                        {appliedCoupon.discountType === 'percentage' ? `${appliedCoupon.discountValue}% OFF` : `৳${appliedCoupon.discountValue} OFF`}
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-emerald-300/80">
+                      আপনি ৳{discountAmount} ছাড় পেয়েছেন!
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={handleRemoveCoupon}
+                    className="text-xs text-gray-400 hover:text-red-400 p-1.5 rounded-lg hover:bg-white/5 transition-colors flex items-center gap-1"
+                    title="কুপন মুছুন"
+                  >
+                    <X className="w-4 h-4" />
+                    <span>মুছুন</span>
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-3 mb-6 border-t border-white/10 pt-4">
               <div className="flex justify-between text-gray-300 text-sm">
                 <span>Subtotal</span>
-                <span>৳ {product.price}</span>
+                <span>৳ {originalPrice}</span>
               </div>
+              {appliedCoupon && (
+                <div className="flex justify-between text-emerald-400 text-sm font-semibold">
+                  <span className="flex items-center gap-1">
+                    <Tag className="w-3.5 h-3.5" /> Coupon ({appliedCoupon.code})
+                  </span>
+                  <span>- ৳ {discountAmount}</span>
+                </div>
+              )}
               <div className="flex justify-between text-green-400 text-sm">
                 <span>Delivery Fee</span>
                 <span>FREE (Instant)</span>
               </div>
             </div>
 
-            <div className="flex justify-between items-center border-t border-white/10 pt-6">
-              <span className="text-gray-400 font-medium">সর্বমোট মূল্য</span>
-              <span className="text-3xl font-extrabold text-white">৳ {product.price}</span>
+            <div className="flex justify-between items-center border-t border-white/10 pt-4">
+              <span className="text-gray-400 font-medium">সর্বমোট প্রদেয় মূল্য</span>
+              <div className="text-right">
+                {appliedCoupon && (
+                  <span className="text-sm line-through text-gray-500 block mr-1">৳ {originalPrice}</span>
+                )}
+                <span className="text-3xl font-extrabold text-white">৳ {finalPrice}</span>
+              </div>
             </div>
           </div>
 
           {/* Payment Instructions */}
-          {product.price > 0 && (
+          {finalPrice > 0 && (
             <div className="bg-[var(--surface)] p-6 rounded-3xl border border-white/5 shadow-xl">
               <h3 className="font-bold text-white mb-4 flex items-center gap-2">
                 <CreditCard className="w-5 h-5 text-gray-400" /> পেমেন্ট নির্দেশিকা
@@ -567,7 +764,7 @@ function CheckoutForm() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">2</span>
-                  <span>প্রদত্ত নম্বরে <strong>৳ {product.price}</strong> সেন্ড মানি করুন।</span>
+                  <span>প্রদত্ত নম্বরে <strong>৳ {finalPrice}</strong> সেন্ড মানি করুন।</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">3</span>
@@ -585,7 +782,7 @@ function CheckoutForm() {
         {/* Right Column: Checkout Form */}
         <div className="lg:col-span-3 order-1 lg:order-2">
           <form onSubmit={handleSubmit} className="bg-[var(--surface)] p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md">
-            {product.price > 0 && (
+            {finalPrice > 0 && (
               <>
                 <h3 className="font-bold text-xl text-white mb-4">পেমেন্ট মেথড বেছে নিন</h3>
 
@@ -630,7 +827,7 @@ function CheckoutForm() {
                       {paymentConfig.name}
                     </span>
                     <div className="text-xs font-bold text-white/90 bg-black/40 px-3 py-1 rounded-lg border border-white/10">
-                      টাকার পরিমাণ: <span className="text-[#ccff00] font-mono">৳ {product.price}</span>
+                      টাকার পরিমাণ: <span className="text-[#ccff00] font-mono">৳ {finalPrice}</span>
                     </div>
                   </div>
 
@@ -755,7 +952,7 @@ function CheckoutForm() {
               </div>
 
               {/* Optional Transaction ID */}
-              {product.price > 0 && (
+              {finalPrice > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1.5">
                     Transaction ID (TrxID) <span className="text-xs text-gray-500 font-normal">(স্ক্রিনশট দিলে ঐচ্ছিক)</span>
@@ -771,7 +968,7 @@ function CheckoutForm() {
               )}
 
               {/* Screenshot Upload */}
-              {product.price > 0 && (
+              {finalPrice > 0 && (
                 <div>
                   <label className="block text-sm font-medium text-gray-300 mb-1.5">পেমেন্টের স্ক্রিনশট আপলোড করুন</label>
                   {!proofPreview ? (
@@ -832,7 +1029,7 @@ function CheckoutForm() {
                     অর্ডার প্রসেস হচ্ছে...
                   </span>
                 ) : (
-                  product.price === 0 ? 'ফ্রি অর্ডার সম্পন্ন করুন' : 'পেমেন্ট ভেরিফাই ও অর্ডার সাবমিট করুন'
+                  finalPrice === 0 ? 'ফ্রি অর্ডার সম্পন্ন করুন' : 'পেমেন্ট ভেরিফাই ও অর্ডার সাবমিট করুন'
                 )}
               </button>
             </div>

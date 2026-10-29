@@ -1,5 +1,6 @@
 import { defaultProducts, Product } from '@/data/products';
 import { defaultSettings, SiteSettings } from '@/data/settings';
+import { defaultCoupons, Coupon } from '@/data/coupons';
 import fs from 'fs';
 import path from 'path';
 
@@ -66,6 +67,27 @@ export async function queryD1<T = any>(sql: string, params: any[] = []): Promise
 const LOCAL_PRODUCTS_PATH = path.join(process.cwd(), 'src', 'data', 'products.json');
 const LOCAL_SETTINGS_PATH = path.join(process.cwd(), 'src', 'data', 'settings.json');
 const LOCAL_USERS_PATH = path.join(process.cwd(), 'src', 'data', 'users.json');
+const LOCAL_COUPONS_PATH = path.join(process.cwd(), 'src', 'data', 'coupons.json');
+
+function loadLocalCoupons(): Coupon[] {
+  try {
+    if (fs.existsSync(LOCAL_COUPONS_PATH)) {
+      const raw = fs.readFileSync(LOCAL_COUPONS_PATH, 'utf-8');
+      return JSON.parse(raw);
+    }
+  } catch (e) {
+    console.warn('Fallback: reading local coupons failed, using defaultCoupons', e);
+  }
+  return [...defaultCoupons];
+}
+
+function saveLocalCoupons(coupons: Coupon[]) {
+  try {
+    fs.writeFileSync(LOCAL_COUPONS_PATH, JSON.stringify(coupons, null, 2), 'utf-8');
+  } catch (e) {
+    console.warn('Fallback: saving local coupons failed', e);
+  }
+}
 
 export interface AppUser {
   id: string;
@@ -449,5 +471,292 @@ export async function dbCreateUser(user: { name: string; email: string; password
   users.push(newUser);
   saveLocalUsers(users);
   return newUser;
+}
+
+// ========================================================
+// COUPON MANAGEMENT METHODS
+// ========================================================
+
+export async function dbGetCoupons(): Promise<Coupon[]> {
+  if (isD1Configured()) {
+    try {
+      const rows = await queryD1('SELECT * FROM coupons ORDER BY created_at DESC');
+      if (rows && rows.length > 0) {
+        return rows.map((r: any) => ({
+          ...r,
+          is_active: Boolean(r.is_active),
+          discount_value: Number(r.discount_value),
+          min_order_amount: Number(r.min_order_amount || 0),
+          max_discount_amount: Number(r.max_discount_amount || 0),
+          usage_limit: Number(r.usage_limit || 0),
+          used_count: Number(r.used_count || 0),
+        }));
+      }
+    } catch (err) {
+      console.warn('D1 GetCoupons Error (falling back to local):', err);
+    }
+  }
+
+  return loadLocalCoupons();
+}
+
+export async function dbSaveCoupon(coupon: Omit<Coupon, 'id' | 'created_at' | 'used_count'> & { id?: string }): Promise<Coupon> {
+  const id = coupon.id || `cpn_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+  const cleanCode = coupon.code.trim().toUpperCase();
+  
+  const newCoupon: Coupon = {
+    id,
+    code: cleanCode,
+    discount_type: coupon.discount_type || 'percentage',
+    discount_value: Number(coupon.discount_value) || 0,
+    applicable_to: coupon.applicable_to || 'all',
+    min_order_amount: Number(coupon.min_order_amount || 0),
+    max_discount_amount: Number(coupon.max_discount_amount || 0),
+    usage_limit: Number(coupon.usage_limit || 0),
+    used_count: 0,
+    expiry_date: coupon.expiry_date || '',
+    is_active: coupon.is_active !== undefined ? Boolean(coupon.is_active) : true,
+    created_at: new Date().toISOString()
+  };
+
+  if (isD1Configured()) {
+    try {
+      await queryD1(
+        `INSERT INTO coupons (id, code, discount_type, discount_value, applicable_to, min_order_amount, max_discount_amount, usage_limit, used_count, expiry_date, is_active)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+         ON CONFLICT(id) DO UPDATE SET
+           code = excluded.code,
+           discount_type = excluded.discount_type,
+           discount_value = excluded.discount_value,
+           applicable_to = excluded.applicable_to,
+           min_order_amount = excluded.min_order_amount,
+           max_discount_amount = excluded.max_discount_amount,
+           usage_limit = excluded.usage_limit,
+           expiry_date = excluded.expiry_date,
+           is_active = excluded.is_active`,
+        [
+          newCoupon.id,
+          newCoupon.code,
+          newCoupon.discount_type,
+          newCoupon.discount_value,
+          newCoupon.applicable_to,
+          newCoupon.min_order_amount || 0,
+          newCoupon.max_discount_amount || 0,
+          newCoupon.usage_limit || 0,
+          newCoupon.used_count || 0,
+          newCoupon.expiry_date || '',
+          newCoupon.is_active ? 1 : 0
+        ]
+      );
+      return newCoupon;
+    } catch (err) {
+      console.warn('D1 SaveCoupon Error (falling back to local):', err);
+    }
+  }
+
+  const coupons = loadLocalCoupons();
+  const existingIdx = coupons.findIndex(c => c.id === newCoupon.id || c.code.toUpperCase() === cleanCode);
+  if (existingIdx >= 0) {
+    coupons[existingIdx] = { ...coupons[existingIdx], ...newCoupon };
+  } else {
+    coupons.unshift(newCoupon);
+  }
+  saveLocalCoupons(coupons);
+  return newCoupon;
+}
+
+export async function dbUpdateCoupon(id: string, updates: Partial<Coupon>): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      const sets: string[] = [];
+      const params: any[] = [];
+      
+      if (updates.code !== undefined) {
+        sets.push('code = ?');
+        params.push(updates.code.trim().toUpperCase());
+      }
+      if (updates.discount_type !== undefined) {
+        sets.push('discount_type = ?');
+        params.push(updates.discount_type);
+      }
+      if (updates.discount_value !== undefined) {
+        sets.push('discount_value = ?');
+        params.push(Number(updates.discount_value));
+      }
+      if (updates.applicable_to !== undefined) {
+        sets.push('applicable_to = ?');
+        params.push(updates.applicable_to);
+      }
+      if (updates.min_order_amount !== undefined) {
+        sets.push('min_order_amount = ?');
+        params.push(Number(updates.min_order_amount));
+      }
+      if (updates.max_discount_amount !== undefined) {
+        sets.push('max_discount_amount = ?');
+        params.push(Number(updates.max_discount_amount));
+      }
+      if (updates.usage_limit !== undefined) {
+        sets.push('usage_limit = ?');
+        params.push(Number(updates.usage_limit));
+      }
+      if (updates.is_active !== undefined) {
+        sets.push('is_active = ?');
+        params.push(updates.is_active ? 1 : 0);
+      }
+      if (updates.expiry_date !== undefined) {
+        sets.push('expiry_date = ?');
+        params.push(updates.expiry_date);
+      }
+
+      if (sets.length > 0) {
+        params.push(id);
+        await queryD1(`UPDATE coupons SET ${sets.join(', ')} WHERE id = ?`, params);
+        return true;
+      }
+    } catch (err) {
+      console.warn('D1 UpdateCoupon Error (falling back to local):', err);
+    }
+  }
+
+  const coupons = loadLocalCoupons();
+  const c = coupons.find(item => item.id === id);
+  if (!c) return false;
+  Object.assign(c, updates);
+  if (updates.code) c.code = updates.code.trim().toUpperCase();
+  saveLocalCoupons(coupons);
+  return true;
+}
+
+export async function dbDeleteCoupon(id: string): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      await queryD1('DELETE FROM coupons WHERE id = ?', [id]);
+      return true;
+    } catch (err) {
+      console.warn('D1 DeleteCoupon Error (falling back to local):', err);
+    }
+  }
+
+  const coupons = loadLocalCoupons();
+  const filtered = coupons.filter(c => c.id !== id);
+  saveLocalCoupons(filtered);
+  return true;
+}
+
+export async function dbIncrementCouponUsage(code: string): Promise<void> {
+  const cleanCode = code.trim().toUpperCase();
+  if (isD1Configured()) {
+    try {
+      await queryD1('UPDATE coupons SET used_count = used_count + 1 WHERE UPPER(code) = ?', [cleanCode]);
+      return;
+    } catch (err) {
+      console.warn('D1 IncrementCouponUsage Error (falling back to local):', err);
+    }
+  }
+
+  const coupons = loadLocalCoupons();
+  const c = coupons.find(item => item.code.toUpperCase() === cleanCode);
+  if (c) {
+    c.used_count = (c.used_count || 0) + 1;
+    saveLocalCoupons(coupons);
+  }
+}
+
+export interface CouponValidationResult {
+  valid: boolean;
+  message: string;
+  coupon?: Coupon;
+  discountAmount: number;
+  finalPrice: number;
+}
+
+export async function dbValidateCoupon(
+  code: string,
+  product: { id: string; product_type?: string; price: number }
+): Promise<CouponValidationResult> {
+  const cleanCode = code.trim().toUpperCase();
+  if (!cleanCode) {
+    return { valid: false, message: 'দয়া করে একটি কুপন কোড লিখুন।', discountAmount: 0, finalPrice: product.price };
+  }
+
+  const coupons = await dbGetCoupons();
+  const coupon = coupons.find(c => c.code.toUpperCase() === cleanCode);
+
+  if (!coupon) {
+    return { valid: false, message: 'কুপন কোডটি সঠিক নয়। অনুগ্রহ করে যাচাই করে পুনরায় চেষ্টা করুন।', discountAmount: 0, finalPrice: product.price };
+  }
+
+  if (!coupon.is_active) {
+    return { valid: false, message: 'এই কুপনটি বর্তমানে নিষ্ক্রিয় রয়েছে।', discountAmount: 0, finalPrice: product.price };
+  }
+
+  if (coupon.expiry_date) {
+    const expiry = new Date(coupon.expiry_date).getTime();
+    if (!isNaN(expiry) && Date.now() > expiry) {
+      return { valid: false, message: 'এই কুপনটির মেয়াদ শেষ হয়ে গেছে।', discountAmount: 0, finalPrice: product.price };
+    }
+  }
+
+  if (coupon.usage_limit && coupon.usage_limit > 0 && coupon.used_count >= coupon.usage_limit) {
+    return { valid: false, message: 'এই কুপনের সর্বোচ্চ ব্যবহারের সীমা শেষ হয়ে গেছে।', discountAmount: 0, finalPrice: product.price };
+  }
+
+  if (coupon.min_order_amount && coupon.min_order_amount > 0 && product.price < coupon.min_order_amount) {
+    return {
+      valid: false,
+      message: `এই কুপনটি ব্যবহার করতে ন্যূনতম ৳${coupon.min_order_amount} টাকার অর্ডার প্রয়োজন।`,
+      discountAmount: 0,
+      finalPrice: product.price
+    };
+  }
+
+  // Check product applicability
+  if (coupon.applicable_to && coupon.applicable_to !== 'all') {
+    const target = coupon.applicable_to.toLowerCase();
+    const prodType = (product.product_type || '').toLowerCase();
+    const prodId = (product.id || '').toLowerCase();
+
+    const matchesType = (target === 'subscription' && prodType === 'subscription') ||
+                        (target === 'single_tool' && prodType === 'single_tool') ||
+                        (target === 'digital' && prodType === 'digital') ||
+                        (target === 'packages' && prodType === 'subscription');
+
+    const matchesId = target === prodId;
+
+    if (!matchesType && !matchesId) {
+      let scopeName = 'নির্দিষ্ট প্যাকেজ বা প্রোডাক্টের জন্য';
+      if (target === 'subscription' || target === 'packages') scopeName = 'শুধুমাত্র সাবস্ক্রিপশন প্যাকেজের জন্য';
+      if (target === 'single_tool') scopeName = 'শুধুমাত্র সিঙ্গেল টুলসের জন্য';
+      if (target === 'digital') scopeName = 'শুধুমাত্র ডিজিটাল প্রডাক্টের জন্য';
+
+      return {
+        valid: false,
+        message: `এই কুপনটি ${scopeName} প্রযোজ্য। আপনার নির্বাচিত পণ্যে প্রযোজ্য নয়।`,
+        discountAmount: 0,
+        finalPrice: product.price
+      };
+    }
+  }
+
+  // Calculate discount
+  let discount = 0;
+  if (coupon.discount_type === 'percentage') {
+    discount = Math.round((product.price * coupon.discount_value) / 100);
+    if (coupon.max_discount_amount && coupon.max_discount_amount > 0) {
+      discount = Math.min(discount, coupon.max_discount_amount);
+    }
+  } else {
+    discount = Math.min(coupon.discount_value, product.price);
+  }
+
+  const finalPrice = Math.max(0, product.price - discount);
+
+  return {
+    valid: true,
+    message: `অভিনন্দন! "${coupon.code}" কুপন সফলভাবে যুক্ত হয়েছে (${coupon.discount_type === 'percentage' ? `${coupon.discount_value}%` : `৳${coupon.discount_value}`} ছাড়)।`,
+    coupon,
+    discountAmount: discount,
+    finalPrice
+  };
 }
 
