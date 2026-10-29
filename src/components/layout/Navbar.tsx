@@ -58,7 +58,7 @@ export default function Navbar() {
       <nav className="fixed w-full z-50 top-4 px-4 sm:px-6">
         <div className="max-w-5xl mx-auto transition-all duration-300">
           {/* Main Pill Navbar */}
-          <div className={`border rounded-full px-6 py-3 flex items-center justify-between transition-all duration-300 ${scrolled
+          <div className={`border rounded-full px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between transition-all duration-300 ${scrolled
               ? 'bg-[#1E293B]/80 border-white/10 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
               : 'bg-[#1E293B]/40 border-white/10 backdrop-blur-md shadow-lg'
             }`}>
@@ -70,17 +70,17 @@ export default function Navbar() {
                 className="text-white hover:text-blue-400 transition-colors p-1"
                 aria-label="Toggle menu"
               >
-                <Menu className="w-6 h-6" />
+                <Menu className="w-5 h-5 sm:w-6 sm:h-6" />
               </button>
             </div>
 
             {/* Logo */}
             <div className="flex items-center absolute md:static left-1/2 -translate-x-1/2 md:translate-x-0">
-              <Link href="/" className="flex items-center gap-2 group">
+              <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group">
                 {logoUrl && (
-                  <img src={logoUrl} alt="Logo" loading="eager" decoding="async" className="h-8 object-contain" />
+                  <img src={logoUrl} alt="Logo" loading="eager" decoding="async" className="h-7 sm:h-8 object-contain" />
                 )}
-                <span className="text-xl font-black text-white tracking-tight">
+                <span className="text-lg sm:text-xl font-black text-white tracking-tight">
                   Renovra
                 </span>
               </Link>
@@ -177,20 +177,32 @@ export default function Navbar() {
                 </StarBorder>
               </div>
 
-              {/* Mobile Cart Button on Pill Navbar */}
-              <div className="md:hidden flex items-center">
+              {/* Mobile Right Side: Cart + Login Buttons on Pill Navbar */}
+              <div className="md:hidden flex items-center gap-1.5 sm:gap-2">
+                {/* Mobile Cart Button */}
                 <button
                   onClick={openCart}
-                  className="relative p-2 text-white hover:text-[#ccff00] transition-colors flex items-center justify-center rounded-full hover:bg-white/5 active:scale-95"
+                  className="relative p-1.5 sm:p-2 text-white hover:text-[#ccff00] transition-colors flex items-center justify-center rounded-full hover:bg-white/5 active:scale-95"
                   aria-label="View Shopping Cart"
+                  title="View Shopping Cart"
                 >
                   <ShoppingBag className="w-5 h-5 text-[#ccff00]" />
                   {totalCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] px-1 rounded-full bg-[#ccff00] text-black font-black text-[10px] flex items-center justify-center shadow-[0_0_10px_rgba(204,255,0,0.6)] animate-pulse">
+                    <span className="absolute -top-0.5 -right-0.5 min-w-[17px] h-[17px] px-1 rounded-full bg-[#ccff00] text-black font-black text-[9px] flex items-center justify-center shadow-[0_0_8px_rgba(204,255,0,0.6)]">
                       {totalCount}
                     </span>
                   )}
                 </button>
+
+                {/* Mobile Login / Account Button */}
+                <Link
+                  href={currentUser ? "/dashboard" : "/login"}
+                  className="flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-[#B3E600] hover:bg-[#a1cf00] text-black font-extrabold text-xs shadow-[0_0_12px_rgba(179,230,0,0.3)] active:scale-95 transition-all shrink-0"
+                  aria-label="Login or Account"
+                >
+                  <User className="w-3.5 h-3.5 text-black" />
+                  <span>{currentUser ? (currentUser.name ? currentUser.name.split(' ')[0] : 'Account') : 'Login'}</span>
+                </Link>
               </div>
             </div>
 
