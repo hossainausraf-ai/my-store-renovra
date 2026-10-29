@@ -58,17 +58,17 @@ export default function HowItWorksVideos() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-600/10 via-[#ccff00]/5 to-purple-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/5 border border-white/10 text-xs sm:text-sm font-semibold text-[#ccff00] mb-3 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
-          <HelpCircle className="w-3.5 h-3.5" />
+      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-[#ccff00] mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
+          <HelpCircle className="w-3 h-3" />
           <span>FAQ ও ভিডিও গাইডলাইন</span>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl md:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3">
+        <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-1.5 sm:mb-2">
           সাধারণ জিজ্ঞাসা ও ব্যবহারের নিয়ম
         </h2>
         
-        <p className="text-gray-400 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto">
+        <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-xl mx-auto">
           টুলস ব্যবহার, এক্সটেনশন ইন্সটল এবং সাধারণ প্রশ্নাবলীর সহজ সমাধান এক নজরে দেখে নিন।
         </p>
       </div>

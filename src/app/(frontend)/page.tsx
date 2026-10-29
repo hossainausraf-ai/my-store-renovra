@@ -156,9 +156,6 @@ export default function Home() {
         )}
       </div>
 
-      {/* How It Works Video Section */}
-      <HowItWorksVideos />
-
       {/* Why Choose Us Section */}
       <WhyChooseUs />
 
@@ -166,9 +163,12 @@ export default function Home() {
       <ToolsMarquee />
 
       {/* User Reviews Section */}
-      <div className="w-full mt-24">
+      <div className="w-full mt-16 sm:mt-24">
         <UserReviews />
       </div>
+
+      {/* FAQ & Video Guide Section (Moved to the very bottom) */}
+      <HowItWorksVideos />
     </main>
   );
 }
