@@ -10,6 +10,7 @@ interface ReviewItem {
   date: string;
   content: string;
   verifiedBrand: string;
+  rating: number;
 }
 
 const row1Reviews: ReviewItem[] = [
@@ -19,7 +20,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=120&auto=format&fit=crop&q=80',
     date: 'March 14, 2026',
     content: 'Honestly the cheapest way to access ChatGPT Plus and Canva Pro together. Support replied in seconds.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   },
   {
     id: 'r1-2',
@@ -27,7 +29,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=120&auto=format&fit=crop&q=80',
     date: 'April 8, 2026',
     content: 'Alhamdulillah excellent service quality. Highly recommended. 100% trusted service provider in BD.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   },
   {
     id: 'r1-3',
@@ -35,7 +38,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
     date: 'February 24, 2026',
     content: 'I bought the Envato & Freepik package. All downloads work flawlessly without any limits. Wonderful team!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 4
   },
   {
     id: 'r1-4',
@@ -43,7 +47,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80',
     date: 'January 19, 2026',
     content: 'Freelancing er jonno Semrush aar Envato niyechi. Fast activation ebong 24/7 WhatsApp help. Best decision!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   },
   {
     id: 'r1-5',
@@ -51,7 +56,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80',
     date: 'May 2, 2026',
     content: 'Super fast activation. Got my Claude 3.5 Sonnet and Leonardo AI setup within 3 minutes of ordering.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 4
   },
   {
     id: 'r1-6',
@@ -59,7 +65,8 @@ const row1Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=120&auto=format&fit=crop&q=80',
     date: 'March 18, 2026',
     content: 'Academic thesis er jonno Paperpal aar Scite AI khub dorkar chilo. Khub kom dam e peyechi, onnek bhalo!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 3
   }
 ];
 
@@ -70,7 +77,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=120&auto=format&fit=crop&q=80',
     date: 'March 30, 2026',
     content: 'Udemy aar Kittl ekshathe pelam ekta plan e. Support team khub helpful. Joss service!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   },
   {
     id: 'r2-2',
@@ -78,7 +86,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=120&auto=format&fit=crop&q=80',
     date: 'March 2, 2026',
     content: 'The Canva Pro access is genuine, no logout issues. Customer support is available 24/7 which is amazing.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 4
   },
   {
     id: 'r2-3',
@@ -86,7 +95,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=120&auto=format&fit=crop&q=80',
     date: 'November 18, 2025',
     content: 'Subscribed to the All-in-One plan. Semrush, Ahrefs, ChatGPT — all working perfectly. Five stars!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   },
   {
     id: 'r2-4',
@@ -94,7 +104,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=120&auto=format&fit=crop&q=80',
     date: 'April 12, 2026',
     content: 'bKash diye payment kore 2 min er moddhe instant access pelam. WhatsApp support response speed osadharon!',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 4
   },
   {
     id: 'r2-5',
@@ -102,7 +113,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80',
     date: 'February 11, 2026',
     content: 'The best tools ecosystem for content creators and marketers. Huge money saver every single month.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 3
   },
   {
     id: 'r2-6',
@@ -110,7 +122,8 @@ const row2Reviews: ReviewItem[] = [
     avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=120&auto=format&fit=crop&q=80',
     date: 'March 22, 2026',
     content: 'Amar agency team er jonno agency bundle niyechi. Shob graphic & video editing tools seamlessly kaj korche.',
-    verifiedBrand: 'Renovra'
+    verifiedBrand: 'Renovra',
+    rating: 5
   }
 ];
 
@@ -164,9 +177,16 @@ function ReviewCard({ review }: { review: ReviewItem }) {
           <span>{review.verifiedBrand}</span>
         </div>
 
-        <div className="flex items-center gap-0.5 text-amber-400">
-          {[...Array(5)].map((_, i) => (
-            <Star key={i} className="w-3 h-3 fill-amber-400" />
+        <div className="flex items-center gap-0.5">
+          {[1, 2, 3, 4, 5].map((s) => (
+            <Star 
+              key={s} 
+              className={`w-3 h-3 ${
+                s <= review.rating 
+                  ? 'text-amber-400 fill-amber-400' 
+                  : 'text-gray-600 fill-white/5'
+              }`} 
+            />
           ))}
         </div>
       </div>
