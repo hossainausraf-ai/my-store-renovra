@@ -50,5 +50,42 @@ export const defaultCoupons: Coupon[] = [
     used_count: 0,
     is_active: true,
     created_at: '2026-10-01T00:00:00.000Z'
+  },
+  {
+    id: 'cpn-tool15',
+    code: 'TOOL15',
+    discount_type: 'percentage',
+    discount_value: 15,
+    applicable_to: 'single_tool',
+    min_order_amount: 100,
+    usage_limit: 150,
+    used_count: 0,
+    is_active: true,
+    created_at: '2026-10-01T00:00:00.000Z'
+  },
+  {
+    id: 'cpn-special100',
+    code: 'SPECIAL100',
+    discount_type: 'fixed',
+    discount_value: 100,
+    applicable_to: 'all',
+    min_order_amount: 500,
+    usage_limit: 50,
+    used_count: 0,
+    is_active: true,
+    created_at: '2026-10-01T00:00:00.000Z'
+  },
+  {
+    id: 'cpn-demo50',
+    code: 'DEMO50',
+    discount_type: 'percentage',
+    discount_value: 50,
+    applicable_to: 'all',
+    min_order_amount: 100,
+    max_discount_amount: 250,
+    usage_limit: 500,
+    used_count: 0,
+    is_active: true,
+    created_at: '2026-10-01T00:00:00.000Z'
   }
 ];
