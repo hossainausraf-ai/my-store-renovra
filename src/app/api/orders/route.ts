@@ -9,17 +9,41 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
   try {
-    const formData = await req.formData();
+    const contentType = req.headers.get('content-type') || '';
+    let phone = '';
+    let whatsapp = '';
+    let customerName = '';
+    let packageId = '';
+    let packageName = 'Product';
+    let price = 0;
+    let paymentMethod = 'bkash';
+    let manualTrxId = '';
+    let proofFile: File | null = null;
+    let proofUrl = '';
 
-    const phone = formData.get('phone') as string;
-    const whatsapp = (formData.get('whatsapp') as string) || phone;
-    const customerName = (formData.get('customerName') as string) || '';
-    const packageId = (formData.get('packageId') as string) || '';
-    const packageName = (formData.get('packageName') as string) || 'Product';
-    const price = Number(formData.get('price')) || 0;
-    const paymentMethod = (formData.get('paymentMethod') as string) || 'bkash';
-    const manualTrxId = (formData.get('trxId') as string) || '';
-    const proofFile = formData.get('proof') as File | null;
+    if (contentType.includes('application/json')) {
+      const json = await req.json();
+      phone = json.phone || '';
+      whatsapp = json.whatsapp || phone;
+      customerName = json.customerName || '';
+      packageId = json.packageId || '';
+      packageName = json.packageName || 'Product';
+      price = Number(json.price) || 0;
+      paymentMethod = json.paymentMethod || 'bkash';
+      manualTrxId = json.trxId || '';
+      proofUrl = json.proofUrl || '';
+    } else {
+      const formData = await req.formData();
+      phone = (formData.get('phone') as string) || '';
+      whatsapp = (formData.get('whatsapp') as string) || phone;
+      customerName = (formData.get('customerName') as string) || '';
+      packageId = (formData.get('packageId') as string) || '';
+      packageName = (formData.get('packageName') as string) || 'Product';
+      price = Number(formData.get('price')) || 0;
+      paymentMethod = (formData.get('paymentMethod') as string) || 'bkash';
+      manualTrxId = (formData.get('trxId') as string) || '';
+      proofFile = formData.get('proof') as File | null;
+    }
 
     if (!phone) {
       return NextResponse.json({ success: false, message: 'ফোন নম্বর আবশ্যক।' }, { status: 400 });
@@ -33,7 +57,7 @@ export async function POST(req: NextRequest) {
 
     let proofBuffer: Buffer | undefined;
     let proofFileName = 'proof.jpg';
-    let proofUrl = '';
+    if (!proofUrl) proofUrl = '';
 
     if (proofFile && typeof proofFile.arrayBuffer === 'function') {
       const arrayBuffer = await proofFile.arrayBuffer();

@@ -87,9 +87,10 @@ export function searchOrders(query: string): StoredOrder[] {
   const orders = getAllOrders();
   return orders.filter(
     (o) =>
-      o.user_phone.toLowerCase().includes(cleanQ) ||
-      o.trx_id.toLowerCase().includes(cleanQ) ||
-      o.id.toLowerCase().includes(cleanQ) ||
-      o.product_name.toLowerCase().includes(cleanQ)
+      (o.id && o.id.toLowerCase().includes(cleanQ)) ||
+      (o.user_phone && o.user_phone.toLowerCase().includes(cleanQ)) ||
+      (o.trx_id && o.trx_id.toLowerCase().includes(cleanQ)) ||
+      (o.product_name && o.product_name.toLowerCase().includes(cleanQ)) ||
+      (o.customer_name && o.customer_name.toLowerCase().includes(cleanQ))
   );
 }
