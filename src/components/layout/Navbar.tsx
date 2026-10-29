@@ -53,6 +53,16 @@ export default function Navbar() {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    if (pathname === '/') {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      if (window.location.hash) {
+        window.history.pushState(null, '', '/');
+      }
+    }
+  };
+
   return (
     <>
       <nav className="fixed w-full z-50 top-4 px-4 sm:px-6">
@@ -76,7 +86,7 @@ export default function Navbar() {
 
             {/* Logo */}
             <div className="flex items-center absolute md:static left-1/2 -translate-x-1/2 md:translate-x-0">
-              <Link href="/" className="flex items-center gap-1.5 sm:gap-2 group">
+              <Link href="/" onClick={handleHomeClick} className="flex items-center gap-1.5 sm:gap-2 group">
                 {logoUrl && (
                   <img src={logoUrl} alt="Logo" loading="eager" decoding="async" className="h-7 sm:h-8 object-contain" />
                 )}
@@ -88,7 +98,7 @@ export default function Navbar() {
 
             {/* Desktop Menu */}
             <div className="hidden md:flex items-center space-x-8">
-              <Link href="/" className="relative flex flex-col items-center group">
+              <Link href="/" onClick={handleHomeClick} className="relative flex flex-col items-center group">
                 <span className={`text-sm font-semibold transition-colors ${pathname === '/' ? 'text-blue-400' : 'text-gray-400 hover:text-gray-200'}`}>
                   Home
                 </span>
@@ -224,7 +234,14 @@ export default function Navbar() {
           onClick={(e) => e.stopPropagation()}
         >
           <div className="p-6 flex items-center justify-between border-b border-white/10">
-            <Link href="/" className="flex items-center gap-2 group" onClick={toggleMobileMenu}>
+            <Link 
+              href="/" 
+              className="flex items-center gap-2 group" 
+              onClick={(e) => {
+                toggleMobileMenu();
+                handleHomeClick(e);
+              }}
+            >
               {logoUrl && (
                 <img src={logoUrl} alt="Logo" className="h-8 object-contain" />
               )}
@@ -259,7 +276,10 @@ export default function Navbar() {
             </button>
             <Link 
               href="/" 
-              onClick={toggleMobileMenu}
+              onClick={(e) => {
+                toggleMobileMenu();
+                handleHomeClick(e);
+              }}
               className={`p-3 rounded-xl font-medium transition-colors ${pathname === '/' ? 'bg-blue-500/10 text-blue-400' : 'text-gray-300 hover:bg-white/5'}`}
             >
               Home

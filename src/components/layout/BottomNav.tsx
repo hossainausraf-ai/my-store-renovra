@@ -47,9 +47,16 @@ export default function BottomNav() {
             <Link
               key={item.name}
               href={item.href}
-              onClick={() => {
-                if (isPackages) setCurrentHash('#packages');
-                else if (isHome) setCurrentHash('');
+              onClick={(e) => {
+                if (isPackages) {
+                  setCurrentHash('#packages');
+                } else if (isHome) {
+                  setCurrentHash('');
+                  if (pathname === '/') {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                  }
+                }
               }}
               className={`flex flex-col items-center gap-1 transition-colors ${
                 isActive ? 'text-[#B3E600]' : 'text-gray-400 hover:text-white'
