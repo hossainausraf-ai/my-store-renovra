@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Crown, CheckCircle2, Calendar, ShoppingCart, Clock, Eye } from 'lucide-react';
+import { Crown, CheckCircle2, Calendar, ShoppingCart, Clock } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
 
 interface SingleToolProps {
@@ -142,26 +142,13 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
-              <button 
-                type="button"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsQuickViewOpen(true);
-                }}
-                className="hidden sm:flex py-2.5 px-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all items-center justify-center gap-1 text-xs font-bold cursor-pointer shrink-0"
-                title="Quick View / কুইক ভিউ"
-              >
-                <Eye className="w-4 h-4 text-[#38bdf8]" />
-                <span>View</span>
-              </button>
-
+            <div>
               <Link 
                 href={`/checkout?pkgId=${tool.id}`} 
                 onClick={(e) => e.stopPropagation()}
-                className="w-full sm:flex-1 py-2 sm:py-2.5 px-2.5 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.35)] cursor-pointer truncate"
+                className="w-full py-2 sm:py-2.5 px-3 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] hover:shadow-[0_0_20px_rgba(204,255,0,0.35)] cursor-pointer truncate"
               >
-                <ShoppingCart className="w-3.5 h-3.5 shrink-0" />
+                <ShoppingCart className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                 <span>Buy Now</span>
               </Link>
             </div>

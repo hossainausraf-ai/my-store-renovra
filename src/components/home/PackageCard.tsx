@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Eye, ArrowRight, Star, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Star, CheckCircle2 } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
 
 interface PackageProps {
@@ -63,25 +63,12 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
           <span className="text-[9px] sm:text-sm text-gray-400">/{pkg.period}</span>
         </div>
 
-        {/* Action Row: Quick View (Desktop only) + Order Button */}
-        <div className="mt-2.5 sm:mt-5 flex items-center gap-1.5 sm:gap-2">
-          <button
-            type="button"
-            onClick={(e) => {
-              e.stopPropagation();
-              setIsQuickViewOpen(true);
-            }}
-            className="hidden sm:flex h-11 px-3.5 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 text-gray-300 hover:text-white transition-all items-center justify-center gap-1 text-xs font-bold shrink-0 cursor-pointer"
-            title="Quick View / কুইক ভিউ"
-          >
-            <Eye className="w-4 h-4 text-[#38bdf8]" />
-            <span>View</span>
-          </button>
-
+        {/* Action Row: Order Button */}
+        <div className="mt-2.5 sm:mt-5">
           <Link
             href={`/checkout?pkgId=${pkg.id}`}
             onClick={(e) => e.stopPropagation()}
-            className={`w-full sm:flex-1 flex items-center justify-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-2.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm transition-all truncate ${
+            className={`w-full flex items-center justify-center gap-1.5 sm:gap-2 h-9 sm:h-11 px-2.5 sm:px-3 rounded-xl font-bold text-xs sm:text-sm transition-all truncate ${
               pkg.isPopular 
                 ? 'bg-[#B3E600] text-black shadow-[0_0_15px_rgba(179,230,0,0.4)] hover:bg-[#9cbd00]' 
                 : 'bg-transparent border border-blue-500/40 text-blue-500 hover:bg-blue-500/10'
