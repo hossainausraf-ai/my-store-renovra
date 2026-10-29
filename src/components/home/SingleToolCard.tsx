@@ -145,7 +145,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
               <button
                 type="button"
                 onClick={(e) => {
@@ -161,7 +161,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
                   setIsAdded(true);
                   setTimeout(() => setIsAdded(false), 1500);
                 }}
-                className={`flex-1 py-2 sm:py-2.5 px-2 rounded-xl border text-xs sm:text-sm font-bold flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer truncate ${
+                className={`w-full py-2 sm:py-2.5 px-1 sm:px-2 rounded-xl border text-[10px] min-[360px]:text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer truncate ${
                   isAdded
                     ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
                     : 'bg-white/10 hover:bg-white/20 border-white/15 text-white hover:text-[#ccff00] hover:border-[#ccff00]/40 shadow-sm'
@@ -184,7 +184,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               <Link 
                 href={`/checkout?pkgId=${tool.id}`} 
                 onClick={(e) => e.stopPropagation()}
-                className="py-2 sm:py-2.5 px-3 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs sm:text-sm flex items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] shrink-0"
+                className="w-full py-2 sm:py-2.5 px-2 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] truncate"
                 title="Buy Now"
               >
                 <span>Buy</span>
