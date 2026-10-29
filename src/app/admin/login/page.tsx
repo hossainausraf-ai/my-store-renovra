@@ -73,7 +73,7 @@ export default function AdminLogin() {
               <input
                 type="email"
                 required
-                placeholder="admin@renovra.com (বা আপনার Gmail)"
+                placeholder="renovrait@gmail.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl pl-10 pr-4 py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500"

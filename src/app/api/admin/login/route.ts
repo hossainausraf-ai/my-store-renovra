@@ -6,7 +6,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, password } = body;
 
-    const configuredEmail = (process.env.ADMIN_EMAIL || 'admin@renovra.com').trim().toLowerCase();
+    const configuredEmail = (process.env.ADMIN_EMAIL || 'renovrait@gmail.com').trim().toLowerCase();
     const configuredPassword = process.env.ADMIN_PASSWORD || 'admin123';
 
     const inputEmail = (email || '').trim().toLowerCase();

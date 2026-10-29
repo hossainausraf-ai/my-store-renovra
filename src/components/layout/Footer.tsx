@@ -50,6 +50,17 @@ export default function Footer() {
             <h3 className="text-white font-bold mb-4 uppercase tracking-wider text-xs">Help & Support</h3>
             <ul className="space-y-2.5">
               <li><Link href="/contact" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Contact Support</Link></li>
+              <li>
+                <a href="https://wa.me/8801766392692" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-green-400 text-sm transition-colors flex items-center gap-1.5">
+                  <span className="text-[#25D366] font-medium">WhatsApp:</span> 01766392692
+                </a>
+              </li>
+              <li>
+                <a href="mailto:renovrait@gmail.com" className="text-gray-400 hover:text-purple-400 text-sm transition-colors flex items-center gap-1.5">
+                  <span className="text-purple-400 font-medium">Email:</span> renovrait@gmail.com
+                </a>
+              </li>
+              <li><Link href="/track" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Track Order</Link></li>
               <li><Link href="/login" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Customer Login</Link></li>
               <li><Link href="/#faq" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">FAQ & Help</Link></li>
               <li><Link href="/about" className="text-gray-400 hover:text-blue-400 text-sm transition-colors">Terms & Privacy</Link></li>
