@@ -84,7 +84,38 @@ export default function WhyChooseUs() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Mobile View: Continuous Seamless Loop Carousel (Right to Left) */}
+        <div 
+          className="block md:hidden overflow-hidden w-full relative py-2 -mx-4 px-4"
+          style={{ 
+            maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
+            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
+          }}
+        >
+          <div className="flex gap-4 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
+            {[...FEATURES, ...FEATURES].map((feature, idx) => (
+              <div
+                key={`mobile-${feature.id}-${idx}`}
+                className="w-[260px] shrink-0 bg-[var(--surface)] relative border border-white/10 rounded-2xl p-5 shadow-lg flex flex-col justify-between"
+              >
+                <div>
+                  <div className="w-12 h-12 rounded-xl bg-green-400 flex items-center justify-center mb-4 shadow-[0_0_25px_rgba(74,222,128,0.35)]">
+                    <div className="text-green-950 scale-95">
+                      {feature.icon}
+                    </div>
+                  </div>
+                  <h3 className="text-base font-bold text-white mb-2 leading-snug">{feature.title}</h3>
+                  <p className="text-gray-400 leading-relaxed text-xs">
+                    {feature.description}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop View: Grid Layout (PC/Tablet) */}
+        <div className="hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {FEATURES.map((feature) => (
             <div
               key={feature.id}
