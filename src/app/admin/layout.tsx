@@ -21,7 +21,6 @@ import {
   Menu,
   X,
   Wrench,
-  Images,
   Layers,
   TicketPercent
 } from 'lucide-react';
@@ -76,7 +75,6 @@ export default function AdminLayout({
     { name: 'Packages', href: '/admin/packages', icon: CreditCard },
     { name: 'Digital Products', href: '/admin/digital-products', icon: MonitorPlay },
     { name: 'Single Tools', href: '/admin/single-tools', icon: Wrench },
-    { name: 'Tool Logos', href: '/admin/tools', icon: Images },
     { name: 'Hero Cards', href: '/admin/hero-cards', icon: Layers },
     { name: 'Coupons & Discounts', href: '/admin/coupons', icon: TicketPercent },
   ];
