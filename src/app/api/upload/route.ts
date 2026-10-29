@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import sharp from 'sharp';
 
 export async function POST(req: NextRequest) {
   try {
@@ -29,41 +28,54 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // 2. High-Quality WebP Compression via Sharp
-    // Downsample if over 1400px (crystal sharp on 4K), auto-rotate EXIF, WebP 85% quality
-    const optimizedBuffer = await sharp(originalBuffer)
-      .rotate() // Auto-orient EXIF orientation
-      .resize({
-        width: 1400,
-        height: 1400,
-        fit: 'inside',
-        withoutEnlargement: true
-      })
-      .webp({
-        quality: 85,
-        effort: 4
-      })
-      .toBuffer();
+    // 2. High-Quality WebP Compression (Dynamic Sharp with Edge fallback)
+    let optimizedBuffer: Buffer = originalBuffer;
+    let format = file.type || 'image/png';
+    let isWebp = false;
+
+    try {
+      // Dynamic import to prevent Edge / Workers runtime bundler failures
+      const sharpModule = await import('sharp');
+      const sharp = sharpModule.default || sharpModule;
+      optimizedBuffer = await sharp(originalBuffer)
+        .rotate() // Auto-orient EXIF orientation
+        .resize({
+          width: 1400,
+          height: 1400,
+          fit: 'inside',
+          withoutEnlargement: true
+        })
+        .webp({
+          quality: 85,
+          effort: 4
+        })
+        .toBuffer();
+      format = 'image/webp';
+      isWebp = true;
+    } catch {
+      // Sharp not available on Cloudflare Edge Worker; preserve original buffer
+      format = file.type || 'image/jpeg';
+    }
 
     const optimizedSize = optimizedBuffer.length;
     const savedPercent = originalSize > 0 
       ? Math.max(0, Math.round(((originalSize - optimizedSize) / originalSize) * 100)) 
       : 0;
 
-    const base64Url = `data:image/webp;base64,${optimizedBuffer.toString('base64')}`;
+    const base64Url = `data:${format};base64,${optimizedBuffer.toString('base64')}`;
     const baseName = file.name.replace(/\.[^/.]+$/, '');
 
     return NextResponse.json({
       success: true,
       url: base64Url,
-      fileName: `${baseName}.webp`,
+      fileName: isWebp ? `${baseName}.webp` : file.name,
       originalSize,
       optimizedSize,
       savedPercent,
-      format: 'webp'
+      format: isWebp ? 'webp' : (file.type || 'image')
     });
   } catch (err: any) {
     console.error('Image optimization failed on upload:', err);
-    return NextResponse.json({ success: false, message: err.message || 'ইমেজ অপ্টিমাইজেশন ব্যর্থ হয়েছে।' }, { status: 500 });
+    return NextResponse.json({ success: false, message: err.message || 'ইমেজ আপলোড ব্যর্থ হয়েছে।' }, { status: 500 });
   }
 }

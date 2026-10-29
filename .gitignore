@@ -48,3 +48,7 @@ next-env.d.ts
 /Videos/
 
 .vercel
+
+# cloudflare & open-next
+.open-next/
+.wrangler/
