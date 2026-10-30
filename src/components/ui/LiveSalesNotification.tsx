@@ -188,11 +188,11 @@ export default function LiveSalesNotification() {
 
   return (
     <div
-      className={`fixed z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`hidden sm:block fixed z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
         isVisible 
           ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' 
           : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
-      } bottom-[84px] md:bottom-6 left-3 sm:left-6 max-w-[calc(100vw-88px)] sm:max-w-[360px]`}
+      } bottom-6 left-6 max-w-[360px]`}
     >
       <Link 
         href="/#packages"

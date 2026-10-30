@@ -94,44 +94,44 @@ function TrackOrderContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-16">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-8 sm:py-16">
       
       {/* Header */}
-      <div className="text-center mb-10">
-        <Link href="/" className="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 font-medium mb-4 transition">
-          <ArrowLeft className="w-4 h-4" /> হোমে ফিরে যান
+      <div className="text-center mb-6 sm:mb-10">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium mb-2.5 sm:mb-4 transition">
+          <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> হোমে ফিরে যান
         </Link>
-        <h1 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-3">
+        <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight mb-2 sm:mb-3">
           অর্ডার ট্র্যাকিং (Track Order)
         </h1>
-        <p className="text-gray-400 max-w-lg mx-auto text-sm sm:text-base">
+        <p className="text-gray-400 max-w-lg mx-auto text-xs sm:text-base leading-relaxed">
           আপনার পেমেন্ট ভেরিফিকেশন স্ট্যাটাস ও ডিজিটাল প্রোডাক্ট অ্যাক্সেস পেতে WhatsApp নম্বর, Order ID বা TrxID দিয়ে সার্চ করুন।
         </p>
       </div>
 
       {/* Search Input Box */}
-      <div className="bg-[#111827]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-4 sm:p-6 shadow-2xl mb-10">
+      <div className="bg-[#111827]/80 backdrop-blur-xl border border-white/10 rounded-2xl p-3 sm:p-6 shadow-2xl mb-8 sm:mb-10">
         <form
           onSubmit={(e) => {
             e.preventDefault();
             handleSearch();
           }}
-          className="flex flex-col sm:flex-row gap-3"
+          className="flex flex-col sm:flex-row gap-2.5 sm:gap-3"
         >
           <div className="relative flex-1">
-            <Search className="w-5 h-5 text-gray-400 absolute left-4 top-1/2 -translate-y-1/2" />
+            <Search className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400 absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2" />
             <input
               type="text"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="WhatsApp নম্বর (যেমন: 017XXXXXXXX), Order ID বা TrxID লিখুন"
-              className="w-full bg-[#1F2937]/60 border border-white/10 rounded-xl pl-12 pr-4 py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-sm sm:text-base"
+              className="w-full bg-[#1F2937]/60 border border-white/10 rounded-xl pl-10 sm:pl-12 pr-4 py-2.5 sm:py-3.5 text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition text-xs sm:text-base"
             />
           </div>
           <button
             type="submit"
             disabled={isLoading}
-            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-8 py-3.5 rounded-xl transition shadow-lg shadow-blue-600/30 disabled:opacity-50 flex items-center justify-center gap-2"
+            className="bg-blue-600 hover:bg-blue-500 text-white font-bold px-6 sm:px-8 py-2.5 sm:py-3.5 rounded-xl transition shadow-lg shadow-blue-600/30 disabled:opacity-50 flex items-center justify-center gap-2 text-xs sm:text-base cursor-pointer"
           >
             {isLoading ? 'খোঁজা হচ্ছে...' : 'অর্ডার খুঁজুন'}
           </button>

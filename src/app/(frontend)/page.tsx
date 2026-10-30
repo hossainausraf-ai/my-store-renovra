@@ -64,9 +64,9 @@ export default function Home() {
         ) : (
           subscriptions.length > 0 && (
             <div className="mb-12 sm:mb-16">
-              <div className="text-center mb-6 sm:mb-8">
-                <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 sm:mb-2">Pricing</p>
-                <h2 className="text-base min-[360px]:text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1.5 sm:mb-3 text-white whitespace-nowrap">Choose a plan that's right for you</h2>
+              <div className="text-center mb-5 sm:mb-8">
+                <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1 sm:mb-2">Pricing</p>
+                <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1 sm:mb-3 text-white sm:whitespace-nowrap">Choose a plan that's right for you</h2>
                 <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
               </div>
 
@@ -115,7 +115,7 @@ export default function Home() {
                     setActiveCategory(cat);
                     setVisibleCount(INITIAL_VISIBLE_TOOLS);
                   }}
-                  className={`px-4 py-2 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
+                  className={`px-3.5 py-1.5 sm:px-6 sm:py-2.5 rounded-full text-xs sm:text-sm font-bold whitespace-nowrap transition-all border shrink-0 cursor-pointer ${
                     isActive
                       ? 'bg-blue-600 text-white border-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)] scale-105'
                       : 'bg-[var(--surface)] text-gray-300 border-white/10 hover:bg-white/10 hover:border-white/30 hover:text-white'

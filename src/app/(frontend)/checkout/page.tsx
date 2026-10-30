@@ -619,30 +619,30 @@ function CheckoutForm() {
   const paymentConfig = getPaymentDetails();
 
   return (
-    <div className="max-w-5xl mx-auto mt-6 lg:mt-10 mb-20 px-4">
+    <div className="max-w-5xl mx-auto mt-4 sm:mt-6 lg:mt-10 mb-20 px-3 sm:px-4">
       {/* Top Banner */}
-      <div className="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+      <div className="mb-5 sm:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
         <div>
-          <Link href="/" className="inline-flex items-center gap-2 text-blue-400 hover:text-blue-300 font-medium mb-4 transition-colors">
-            <ArrowLeft className="w-4 h-4" /> হোমে ফিরে যান
+          <Link href="/" className="inline-flex items-center gap-1.5 text-xs sm:text-sm text-blue-400 hover:text-blue-300 font-medium mb-2.5 sm:mb-4 transition-colors">
+            <ArrowLeft className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> হোমে ফিরে যান
           </Link>
-          <h1 className="text-3xl lg:text-4xl font-bold text-white tracking-tight">নিরাপদ চেকআউট (Checkout)</h1>
-          <p className="text-gray-400 mt-2">পেমেন্ট সম্পন্ন করে অর্ডারটি কনফার্ম করুন</p>
+          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">নিরাপদ চেকআউট (Checkout)</h1>
+          <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2">পেমেন্ট সম্পন্ন করে অর্ডারটি কনফার্ম করুন</p>
         </div>
-        <div className="flex items-center gap-2 text-sm text-green-400 bg-green-400/10 px-4 py-2 rounded-full border border-green-400/20">
-          <ShieldCheck className="w-4 h-4" />
+        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-400 bg-green-400/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-green-400/20 w-fit">
+          <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
           <span>SSL & Telegram Verified</span>
         </div>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-8 lg:gap-12">
+      <div className="grid lg:grid-cols-5 gap-5 sm:gap-8 lg:gap-12">
         {/* Left Column: Order Summary */}
-        <div className="lg:col-span-2 order-2 lg:order-1 space-y-6">
-          <div className="bg-[var(--surface)] p-6 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-xl relative overflow-hidden">
+        <div className="lg:col-span-2 order-2 lg:order-1 space-y-4 sm:space-y-6">
+          <div className="bg-[var(--surface)] p-4 sm:p-6 rounded-2xl sm:rounded-3xl border border-white/5 shadow-2xl backdrop-blur-xl relative overflow-hidden">
             <div className={`absolute top-0 left-0 w-full h-1 bg-gradient-to-r ${product.color_from || 'from-blue-500'} ${product.color_to || 'to-purple-500'}`}></div>
 
-            <h3 className="font-bold text-lg text-white mb-6 border-b border-white/10 pb-4 flex items-center gap-2">
-              <Package className="w-5 h-5 text-gray-400" /> Order Summary
+            <h3 className="font-bold text-base sm:text-lg text-white mb-4 sm:mb-6 border-b border-white/10 pb-3 sm:pb-4 flex items-center gap-2">
+              <Package className="w-4 h-4 sm:w-5 sm:h-5 text-gray-400" /> Order Summary
             </h3>
 
             {/* Product Switcher Dropdown */}
@@ -984,7 +984,7 @@ function CheckoutForm() {
 
         {/* Right Column: Checkout Form */}
         <div className="lg:col-span-3 order-1 lg:order-2">
-          <form onSubmit={handleSubmit} className="bg-[var(--surface)] p-6 md:p-8 rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md">
+          <form onSubmit={handleSubmit} className="bg-[var(--surface)] p-4 sm:p-8 rounded-2xl sm:rounded-3xl border border-white/10 shadow-2xl backdrop-blur-md">
             {finalPrice > 0 && (
               <>
                 <h3 className="font-bold text-xl text-white mb-4">পেমেন্ট মেথড বেছে নিন</h3>

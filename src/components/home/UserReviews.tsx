@@ -129,7 +129,7 @@ const row2Reviews: ReviewItem[] = [
 
 function ReviewCard({ review }: { review: ReviewItem }) {
   return (
-    <div className="w-[310px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-2xl p-4 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
+    <div className="w-[260px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
       <div>
         {/* Top Header: Avatar + Name + Recommends + Date */}
         <div className="flex items-start gap-3">
@@ -211,7 +211,7 @@ export default function UserReviews() {
           <span>কাস্টমার রিভিউ • 100% Genuine</span>
         </div>
 
-        <h2 className="text-lg min-[380px]:text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3 whitespace-nowrap">
+        <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3 sm:whitespace-nowrap">
           Loved by 1,200+ Creators & Students
         </h2>
         

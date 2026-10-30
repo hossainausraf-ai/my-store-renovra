@@ -107,15 +107,25 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
           </button>
         </div>
 
-        <div className="mt-3 sm:mt-6 pt-2.5 sm:pt-5 border-t border-white/10 flex-1">
-          <p className="text-[9px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2 sm:mb-3">Plan includes</p>
-          <ul className="space-y-1.5 sm:space-y-2.5">
+        <div className="mt-2.5 sm:mt-6 pt-2 sm:pt-5 border-t border-white/10 flex-1">
+          <p className="text-[8px] sm:text-xs font-semibold text-gray-400 uppercase tracking-wider mb-1.5 sm:mb-3">Plan includes</p>
+          <ul className="space-y-1 sm:space-y-2.5">
             {pkg.features.map((feature, i) => (
-              <li key={i} className="flex items-start gap-1.5 sm:gap-2 text-[10px] sm:text-sm text-gray-200">
+              <li 
+                key={i} 
+                className={`items-start gap-1.5 sm:gap-2 text-[10px] sm:text-sm text-gray-200 ${
+                  i < 3 ? 'flex' : 'hidden sm:flex'
+                }`}
+              >
                 <CheckCircle2 className="w-3 h-3 sm:w-4 sm:h-4 text-blue-500 flex-shrink-0 mt-0.5" />
                 <span className="leading-snug line-clamp-1">{feature}</span>
               </li>
             ))}
+            {pkg.features.length > 3 && (
+              <li className="sm:hidden text-[9px] text-blue-400/90 font-semibold pl-4.5 pt-0.5">
+                + আরও {pkg.features.length - 3}টি সুবিধা অন্তর্ভুক্ত
+              </li>
+            )}
           </ul>
         </div>
       </div>

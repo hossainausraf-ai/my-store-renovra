@@ -126,8 +126,8 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               </div>
             </div>
 
-            {/* Clean Remaining Pill */}
-            <div className="bg-black/40 rounded-full border border-green-500/30 py-1 px-2 sm:py-2 sm:px-3 flex items-center justify-center gap-1 sm:gap-1.5 mb-2 sm:mb-5 shadow-inner">
+            {/* Clean Remaining Pill - Hidden on mobile to avoid duplication and clutter */}
+            <div className="hidden sm:flex bg-black/40 rounded-full border border-green-500/30 py-1 px-2 sm:py-2 sm:px-3 items-center justify-center gap-1 sm:gap-1.5 mb-2 sm:mb-5 shadow-inner">
               <Clock className="w-3 h-3 text-green-400 shrink-0" />
               <span className="text-green-400 text-[8px] sm:text-[11px] font-bold tracking-tight truncate">
                 {cleanValidity}
@@ -137,15 +137,16 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
 
           {/* Pricing & CTA */}
           <div className="mt-auto pt-1">
-            <div className="text-center mb-2 sm:mb-3">
-              <div className="text-base sm:text-2xl font-black text-white tracking-tight flex items-baseline justify-center gap-0.5 sm:gap-1">
-                <span className="text-xs sm:text-base text-gray-400 font-bold">৳</span> 
+            <div className="text-center mb-1.5 sm:mb-3">
+              <div className="text-sm sm:text-2xl font-black text-white tracking-tight flex items-baseline justify-center gap-0.5 sm:gap-1">
+                <span className="text-[11px] sm:text-base text-gray-400 font-bold">৳</span> 
                 {tool.price} 
-                <span className="text-[9px] sm:text-xs font-medium text-gray-500 font-sans tracking-normal">{periodText}</span>
+                <span className="text-[8px] sm:text-xs font-medium text-gray-500 font-sans tracking-normal">{periodText}</span>
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-1.5 sm:gap-2">
+            {/* Mobile Action Row: Compact square cart button + Flex-1 Buy button */}
+            <div className="flex sm:hidden items-center gap-1.5">
               <button
                 type="button"
                 onClick={(e) => {
@@ -161,7 +162,44 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
                   setIsAdded(true);
                   setTimeout(() => setIsAdded(false), 1500);
                 }}
-                className={`w-full py-2 sm:py-2.5 px-1 sm:px-2 rounded-xl border text-[10px] min-[360px]:text-[11px] sm:text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer truncate ${
+                className={`w-8 h-8 rounded-xl border flex items-center justify-center transition-all shrink-0 active:scale-95 cursor-pointer ${
+                  isAdded
+                    ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
+                    : 'bg-white/10 hover:bg-white/20 border-white/15 text-white hover:text-[#ccff00]'
+                }`}
+                title="Add to Cart"
+              >
+                {isAdded ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <ShoppingBag className="w-3.5 h-3.5 text-[#ccff00]" />}
+              </button>
+
+              <Link 
+                href={`/checkout?pkgId=${tool.id}`} 
+                onClick={(e) => e.stopPropagation()}
+                className="flex-1 h-8 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-[11px] flex items-center justify-center transition-all active:scale-[0.98] shadow-[0_0_10px_rgba(204,255,0,0.2)]"
+                title="Buy Now"
+              >
+                <span>Buy</span>
+              </Link>
+            </div>
+
+            {/* Desktop Action Row: Standard two buttons */}
+            <div className="hidden sm:grid sm:grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  addToCart({
+                    id: tool.id,
+                    name: tool.name,
+                    price: tool.price,
+                    imageUrl: tool.imageUrl,
+                    product_type: 'single_tool',
+                    validity: cleanValidity
+                  });
+                  setIsAdded(true);
+                  setTimeout(() => setIsAdded(false), 1500);
+                }}
+                className={`w-full py-2.5 px-2 rounded-xl border text-xs font-bold flex items-center justify-center gap-1 transition-all active:scale-95 cursor-pointer truncate ${
                   isAdded
                     ? 'bg-emerald-500/20 border-emerald-500/50 text-emerald-400'
                     : 'bg-white/10 hover:bg-white/20 border-white/15 text-white hover:text-[#ccff00] hover:border-[#ccff00]/40 shadow-sm'
@@ -184,7 +222,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
               <Link 
                 href={`/checkout?pkgId=${tool.id}`} 
                 onClick={(e) => e.stopPropagation()}
-                className="w-full py-2 sm:py-2.5 px-2 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-[11px] sm:text-xs flex items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] truncate"
+                className="w-full py-2.5 px-2 rounded-xl bg-[#ccff00] hover:bg-[#b8e600] text-black font-extrabold text-xs flex items-center justify-center gap-1 transition-all hover:scale-[1.02] active:scale-[0.98] shadow-[0_0_12px_rgba(204,255,0,0.2)] truncate"
                 title="Buy Now"
               >
                 <span>Buy</span>

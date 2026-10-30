@@ -65,10 +65,10 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="fixed w-full z-50 top-4 px-4 sm:px-6">
+      <nav className="fixed w-full z-50 top-2.5 sm:top-4 px-2.5 sm:px-6">
         <div className="max-w-5xl mx-auto transition-all duration-300">
           {/* Main Pill Navbar */}
-          <div className={`border rounded-full px-3.5 sm:px-6 py-2 sm:py-3 flex items-center justify-between transition-all duration-300 ${scrolled
+          <div className={`border rounded-full px-3 sm:px-6 py-1.5 sm:py-3 flex items-center justify-between transition-all duration-300 ${scrolled
               ? 'bg-[#1E293B]/80 border-white/10 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
               : 'bg-[#1E293B]/40 border-white/10 backdrop-blur-md shadow-lg'
             }`}>

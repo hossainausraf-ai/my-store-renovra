@@ -151,14 +151,14 @@ export default function HeroSection() {
           <div className="relative">
             
             {/* Floating Badges */}
-            <div className="flex flex-wrap gap-2 mb-6 relative z-20">
-              <div className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-medium text-gray-300 shadow-xl">
+            <div className="flex flex-wrap gap-2 mb-3 sm:mb-6 relative z-20">
+              <div className="inline-flex items-center gap-1.5 px-2.5 py-1 sm:py-1.5 rounded-full bg-white/5 backdrop-blur-md border border-white/10 text-[10px] sm:text-xs font-medium text-gray-300 shadow-xl">
                 <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
                 Trusted by 1200+
               </div>
             </div>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[46px] xl:text-[52px] font-extrabold tracking-tight leading-[1.2] sm:leading-[1.2] text-white mb-4 sm:mb-5">
+            <h1 className="text-xl min-[360px]:text-2xl sm:text-3xl md:text-4xl lg:text-[46px] xl:text-[52px] font-extrabold tracking-tight leading-[1.2] sm:leading-[1.2] text-white mb-2.5 sm:mb-5">
               Access 100+ Premium Tools & AI <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-gray-200 to-gray-400">
                 Built for{' '}
@@ -168,44 +168,44 @@ export default function HeroSection() {
               </span>
             </h1>
 
-            <p className="text-xs sm:text-base text-gray-400 mb-6 sm:mb-8 max-w-lg leading-relaxed">
+            <p className="text-xs sm:text-base text-gray-400 mb-4 sm:mb-8 max-w-lg leading-relaxed">
               Get instant access to ChatGPT, Canva Pro & 100+ premium AI tools at up to 90% off with 24/7 warranty.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 mb-10 sm:mb-12">
-              <a href="#packages" className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 rounded-full bg-[#B3E600] hover:bg-[#9cbd00] text-black font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2 group shadow-[0_0_20px_rgba(179,230,0,0.2)]">
-                Browse All Tools
-                <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+            <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-row sm:gap-4 mb-6 sm:mb-12">
+              <a href="#packages" className="py-2.5 sm:py-4 px-3 sm:px-8 rounded-xl sm:rounded-full bg-[#B3E600] hover:bg-[#9cbd00] text-black font-bold text-xs sm:text-base transition-all flex items-center justify-center gap-1.5 sm:gap-2 group shadow-[0_0_20px_rgba(179,230,0,0.2)]">
+                <span>Browse Tools</span>
+                <ArrowRight className="w-3.5 h-3.5 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
               </a>
-              <a href="#how-it-works" className="w-full sm:w-auto px-6 py-3.5 sm:px-8 sm:py-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-sm sm:text-base transition-all flex items-center justify-center gap-2">
-                <div className="w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center">
-                  <Play className="w-2.5 h-2.5 sm:w-3 sm:h-3 ml-0.5" fill="currentColor" />
+              <a href="#how-it-works" className="py-2.5 sm:py-4 px-3 sm:px-8 rounded-xl sm:rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-white font-bold text-xs sm:text-base transition-all flex items-center justify-center gap-1.5 sm:gap-2">
+                <div className="w-4 h-4 sm:w-6 sm:h-6 rounded-full bg-white/20 flex items-center justify-center">
+                  <Play className="w-2 h-2 sm:w-3 sm:h-3 ml-0.5" fill="currentColor" />
                 </div>
-                Watch How It Works
+                <span>How It Works</span>
               </a>
             </div>
 
             {/* Social Proof */}
-            <div className="flex items-center gap-4 sm:gap-6 p-3 sm:p-4 rounded-2xl bg-white/5 border border-white/10 w-fit max-w-full overflow-hidden">
-              <div className="flex items-center gap-3 sm:gap-4 shrink-0">
-                <div className="flex -space-x-3">
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-black bg-purple-500 flex items-center justify-center font-bold text-white text-[10px] sm:text-xs">R</div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-black bg-blue-500 flex items-center justify-center font-bold text-white text-[10px] sm:text-xs">S</div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-black bg-orange-500 flex items-center justify-center font-bold text-white text-[10px] sm:text-xs">A</div>
-                  <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full border-2 border-black bg-emerald-500 flex items-center justify-center font-bold text-white text-[10px] sm:text-xs">T</div>
+            <div className="flex items-center gap-3 sm:gap-6 p-2 sm:p-4 rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 w-fit max-w-full overflow-hidden">
+              <div className="flex items-center gap-2 sm:gap-4 shrink-0">
+                <div className="flex -space-x-2 sm:-space-x-3">
+                  <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full border border-black sm:border-2 bg-purple-500 flex items-center justify-center font-bold text-white text-[9px] sm:text-xs">R</div>
+                  <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full border border-black sm:border-2 bg-blue-500 flex items-center justify-center font-bold text-white text-[9px] sm:text-xs">S</div>
+                  <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full border border-black sm:border-2 bg-orange-500 flex items-center justify-center font-bold text-white text-[9px] sm:text-xs">A</div>
+                  <div className="w-6 h-6 sm:w-10 sm:h-10 rounded-full border border-black sm:border-2 bg-emerald-500 flex items-center justify-center font-bold text-white text-[9px] sm:text-xs">T</div>
                 </div>
                 <div>
                   <div className="flex items-center gap-1 text-[#ccff00] mb-0.5">
-                    {'★★★★★'.split('').map((star, i) => <span key={i} className="text-xs sm:text-sm">{star}</span>)}
-                    <span className="text-white font-bold ml-1 text-xs sm:text-sm">4.9/5</span>
+                    {'★★★★★'.split('').map((star, i) => <span key={i} className="text-[10px] sm:text-sm">{star}</span>)}
+                    <span className="text-white font-bold ml-1 text-[10px] sm:text-sm">4.9/5</span>
                   </div>
-                  <p className="text-[9px] sm:text-[11px] text-gray-400">Joined by 15,000+</p>
+                  <p className="text-[8px] sm:text-[11px] text-gray-400">Joined by 15,000+</p>
                 </div>
               </div>
-              <div className="w-px h-8 sm:h-10 bg-white/10 shrink-0"></div>
-              <div className="shrink-0 pr-2">
-                <div className="text-white font-bold text-sm sm:text-base">100+</div>
-                <div className="text-[9px] sm:text-[11px] text-gray-400">Premium Tools</div>
+              <div className="w-px h-6 sm:h-10 bg-white/10 shrink-0"></div>
+              <div className="shrink-0 pr-1 sm:pr-2">
+                <div className="text-white font-bold text-xs sm:text-base">100+</div>
+                <div className="text-[8px] sm:text-[11px] text-gray-400">Premium Tools</div>
               </div>
             </div>
             
