@@ -619,7 +619,7 @@ function CheckoutForm() {
   const paymentConfig = getPaymentDetails();
 
   return (
-    <div className="max-w-5xl mx-auto mt-4 sm:mt-6 lg:mt-10 mb-20 px-3 sm:px-4">
+    <div className="max-w-5xl mx-auto pt-20 sm:pt-24 lg:pt-28 mb-20 px-3 sm:px-4">
       {/* Top Banner */}
       <div className="mb-5 sm:mb-8 flex flex-col md:flex-row md:items-end justify-between gap-3 sm:gap-4">
         <div>

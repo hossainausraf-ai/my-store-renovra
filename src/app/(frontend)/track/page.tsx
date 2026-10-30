@@ -94,7 +94,7 @@ function TrackOrderContent() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-3 sm:px-4 py-8 sm:py-16">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 pt-20 sm:pt-24 pb-12 sm:pb-16">
       
       {/* Header */}
       <div className="text-center mb-6 sm:mb-10">
