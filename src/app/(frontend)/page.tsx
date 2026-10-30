@@ -154,31 +154,31 @@ export default function Home() {
 
                 {/* Show More / Show Less Button */}
                 {singleTools.length > visibleCount && (
-                  <div className="text-center mt-10 sm:mt-14">
+                  <div className="text-center mt-6 sm:mt-14">
                     <button
                       type="button"
                       onClick={() => setVisibleCount(singleTools.length)}
-                      className="inline-flex items-center gap-2.5 px-8 py-3.5 rounded-full bg-[#1E293B] hover:bg-[#283548] border border-white/15 hover:border-[#ccff00] text-white hover:text-[#ccff00] font-bold text-xs sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2.5 px-3.5 sm:px-8 py-2.5 sm:py-3.5 rounded-full bg-[#1E293B] hover:bg-[#283548] border border-white/15 hover:border-[#ccff00] text-white hover:text-[#ccff00] font-bold text-[10.5px] min-[360px]:text-xs sm:text-sm shadow-2xl transition-all duration-300 hover:scale-105 active:scale-95 group cursor-pointer whitespace-nowrap"
                     >
-                      <Sparkles className="w-4 h-4 text-[#ccff00]" />
-                      <span>Show More Tools (আরও {singleTools.length - visibleCount}টি টুলস দেখুন)</span>
-                      <ChevronDown className="w-4 h-4 text-[#ccff00] group-hover:translate-y-0.5 transition-transform" />
+                      <Sparkles className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] shrink-0" />
+                      <span className="whitespace-nowrap">Show More Tools (আরও {singleTools.length - visibleCount}টি টুলস দেখুন)</span>
+                      <ChevronDown className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#ccff00] group-hover:translate-y-0.5 transition-transform shrink-0" />
                     </button>
                   </div>
                 )}
 
                 {visibleCount >= singleTools.length && singleTools.length > INITIAL_VISIBLE_TOOLS && (
-                  <div className="text-center mt-10 sm:mt-14">
+                  <div className="text-center mt-6 sm:mt-14">
                     <button
                       type="button"
                       onClick={() => {
                         setVisibleCount(INITIAL_VISIBLE_TOOLS);
                         document.getElementById('tools')?.scrollIntoView({ behavior: 'smooth' });
                       }}
-                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-medium text-xs sm:text-sm transition-all cursor-pointer"
+                      className="inline-flex items-center justify-center gap-1.5 sm:gap-2 px-5 sm:px-6 py-2 sm:py-2.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-gray-400 hover:text-white font-medium text-[11px] sm:text-sm transition-all cursor-pointer whitespace-nowrap"
                     >
-                      <span>Show Less (কম দেখান)</span>
-                      <ChevronUp className="w-4 h-4" />
+                      <span className="whitespace-nowrap">Show Less (কম দেখান)</span>
+                      <ChevronUp className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
                     </button>
                   </div>
                 )}
