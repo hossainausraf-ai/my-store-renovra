@@ -129,51 +129,51 @@ const row2Reviews: ReviewItem[] = [
 
 function ReviewCard({ review }: { review: ReviewItem }) {
   return (
-    <div className="w-[260px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
+    <div className="w-[210px] min-[360px]:w-[225px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
       <div>
         {/* Top Header: Avatar + Name + Recommends + Date */}
-        <div className="flex items-start gap-3">
+        <div className="flex items-start gap-2 sm:gap-3">
           <img
             src={review.avatar}
             alt={review.name}
-            className="w-10 h-10 rounded-full object-cover border border-white/15 shrink-0 shadow-md"
+            className="w-7 h-7 sm:w-10 sm:h-10 rounded-full object-cover border border-white/15 shrink-0 shadow-md"
             loading="lazy"
           />
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="font-bold text-white text-xs sm:text-sm tracking-tight truncate">
+            <div className="flex items-center gap-1 sm:gap-1.5 flex-wrap">
+              <span className="font-bold text-white text-[11px] sm:text-sm tracking-tight truncate max-w-[90px] sm:max-w-none">
                 {review.name}
               </span>
-              <span className="inline-flex items-center gap-1 text-[11px] text-gray-400">
-                <ThumbsUp className="w-3 h-3 text-emerald-400 fill-emerald-400 shrink-0" />
-                <span>recommends</span>
+              <span className="inline-flex items-center gap-0.5 sm:gap-1 text-[9px] sm:text-[11px] text-gray-400">
+                <ThumbsUp className="w-2.5 h-2.5 sm:w-3 sm:h-3 text-emerald-400 fill-emerald-400 shrink-0" />
+                <span className="hidden min-[360px]:inline">recommends</span>
                 <strong className="text-white font-semibold">{review.verifiedBrand}.</strong>
               </span>
             </div>
 
-            <div className="flex items-center gap-1 text-[10px] sm:text-[11px] text-gray-500 mt-0.5">
+            <div className="flex items-center gap-1 text-[8.5px] sm:text-[11px] text-gray-500 mt-0.5">
               <span>{review.date}</span>
               <span>•</span>
-              <Globe className="w-2.5 h-2.5" />
+              <Globe className="w-2 h-2 sm:w-2.5 sm:h-2.5" />
             </div>
           </div>
 
-          <div className="text-gray-500 hover:text-gray-300 cursor-pointer shrink-0 ml-1">
+          <div className="hidden sm:block text-gray-500 hover:text-gray-300 cursor-pointer shrink-0 ml-1">
             <MoreHorizontal className="w-4 h-4" />
           </div>
         </div>
 
         {/* Review Text */}
-        <p className="text-xs sm:text-sm text-gray-300 leading-relaxed mt-3 mb-4">
+        <p className="text-[10px] min-[360px]:text-[11px] sm:text-sm text-gray-300 leading-snug line-clamp-3 mt-1.5 mb-2 sm:mt-3 sm:mb-4">
           {review.content}
         </p>
       </div>
 
       {/* Bottom Tag Pill */}
-      <div className="pt-2 border-t border-white/5 flex items-center justify-between">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-[11px] font-medium text-gray-300">
-          <span className="w-2 h-2 rounded-full bg-[#ccff00] shadow-[0_0_8px_#ccff00]" />
+      <div className="pt-1.5 sm:pt-2 border-t border-white/5 flex items-center justify-between">
+        <div className="inline-flex items-center gap-1 sm:gap-1.5 px-1.5 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[8.5px] sm:text-[11px] font-medium text-gray-300">
+          <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-[#ccff00] shadow-[0_0_8px_#ccff00]" />
           <span>{review.verifiedBrand}</span>
         </div>
 
@@ -181,7 +181,7 @@ function ReviewCard({ review }: { review: ReviewItem }) {
           {[1, 2, 3, 4, 5].map((s) => (
             <Star 
               key={s} 
-              className={`w-3 h-3 ${
+              className={`w-2.5 h-2.5 sm:w-3 sm:h-3 ${
                 s <= review.rating 
                   ? 'text-amber-400 fill-amber-400' 
                   : 'text-gray-600 fill-white/5'
@@ -199,44 +199,44 @@ export default function UserReviews() {
   const loopRow2 = [...row2Reviews, ...row2Reviews];
 
   return (
-    <section className="py-6 sm:py-24 bg-transparent border-t border-white/5 relative overflow-hidden w-full">
+    <section className="py-5 sm:py-24 bg-transparent border-t border-white/5 relative overflow-hidden w-full">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-blue-600/10 via-[#ccff00]/5 to-purple-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-14 px-4">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-[#ccff00] mb-1.5 sm:mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
+      <div className="text-center max-w-3xl mx-auto mb-3.5 sm:mb-14 px-3 sm:px-4">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-[#ccff00] mb-1 sm:mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
           <Sparkles className="w-3 h-3" />
           <span>কাস্টমার রিভিউ • 100% Genuine</span>
         </div>
 
-        <h2 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-1.5 sm:mb-3 sm:whitespace-nowrap">
+        <h2 className="text-sm min-[360px]:text-[15px] min-[400px]:text-base sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-1 sm:mb-3 whitespace-nowrap">
           Loved by 1,200+ Creators & Students
         </h2>
         
-        <p className="text-gray-400 text-xs sm:text-base leading-relaxed max-w-2xl mx-auto">
+        <p className="text-gray-400 text-[11px] sm:text-base leading-relaxed max-w-2xl mx-auto">
           দেখুন ১২০০+ ফ্রিল্যান্সার, কন্টেন্ট ক্রিয়েটর এবং শিক্ষার্থীরা Renovra সম্পর্কে কী বলছেন।
         </p>
       </div>
 
       {/* Two-Row Marquee Loop Carousel */}
       <div 
-        className="relative w-full overflow-hidden space-y-4 sm:space-y-5"
+        className="relative w-full overflow-hidden space-y-2.5 sm:space-y-5"
         style={{
           maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
           WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
         }}
       >
         {/* Row 1: Right to Left (animate-marquee-left) */}
-        <div className="flex gap-3.5 sm:gap-5 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused] py-1">
+        <div className="flex gap-2.5 sm:gap-5 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused] py-0.5">
           {loopRow1.map((rev, idx) => (
             <ReviewCard key={`r1-${rev.id}-${idx}`} review={rev} />
           ))}
         </div>
 
         {/* Row 2: Left to Right (animate-marquee-right) */}
-        <div className="flex gap-3.5 sm:gap-5 w-max animate-marquee-right hover:[animation-play-state:paused] active:[animation-play-state:paused] py-1">
+        <div className="flex gap-2.5 sm:gap-5 w-max animate-marquee-right hover:[animation-play-state:paused] active:[animation-play-state:paused] py-0.5">
           {loopRow2.map((rev, idx) => (
             <ReviewCard key={`r2-${rev.id}-${idx}`} review={rev} />
           ))}
