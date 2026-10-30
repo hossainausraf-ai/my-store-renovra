@@ -87,13 +87,21 @@ export function deleteOrder(id: string): boolean {
 export function searchOrders(query: string): StoredOrder[] {
   const cleanQ = query.trim().toLowerCase();
   if (!cleanQ) return [];
+  const digits = cleanQ.replace(/\D/g, '');
+  const corePhone = digits.length >= 10 ? digits.slice(-10) : digits;
   const orders = getAllOrders();
-  return orders.filter(
-    (o) =>
+  return orders.filter((o) => {
+    const oPhoneDigits = (o.user_phone || '').replace(/\D/g, '');
+    const oWaDigits = (o.whatsapp || '').replace(/\D/g, '');
+    const phoneMatch = corePhone.length >= 7 && (oPhoneDigits.includes(corePhone) || oWaDigits.includes(corePhone));
+    return (
+      phoneMatch ||
       (o.id && o.id.toLowerCase().includes(cleanQ)) ||
       (o.user_phone && o.user_phone.toLowerCase().includes(cleanQ)) ||
+      (o.whatsapp && o.whatsapp.toLowerCase().includes(cleanQ)) ||
       (o.trx_id && o.trx_id.toLowerCase().includes(cleanQ)) ||
       (o.product_name && o.product_name.toLowerCase().includes(cleanQ)) ||
       (o.customer_name && o.customer_name.toLowerCase().includes(cleanQ))
-  );
+    );
+  });
 }

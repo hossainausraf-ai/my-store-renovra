@@ -318,23 +318,24 @@ function CheckoutForm() {
       return;
     }
 
-    if (!phone) {
-      setError('দয়া করে আপনার ফোন নম্বর দিন।');
+    const cleanWhatsapp = (whatsappNumber || phone).trim();
+    if (!cleanWhatsapp) {
+      setError('দয়া করে আপনার WhatsApp নম্বর দিন।');
       setIsLoading(false);
       return;
     }
 
-    if (finalPrice > 0 && !proofFile && !trxIdInput) {
-      setError('দয়া করে পেমেন্টের স্ক্রিনশট আপলোড করুন অথবা TrxID লিখুন।');
+    if (finalPrice > 0 && !proofFile) {
+      setError('দয়া করে পেমেন্টের স্ক্রিনশট আপলোড করুন।');
       setIsLoading(false);
       return;
     }
 
     try {
       const formData = new FormData();
-      formData.append('phone', phone);
-      formData.append('whatsapp', whatsappNumber || phone);
-      formData.append('customerName', customerName);
+      formData.append('phone', cleanWhatsapp);
+      formData.append('whatsapp', cleanWhatsapp);
+      formData.append('customerName', customerName.trim());
       formData.append('packageId', selectedProductId);
       
       if (selectedProductId === 'cart-order') {
@@ -1121,64 +1122,66 @@ function CheckoutForm() {
                 />
               </div>
 
-              {/* Phone Number */}
+              {/* WhatsApp Number (Primary contact number) */}
               <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                  আপনার মোবাইল নম্বর <span className="text-red-400">*</span>
+                <label className="block text-sm font-medium text-gray-300 mb-1.5 flex items-center justify-between">
+                  <span className="flex items-center gap-1">
+                    <span>আপনার WhatsApp নম্বর</span>
+                    <span className="text-red-400 font-bold">*</span>
+                  </span>
+                  <span className="text-[11px] text-green-400 font-medium bg-green-500/10 px-2 py-0.5 rounded-md border border-green-500/20">বাধ্যতামূলক</span>
                 </label>
                 <input
-                  type="text"
+                  type="tel"
                   required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="01XXXXXXXXX"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-600 text-sm"
-                />
-              </div>
-
-              {/* WhatsApp Number */}
-              <div>
-                <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                  WhatsApp নম্বর <span className="text-xs text-gray-500 font-normal">(ঐচ্ছিক - ফোন নম্বর এক হলে খালি রাখতে পারেন)</span>
-                </label>
-                <input
-                  type="text"
                   value={whatsappNumber}
-                  onChange={(e) => setWhatsappNumber(e.target.value)}
+                  onChange={(e) => {
+                    setWhatsappNumber(e.target.value);
+                    setPhone(e.target.value);
+                  }}
                   placeholder="01XXXXXXXXX"
-                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-all placeholder:text-gray-600 text-sm"
+                  className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-green-500 transition-all placeholder:text-gray-600 text-sm font-mono"
                 />
-                <p className="text-[11px] text-green-400/90 mt-1.5">
-                  অর্ডার কনফার্ম হওয়ার সাথে সাথে এই নম্বরে WhatsApp-এ টুলস এক্সেস ও নোটিফিকেশন পৌঁছে যাবে।
+                <p className="text-[11px] text-green-400/90 mt-1.5 flex items-center gap-1">
+                  <span>💬 অর্ডার ভেরিফাই হওয়া মাত্র এই WhatsApp নম্বরে টুলসের লগইন ও এক্সেস পাঠিয়ে দেওয়া হবে।</span>
                 </p>
               </div>
 
               {/* Optional Transaction ID */}
               {finalPrice > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1.5">
-                    Transaction ID (TrxID) <span className="text-xs text-gray-500 font-normal">(স্ক্রিনশট দিলে ঐচ্ছিক)</span>
+                  <label className="block text-sm font-medium text-gray-300 mb-1.5 flex items-center justify-between">
+                    <span>Transaction ID (TrxID)</span>
+                    <span className="text-xs text-gray-400 font-normal bg-white/5 px-2 py-0.5 rounded-full border border-white/10">ঐচ্ছিক (Optional)</span>
                   </label>
                   <input
                     type="text"
                     value={trxIdInput}
                     onChange={(e) => setTrxIdInput(e.target.value)}
-                    placeholder="যেমন: BLG987654"
+                    placeholder="যেমন: BLG987654 (না থাকলে ফাঁকা রাখুন)"
                     className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500 transition-all placeholder:text-gray-600 text-sm font-mono"
                   />
                 </div>
               )}
 
-              {/* Screenshot Upload */}
+              {/* Screenshot Upload - Mandatory */}
               {finalPrice > 0 && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-300 mb-1.5">পেমেন্টের স্ক্রিনশট আপলোড করুন</label>
+                  <label className="block text-sm font-medium text-gray-300 mb-1.5 flex items-center justify-between">
+                    <span className="flex items-center gap-1">
+                      <span>পেমেন্টের স্ক্রিনশট আপলোড করুন</span>
+                      <span className="text-red-400 font-bold">*</span>
+                    </span>
+                    <span className="text-[11px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">বাধ্যতামূলক</span>
+                  </label>
                   {!proofPreview ? (
-                    <label className="flex flex-col items-center justify-center w-full h-28 border-2 border-white/10 border-dashed rounded-xl cursor-pointer bg-black/20 hover:bg-black/40 hover:border-blue-500/50 transition-all">
-                      <div className="flex flex-col items-center justify-center pt-3 pb-3">
-                        <Upload className="w-6 h-6 text-gray-400 mb-1.5" />
-                        <p className="text-xs text-gray-300"><span className="font-semibold text-blue-400">স্ক্রিনশট বাছাই করুন</span> বা এখানে ড্রপ করুন</p>
-                        <p className="text-[10px] text-gray-500">PNG, JPG বা JPEG</p>
+                    <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer bg-black/20 hover:bg-black/40 transition-all ${!proofFile ? 'border-amber-500/40 hover:border-amber-400' : 'border-white/10'}`}>
+                      <div className="flex flex-col items-center justify-center pt-3 pb-3 text-center px-4">
+                        <Upload className="w-6 h-6 text-amber-400 mb-1.5 animate-bounce" />
+                        <p className="text-xs text-gray-200">
+                          <span className="font-bold text-amber-300">পেমেন্ট সফল হওয়ার স্ক্রিনশট দিন</span> বা ফাইল ড্রপ করুন
+                        </p>
+                        <p className="text-[10px] text-gray-400 mt-1">PNG, JPG, JPEG বা WebP ইমেজ</p>
                       </div>
                       <input
                         type="file"
@@ -1189,23 +1192,28 @@ function CheckoutForm() {
                           if (file) {
                             setProofFile(file);
                             setProofPreview(URL.createObjectURL(file));
+                            setError('');
                           }
                         }}
                       />
                     </label>
                   ) : (
-                    <div className="relative w-full h-32 rounded-xl border border-white/10 overflow-hidden group">
-                      <img src={proofPreview} alt="Payment Proof" className="w-full h-full object-cover" />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                    <div className="relative w-full h-36 rounded-xl border border-green-500/30 overflow-hidden group bg-black/40">
+                      <img src={proofPreview} alt="Payment Proof" className="w-full h-full object-contain" />
+                      <div className="absolute top-2 right-2 bg-black/70 backdrop-blur-md rounded-lg p-1.5 flex items-center gap-2">
+                        <span className="text-[11px] text-green-400 font-bold px-1.5 flex items-center gap-1">
+                          <Check className="w-3.5 h-3.5 text-green-400" /> স্ক্রিনশট যুক্ত হয়েছে
+                        </span>
                         <button
                           type="button"
                           onClick={() => {
                             setProofFile(null);
                             setProofPreview(null);
                           }}
-                          className="p-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition"
+                          className="p-1 bg-red-500/80 hover:bg-red-500 text-white rounded-md transition"
+                          title="ছবি মুছুন"
                         >
-                          <X className="w-5 h-5" />
+                          <X className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>

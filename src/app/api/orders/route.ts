@@ -1,10 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { addOrder, getAllOrders, updateOrderStatus, deleteOrder } from '@/lib/orders-store';
+import { dbGetOrders, dbSaveOrder, dbUpdateOrderStatus, dbDeleteOrder, dbIncrementCouponUsage } from '@/lib/d1';
 import { sendTelegramOrderNotification } from '@/lib/telegram';
-import { dbIncrementCouponUsage } from '@/lib/d1';
 
 export async function GET() {
-  const orders = getAllOrders();
+  const orders = await dbGetOrders();
   return NextResponse.json({ success: true, orders });
 }
 
@@ -27,43 +26,51 @@ export async function POST(req: NextRequest) {
 
     if (contentType.includes('application/json')) {
       const json = await req.json();
-      phone = json.phone || '';
-      whatsapp = json.whatsapp || phone;
-      customerName = json.customerName || '';
+      whatsapp = (json.whatsapp || json.phone || '').trim();
+      phone = (json.phone || whatsapp).trim();
+      customerName = (json.customerName || '').trim();
       packageId = json.packageId || '';
       packageName = json.packageName || 'Product';
       price = Number(json.price) || 0;
       paymentMethod = json.paymentMethod || 'bkash';
-      manualTrxId = json.trxId || '';
+      manualTrxId = (json.trxId || '').trim();
       proofUrl = json.proofUrl || '';
       couponCode = (json.couponCode || json.coupon_code || '').trim().toUpperCase();
       discountAmount = Number(json.discountAmount || json.discount_amount) || 0;
       originalPrice = Number(json.originalPrice || json.original_price) || price;
     } else {
       const formData = await req.formData();
-      phone = (formData.get('phone') as string) || '';
-      whatsapp = (formData.get('whatsapp') as string) || phone;
-      customerName = (formData.get('customerName') as string) || '';
-      packageId = (formData.get('packageId') as string) || '';
-      packageName = (formData.get('packageName') as string) || 'Product';
+      whatsapp = ((formData.get('whatsapp') as string) || (formData.get('phone') as string) || '').trim();
+      phone = ((formData.get('phone') as string) || whatsapp).trim();
+      customerName = ((formData.get('customerName') as string) || '').trim();
+      packageId = ((formData.get('packageId') as string) || '').trim();
+      packageName = ((formData.get('packageName') as string) || 'Product').trim();
       price = Number(formData.get('price')) || 0;
-      paymentMethod = (formData.get('paymentMethod') as string) || 'bkash';
-      manualTrxId = (formData.get('trxId') as string) || '';
+      paymentMethod = ((formData.get('paymentMethod') as string) || 'bkash').trim();
+      manualTrxId = ((formData.get('trxId') as string) || '').trim();
       proofFile = formData.get('proof') as File | null;
-      couponCode = ((formData.get('couponCode') || formData.get('coupon_code') || '') as string).trim().toUpperCase();
+      couponCode = (((formData.get('couponCode') || formData.get('coupon_code') || '') as string)).trim().toUpperCase();
       discountAmount = Number(formData.get('discountAmount') || formData.get('discount_amount')) || 0;
       originalPrice = Number(formData.get('originalPrice') || formData.get('original_price')) || price;
     }
 
-    if (!phone) {
-      return NextResponse.json({ success: false, message: 'ফোন নম্বর আবশ্যক।' }, { status: 400 });
+    if (!customerName) {
+      return NextResponse.json({ success: false, message: 'দয়া করে আপনার নাম লিখুন।' }, { status: 400 });
+    }
+
+    const contactPhone = whatsapp || phone;
+    if (!contactPhone) {
+      return NextResponse.json({ success: false, message: 'WhatsApp নম্বর আবশ্যক।' }, { status: 400 });
+    }
+
+    if (price > 0 && !proofFile && !proofUrl) {
+      return NextResponse.json({ success: false, message: 'পেমেন্টের স্ক্রিনশট আপলোড করা আবশ্যক।' }, { status: 400 });
     }
 
     // Generate unique readable order and transaction ID
     const randomSuffix = Math.floor(100000 + Math.random() * 900000);
     const orderId = `RNV-${randomSuffix}`;
-    const trxId = manualTrxId.trim() || `PROOF-${randomSuffix}`;
-    const finalPhone = whatsapp && whatsapp !== phone ? `${phone} (WA: ${whatsapp})` : phone;
+    const trxId = manualTrxId || `PROOF-${randomSuffix}`;
 
     let proofBuffer: Buffer | undefined;
     let proofFileName = 'proof.jpg';
@@ -73,19 +80,21 @@ export async function POST(req: NextRequest) {
       const arrayBuffer = await proofFile.arrayBuffer();
       proofBuffer = Buffer.from(arrayBuffer);
       proofFileName = proofFile.name || `proof-${orderId}.jpg`;
-      // Convert small preview to base64 data URL for web admin view
-      if (proofBuffer.length < 2 * 1024 * 1024) {
+      // Convert preview to base64 data URL for web admin view (up to 3MB)
+      if (proofBuffer.length < 3 * 1024 * 1024) {
         proofUrl = `data:${proofFile.type || 'image/jpeg'};base64,${proofBuffer.toString('base64')}`;
+      } else {
+        proofUrl = `FILE_UPLOADED (${Math.round(proofBuffer.length / 1024)}KB)`;
       }
     } else if (price === 0) {
       proofUrl = 'FREE_TRIAL';
     }
 
-    // 1. Save order into local orders store
-    const storedOrder = addOrder({
+    // 1. Save order into Cloudflare D1 (and local store fallback)
+    const storedOrder = await dbSaveOrder({
       id: orderId,
       created_at: new Date().toISOString(),
-      user_phone: finalPhone,
+      user_phone: contactPhone,
       trx_id: trxId,
       payment_method: paymentMethod,
       package_id: packageId,
@@ -94,7 +103,7 @@ export async function POST(req: NextRequest) {
       status: 'pending',
       proof_url: proofUrl,
       customer_name: customerName,
-      whatsapp,
+      whatsapp: contactPhone,
       coupon_code: couponCode || undefined,
       discount_amount: discountAmount || undefined,
       original_price: originalPrice || undefined,
@@ -113,8 +122,8 @@ export async function POST(req: NextRequest) {
     const telegramResult = await sendTelegramOrderNotification({
       orderId,
       customerName,
-      phone,
-      whatsapp,
+      phone: contactPhone,
+      whatsapp: contactPhone,
       productName: packageName,
       price,
       paymentMethod,
@@ -149,7 +158,7 @@ export async function PATCH(req: NextRequest) {
     if (!id || !status) {
       return NextResponse.json({ success: false, message: 'Missing parameters' }, { status: 400 });
     }
-    const updated = updateOrderStatus(id, status);
+    const updated = await dbUpdateOrderStatus(id, status);
     return NextResponse.json({ success: updated });
   } catch (err: any) {
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });
@@ -163,7 +172,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) {
       return NextResponse.json({ success: false, message: 'Missing order id' }, { status: 400 });
     }
-    const deleted = deleteOrder(id);
+    const deleted = await dbDeleteOrder(id);
     return NextResponse.json({ success: deleted });
   } catch (err: any) {
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });

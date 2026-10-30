@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { searchOrders } from '@/lib/orders-store';
 import { defaultProducts } from '@/data/products';
-import { dbGetProducts } from '@/lib/d1';
+import { dbGetProducts, dbSearchOrders } from '@/lib/d1';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -12,13 +11,13 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const matchedOrders = searchOrders(query);
+    const matchedOrders = await dbSearchOrders(query);
 
     if (matchedOrders.length === 0) {
       return NextResponse.json({
         success: true,
         orders: [],
-        message: 'কোনো অর্ডার খুঁজে পাওয়া যায়নি। অনুগ্রহ করে সঠিক ফোন নম্বর বা TrxID দিন।',
+        message: 'কোনো অর্ডার খুঁজে পাওয়া যায়নি। অনুগ্রহ করে সঠিক WhatsApp নম্বর বা TrxID দিন।',
       });
     }
 
@@ -42,7 +41,7 @@ export async function GET(req: NextRequest) {
         id: order.id,
         created_at: order.created_at,
         trx_id: order.trx_id,
-        user_phone: order.user_phone,
+        user_phone: order.whatsapp || order.user_phone,
         status: order.status || 'pending',
         payment_method: order.payment_method,
         product_name: order.product_name,

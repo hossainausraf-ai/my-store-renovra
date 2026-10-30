@@ -1,6 +1,7 @@
 import { defaultProducts, Product } from '@/data/products';
 import { defaultSettings, SiteSettings } from '@/data/settings';
 import { defaultCoupons, Coupon } from '@/data/coupons';
+import { StoredOrder, getAllOrders, addOrder, updateOrderStatus, deleteOrder, searchOrders } from '@/lib/orders-store';
 import fs from 'fs';
 import path from 'path';
 
@@ -919,5 +920,115 @@ export async function dbReorderHeroCards(orderedIds: string[]): Promise<boolean>
   saveLocalHeroCards(reordered);
   return true;
 }
+
+// ========================================================
+// ORDERS (Cloudflare D1 + Fallback)
+// ========================================================
+export async function dbGetOrders(): Promise<StoredOrder[]> {
+  if (isD1Configured()) {
+    try {
+      const rows = await queryD1<StoredOrder>('SELECT * FROM orders ORDER BY created_at DESC');
+      if (rows && Array.isArray(rows)) return rows;
+    } catch (err) {
+      console.warn('D1 dbGetOrders Error:', err);
+    }
+  }
+  return getAllOrders();
+}
+
+export async function dbSaveOrder(order: StoredOrder): Promise<StoredOrder> {
+  if (isD1Configured()) {
+    try {
+      await queryD1(
+        `INSERT INTO orders (id, user_phone, trx_id, payment_method, package_id, product_name, price, status, proof_url, customer_name, whatsapp, created_at, original_price, discount_amount, coupon_code)
+         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        [
+          order.id,
+          order.user_phone,
+          order.trx_id || null,
+          order.payment_method || null,
+          order.package_id || null,
+          order.product_name || null,
+          order.price || 0,
+          order.status || 'pending',
+          order.proof_url || null,
+          order.customer_name || null,
+          order.whatsapp || null,
+          order.created_at || new Date().toISOString(),
+          order.original_price || null,
+          order.discount_amount || null,
+          order.coupon_code || null,
+        ]
+      );
+    } catch (err) {
+      console.warn('D1 dbSaveOrder Error:', err);
+    }
+  }
+  addOrder(order);
+  return order;
+}
+
+export async function dbUpdateOrderStatus(id: string, status: string): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      await queryD1('UPDATE orders SET status = ? WHERE id = ? OR trx_id = ?', [status, id, id]);
+    } catch (err) {
+      console.warn('D1 dbUpdateOrderStatus Error:', err);
+    }
+  }
+  updateOrderStatus(id, status as any);
+  return true;
+}
+
+export async function dbDeleteOrder(id: string): Promise<boolean> {
+  if (isD1Configured()) {
+    try {
+      await queryD1('DELETE FROM orders WHERE id = ? OR trx_id = ?', [id, id]);
+    } catch (err) {
+      console.warn('D1 dbDeleteOrder Error:', err);
+    }
+  }
+  deleteOrder(id);
+  return true;
+}
+
+export async function dbSearchOrders(query: string): Promise<StoredOrder[]> {
+  const cleanQ = query.trim();
+  if (!cleanQ) return [];
+
+  if (isD1Configured()) {
+    try {
+      const digits = cleanQ.replace(/\D/g, '');
+      const corePhone = digits.length >= 10 ? digits.slice(-10) : digits;
+      const qParam = `%${cleanQ}%`;
+      const phoneParam = `%${corePhone}%`;
+
+      let sql = `
+        SELECT * FROM orders 
+        WHERE LOWER(id) LIKE LOWER(?) 
+           OR LOWER(trx_id) LIKE LOWER(?) 
+           OR LOWER(user_phone) LIKE LOWER(?) 
+           OR LOWER(whatsapp) LIKE LOWER(?) 
+           OR LOWER(customer_name) LIKE LOWER(?)
+      `;
+      const params: any[] = [qParam, qParam, qParam, qParam, qParam];
+
+      if (corePhone.length >= 7) {
+        sql += ` OR user_phone LIKE ? OR whatsapp LIKE ?`;
+        params.push(phoneParam, phoneParam);
+      }
+
+      sql += ` ORDER BY created_at DESC`;
+
+      const rows = await queryD1<StoredOrder>(sql, params);
+      if (rows && rows.length > 0) return rows;
+    } catch (err) {
+      console.warn('D1 dbSearchOrders Error:', err);
+    }
+  }
+
+  return searchOrders(cleanQ);
+}
+
 
 
