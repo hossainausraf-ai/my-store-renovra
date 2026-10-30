@@ -151,7 +151,7 @@ export default function HowItWorksVideos() {
               <Play className="w-2.5 h-2.5 fill-current" />
               <span>ভিডিও টিউটোরিয়াল</span>
             </div>
-            <h3 className="text-base sm:text-xl font-bold text-white tracking-tight mb-1">
+            <h3 className="text-xs min-[360px]:text-[13px] min-[400px]:text-sm sm:text-xl font-bold text-white tracking-tight mb-1 whitespace-nowrap overflow-hidden text-ellipsis">
               Extension Install Guideline For PC & Android
             </h3>
             <p className="text-xs sm:text-sm text-gray-400 leading-relaxed">
@@ -159,32 +159,32 @@ export default function HowItWorksVideos() {
             </p>
           </div>
 
-          {/* Device Switcher Tabs: PC vs Phone */}
+          {/* Device Switcher Tabs: PC vs Android */}
           <div className="grid grid-cols-2 gap-2 p-1 bg-black/40 border border-white/10 rounded-2xl mb-4">
             <button
               type="button"
               onClick={() => setDeviceTab('pc')}
-              className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              className={`py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer whitespace-nowrap ${
                 deviceTab === 'pc'
                   ? 'bg-[#ccff00] text-black shadow-[0_0_15px_rgba(204,255,0,0.3)]'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Monitor className="w-4 h-4" />
+              <Monitor className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
               <span>PC Version</span>
             </button>
 
             <button
               type="button"
               onClick={() => setDeviceTab('phone')}
-              className={`py-2.5 px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all cursor-pointer ${
+              className={`py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 sm:gap-2 transition-all cursor-pointer whitespace-nowrap ${
                 deviceTab === 'phone'
                   ? 'bg-[#ccff00] text-black shadow-[0_0_15px_rgba(204,255,0,0.3)]'
                   : 'text-gray-400 hover:text-white hover:bg-white/5'
               }`}
             >
-              <Smartphone className="w-4 h-4" />
-              <span>Phone / Android</span>
+              <Smartphone className="w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0" />
+              <span>Android</span>
             </button>
           </div>
 
