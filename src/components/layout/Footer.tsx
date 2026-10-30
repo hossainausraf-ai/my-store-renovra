@@ -5,7 +5,7 @@ export default function Footer() {
   const logoUrl = defaultSettings.logo_url;
 
   return (
-    <footer className="bg-[var(--surface)] border-t border-white/10 pt-16 pb-28 md:pb-12 mt-auto w-full relative z-10">
+    <footer className="bg-[var(--surface)] border-t border-white/10 pt-8 sm:pt-16 pb-24 md:pb-12 mt-auto w-full relative z-10">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
 

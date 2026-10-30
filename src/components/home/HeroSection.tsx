@@ -123,7 +123,7 @@ export default function HeroSection() {
   };
 
   return (
-    <div className="relative w-full pt-10 pb-4 sm:pt-16 sm:pb-8 md:pt-24 md:pb-12 overflow-hidden bg-transparent">
+    <div className="relative w-full pt-8 pb-3 sm:pt-16 sm:pb-8 md:pt-24 md:pb-12 overflow-hidden bg-transparent">
       
       {/* Dynamic Background Effects */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>

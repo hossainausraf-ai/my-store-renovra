@@ -199,19 +199,19 @@ export default function UserReviews() {
   const loopRow2 = [...row2Reviews, ...row2Reviews];
 
   return (
-    <section className="py-16 sm:py-24 bg-transparent border-t border-white/5 relative overflow-hidden w-full">
+    <section className="py-6 sm:py-24 bg-transparent border-t border-white/5 relative overflow-hidden w-full">
       
       {/* Background Ambient Glow */}
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[350px] bg-gradient-to-tr from-blue-600/10 via-[#ccff00]/5 to-purple-600/10 rounded-full blur-[140px] pointer-events-none -z-10" />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-10 sm:mb-14 px-4">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-[#ccff00] mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
+      <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-14 px-4">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-[#ccff00] mb-1.5 sm:mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
           <Sparkles className="w-3 h-3" />
           <span>কাস্টমার রিভিউ • 100% Genuine</span>
         </div>
 
-        <h2 className="text-xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-2 sm:mb-3 sm:whitespace-nowrap">
+        <h2 className="text-lg sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight mb-1.5 sm:mb-3 sm:whitespace-nowrap">
           Loved by 1,200+ Creators & Students
         </h2>
         

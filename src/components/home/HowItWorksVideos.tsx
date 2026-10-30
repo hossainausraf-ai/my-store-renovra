@@ -50,7 +50,7 @@ export default function HowItWorksVideos() {
   const [deviceTab, setDeviceTab] = useState<'pc' | 'phone'>('pc');
 
   return (
-    <section id="faq" className="relative w-full py-14 sm:py-20 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24 sm:scroll-mt-32">
+    <section id="faq" className="relative w-full py-6 sm:py-20 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24 sm:scroll-mt-32">
       {/* Anchor for Watch How It Works links */}
       <div id="how-it-works" className="-mt-24 pt-24" />
 
@@ -58,13 +58,13 @@ export default function HowItWorksVideos() {
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[350px] bg-gradient-to-tr from-blue-600/10 via-[#ccff00]/5 to-purple-600/10 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* Section Header */}
-      <div className="text-center max-w-3xl mx-auto mb-8 sm:mb-12">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] sm:text-xs font-semibold text-[#ccff00] mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
+      <div className="text-center max-w-3xl mx-auto mb-4 sm:mb-12">
+        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-white/5 border border-white/10 text-[10px] sm:text-xs font-semibold text-[#ccff00] mb-1.5 sm:mb-2.5 shadow-[0_0_15px_rgba(204,255,0,0.15)]">
           <HelpCircle className="w-3 h-3" />
           <span>FAQ ও ভিডিও গাইডলাইন</span>
         </div>
 
-        <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-1.5 sm:mb-2">
+        <h2 className="text-lg sm:text-2xl md:text-3xl font-extrabold text-white tracking-tight mb-1 sm:mb-2">
           সাধারণ জিজ্ঞাসা ও ব্যবহারের নিয়ম
         </h2>
         

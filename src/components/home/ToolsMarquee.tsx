@@ -165,11 +165,11 @@ export default function ToolsMarquee() {
   const bottomQuad = [...bottomRowTools, ...bottomRowTools, ...bottomRowTools, ...bottomRowTools];
 
   return (
-    <section className="py-16 sm:py-24 w-full overflow-hidden bg-transparent border-t border-white/5 relative">
-      <div className="text-center mb-10 sm:mb-14 px-4">
-        <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2">Our Tool Stack</p>
-        <h2 className="text-xl sm:text-3xl font-extrabold text-white tracking-tight">PREMIUM TOOLS WE PROVIDE</h2>
-        <p className="text-xs sm:text-sm text-gray-400 mt-2 max-w-md mx-auto">
+    <section className="py-6 sm:py-24 w-full overflow-hidden bg-transparent border-t border-white/5 relative">
+      <div className="text-center mb-4 sm:mb-14 px-4">
+        <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1 sm:mb-2">Our Tool Stack</p>
+        <h2 className="text-lg sm:text-3xl font-extrabold text-white tracking-tight">PREMIUM TOOLS WE PROVIDE</h2>
+        <p className="text-[11px] sm:text-sm text-gray-400 mt-1 sm:mt-2 max-w-md mx-auto">
           Over 100+ industry-standard tools available instantly from your dashboard
         </p>
       </div>

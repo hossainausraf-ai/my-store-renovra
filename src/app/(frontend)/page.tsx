@@ -50,7 +50,7 @@ export default function Home() {
     : allSingleTools.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-24">
+    <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-20 sm:pb-24">
 
       {/* Hero Section */}
       <div className="w-full">
@@ -60,11 +60,11 @@ export default function Home() {
       {/* Subscriptions Section (Moved below Hero) */}
       <div className="max-w-7xl mx-auto w-full mt-2 sm:mt-6 px-2.5 sm:px-4 scroll-mt-24" id="packages">
         {isLoading ? (
-          <div className="text-center py-20 text-gray-400">লোড হচ্ছে...</div>
+          <div className="text-center py-10 sm:py-20 text-gray-400">লোড হচ্ছে...</div>
         ) : (
           subscriptions.length > 0 && (
-            <div className="mb-12 sm:mb-16">
-              <div className="text-center mb-5 sm:mb-8">
+            <div className="mb-6 sm:mb-16">
+              <div className="text-center mb-4 sm:mb-8">
                 <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1 sm:mb-2">Pricing</p>
                 <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1 sm:mb-3 text-white sm:whitespace-nowrap">Choose a plan that's right for you</h2>
                 <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
@@ -95,16 +95,16 @@ export default function Home() {
         )}
       </div>
 
-      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-8 sm:mt-16 px-2.5 sm:px-4">
+      <div id="tools" className="max-w-7xl mx-auto w-full scroll-mt-24 mt-4 sm:mt-16 px-2.5 sm:px-4">
         {/* Section Header */}
-        <div className="text-center mb-6 sm:mb-10">
-          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">The Arsenal</p>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Premium tools, zero setup.</h2>
+        <div className="text-center mb-4 sm:mb-10">
+          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 sm:mb-3">The Arsenal</p>
+          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-1.5 sm:mb-4 text-white">Premium tools, zero setup.</h2>
           <p className="text-xs sm:text-base text-gray-400">Hand-picked subscriptions, instantly accessible from your dashboard.</p>
         </div>
 
         {/* Category Filters (Mobile: 1-line horizontal scroll, Desktop: flex wrap centered) */}
-        <div className="relative w-full mb-8 sm:mb-12">
+        <div className="relative w-full mb-4 sm:mb-12">
           <div className="flex sm:flex-wrap items-center sm:justify-center gap-2 sm:gap-3 overflow-x-auto sm:overflow-x-visible no-scrollbar px-2 sm:px-0 py-1.5 scroll-smooth">
             {categories.map(cat => {
               const isActive = activeCategory.toLowerCase() === cat.toLowerCase();
@@ -134,7 +134,7 @@ export default function Home() {
           <>
             {/* Single Premium Tools Section */}
             {singleTools.length > 0 && (
-              <div className="mb-16 sm:mb-24">
+              <div className="mb-6 sm:mb-24">
                 <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-6">
                   {singleTools.slice(0, visibleCount).map((tool) => (
                     <SingleToolCard
@@ -201,7 +201,7 @@ export default function Home() {
       <ToolsMarquee />
 
       {/* User Reviews Section */}
-      <div className="w-full mt-16 sm:mt-24">
+      <div className="w-full mt-6 sm:mt-24">
         <UserReviews />
       </div>
 

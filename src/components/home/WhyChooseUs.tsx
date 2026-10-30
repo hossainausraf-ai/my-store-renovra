@@ -74,11 +74,11 @@ const FEATURES = [
 
 export default function WhyChooseUs() {
   return (
-    <section className="py-14 sm:py-24 px-3 sm:px-4 bg-transparent w-full overflow-hidden">
+    <section className="py-6 sm:py-24 px-3 sm:px-4 bg-transparent w-full overflow-hidden">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-8 sm:mb-16">
-          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Elevate Your Workflow</p>
-          <h2 className="text-2xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-2 sm:mb-4 text-white">Why Choose Our Subscription?</h2>
+        <div className="text-center mb-4 sm:mb-16">
+          <p className="text-green-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1.5 sm:mb-3">Elevate Your Workflow</p>
+          <h2 className="text-xl sm:text-3xl md:text-5xl font-bold tracking-tight mb-1.5 sm:mb-4 text-white">Why Choose Our Subscription?</h2>
           <p className="text-gray-400 text-xs sm:text-lg max-w-2xl mx-auto">
             We've engineered a platform that focuses on <strong className="text-white">real productivity</strong>, saving you both time and money.
           </p>
