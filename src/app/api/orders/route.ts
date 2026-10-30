@@ -161,6 +161,7 @@ export async function PATCH(req: NextRequest) {
     const updated = await dbUpdateOrderStatus(id, status);
     return NextResponse.json({ success: updated });
   } catch (err: any) {
+    console.error('PATCH /api/orders error:', err);
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }
@@ -175,6 +176,7 @@ export async function DELETE(req: NextRequest) {
     const deleted = await dbDeleteOrder(id);
     return NextResponse.json({ success: deleted });
   } catch (err: any) {
+    console.error('PATCH /api/orders error:', err);
     return NextResponse.json({ success: false, message: err.message }, { status: 500 });
   }
 }
