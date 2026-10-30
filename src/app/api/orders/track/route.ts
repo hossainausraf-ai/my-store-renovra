@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
         status: order.status || 'pending',
         payment_method: order.payment_method,
         product_name: order.product_name,
-        download_url: order.status === 'approved' ? (product.download_url || '') : '',
+        download_url: (order.status === 'approved' || order.status === 'confirmed') ? (product.download_url || '') : '',
       };
     });
 

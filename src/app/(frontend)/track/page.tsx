@@ -65,23 +65,30 @@ function TrackOrderContent() {
   };
 
   const getStatusBadge = (status: string) => {
-    if (status === 'approved') {
+    if (status === 'approved' || status === 'confirmed') {
       return (
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-green-500/10 text-green-400 border border-green-500/20">
-          <CheckCircle2 className="w-3.5 h-3.5" /> Approved
+          <CheckCircle2 className="w-3.5 h-3.5" /> কনফার্মড (Confirmed)
         </span>
       );
     }
-    if (status === 'rejected') {
+    if (status === 'rejected' || status === 'declined') {
       return (
         <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-red-500/10 text-red-400 border border-red-500/20">
-          <XCircle className="w-3.5 h-3.5" /> Rejected
+          <XCircle className="w-3.5 h-3.5" /> বাতিল (Declined)
+        </span>
+      );
+    }
+    if (status === 'verifying') {
+      return (
+        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+          <Clock className="w-3.5 h-3.5 animate-pulse" /> ভেরিফিকেশন চলছে (Verifying)
         </span>
       );
     }
     return (
       <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-        <Clock className="w-3.5 h-3.5 animate-pulse" /> Pending Verification
+        <Clock className="w-3.5 h-3.5 animate-pulse" /> পেন্ডিং (Pending)
       </span>
     );
   };
@@ -164,26 +171,31 @@ function TrackOrderContent() {
               {/* Status explanation */}
               <div className="pt-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="text-sm text-gray-300">
-                  {order.status === 'approved' ? (
+                  {(order.status === 'approved' || order.status === 'confirmed') ? (
                     <div className="text-green-400 flex items-center gap-2 font-medium">
-                      <CheckCircle2 className="w-4 h-4" />
-                      আপনার অর্ডার অনুমোদিত হয়েছে! নিচে থেকে ফাইল ডাউনলোড করুন বা WhatsApp-এ এক্সেস পান।
+                      <CheckCircle2 className="w-4 h-4 shrink-0" />
+                      <span>আপনার অর্ডার কনফার্ম হয়েছে! নিচে থেকে ফাইল ডাউনলোড করুন বা WhatsApp-এ এক্সেস পান।</span>
                     </div>
-                  ) : order.status === 'rejected' ? (
-                    <div className="text-red-400 flex items-center gap-2">
-                      <XCircle className="w-4 h-4" />
-                      পেমেন্ট তথ্যে সমস্যা পাওয়া গেছে। অনুগ্রহ করে WhatsApp সাপোর্টে কথা বলুন।
+                  ) : (order.status === 'rejected' || order.status === 'declined') ? (
+                    <div className="text-red-400 flex items-center gap-2 font-medium">
+                      <XCircle className="w-4 h-4 shrink-0" />
+                      <span>অর্ডার বাতিল (Declined) হয়েছে বা পেমেন্ট তথ্যে অসঙ্গতি রয়েছে। বিস্তারিত জানতে WhatsApp সাপোর্টে যোগাযোগ করুন।</span>
+                    </div>
+                  ) : order.status === 'verifying' ? (
+                    <div className="text-cyan-400 flex items-center gap-2 font-medium">
+                      <Clock className="w-4 h-4 shrink-0 animate-pulse" />
+                      <span>আপনার পেমেন্ট ও তথ্য যাচাই (Verifying) চলছে। কিছুক্ষণের মধ্যেই কনফার্মেশন পাবেন।</span>
                     </div>
                   ) : (
-                    <div className="text-yellow-400/90 flex items-center gap-2">
-                      <Clock className="w-4 h-4" />
-                      অ্যাডমিন পেমেন্ট যাচাই করছেন। সাধারণত ৫-১৫ মিনিটের মধ্যে কনফার্মেশন পাওয়া যায়।
+                    <div className="text-yellow-400/90 flex items-center gap-2 font-medium">
+                      <Clock className="w-4 h-4 shrink-0" />
+                      <span>অর্ডার পেন্ডিং রয়েছে। অ্যাডমিন সাধারণত ৫-১৫ মিনিটের মধ্যে যাচাই করে অ্যাক্সেস প্রদান করবেন।</span>
                     </div>
                   )}
                 </div>
 
                 <div className="flex items-center gap-3">
-                  {order.status === 'approved' && order.download_url && (
+                  {(order.status === 'approved' || order.status === 'confirmed') && order.download_url && (
                     <a
                       href={order.download_url}
                       target="_blank"

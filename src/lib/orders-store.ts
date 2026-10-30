@@ -1,6 +1,8 @@
 import fs from 'fs';
 import path from 'path';
 
+export type OrderStatus = 'pending' | 'verifying' | 'approved' | 'confirmed' | 'rejected' | 'declined';
+
 export interface StoredOrder {
   id: string;
   created_at: string;
@@ -10,7 +12,7 @@ export interface StoredOrder {
   package_id: string;
   product_name: string;
   price: number;
-  status: 'pending' | 'approved' | 'rejected';
+  status: OrderStatus | string;
   proof_url?: string;
   customer_name?: string;
   whatsapp?: string;
@@ -65,7 +67,7 @@ export function addOrder(newOrder: StoredOrder): StoredOrder {
   return newOrder;
 }
 
-export function updateOrderStatus(id: string, status: 'pending' | 'approved' | 'rejected'): boolean {
+export function updateOrderStatus(id: string, status: string): boolean {
   const orders = getAllOrders();
   const order = orders.find((o) => o.id === id || o.trx_id === id);
   if (!order) return false;
