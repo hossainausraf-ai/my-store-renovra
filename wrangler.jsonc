@@ -9,5 +9,12 @@
   "assets": {
     "directory": ".open-next/assets",
     "binding": "ASSETS"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "renovra-db",
+      "database_id": "d7e8d988-1629-4301-aa1b-88cd6b437cd3"
+    }
+  ]
 }

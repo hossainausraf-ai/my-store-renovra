@@ -1,3 +1,5 @@
+import { getEnvVar } from '@/lib/d1';
+
 export interface TelegramOrderPayload {
   orderId: string;
   customerName?: string;
@@ -17,9 +19,9 @@ export interface TelegramOrderPayload {
 }
 
 export async function sendTelegramOrderNotification(payload: TelegramOrderPayload) {
-  const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  const chatId = process.env.TELEGRAM_CHAT_ID;
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://renovra.com';
+  const botToken = getEnvVar('TELEGRAM_BOT_TOKEN');
+  const chatId = getEnvVar('TELEGRAM_CHAT_ID');
+  const siteUrl = getEnvVar('NEXT_PUBLIC_SITE_URL', 'https://shop.renovra.workers.dev');
 
   if (!botToken || !chatId) {
     console.warn(

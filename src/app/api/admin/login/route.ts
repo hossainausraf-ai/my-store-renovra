@@ -1,13 +1,14 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { getEnvVar } from '@/lib/d1';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { email, password } = body;
 
-    const configuredEmail = (process.env.ADMIN_EMAIL || 'renovrait@gmail.com').trim().toLowerCase();
-    const configuredPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    const configuredEmail = getEnvVar('ADMIN_EMAIL', 'renovrait@gmail.com').trim().toLowerCase();
+    const configuredPassword = getEnvVar('ADMIN_PASSWORD', '137902');
 
     const inputEmail = (email || '').trim().toLowerCase();
     const inputPassword = password || '';

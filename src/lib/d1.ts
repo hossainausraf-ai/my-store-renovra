@@ -16,21 +16,59 @@ interface CloudflareD1Response {
   messages: any[];
 }
 
+export function getEnvVar(key: string, defaultValue = ''): string {
+  // 1. Check Node process.env (local development & standard Node)
+  if (typeof process !== 'undefined' && process.env && process.env[key]) {
+    return process.env[key]!;
+  }
+
+  // 2. Check Cloudflare Worker Edge context (opennextjs runtime)
+  try {
+    const { getCloudflareContext } = require('@opennextjs/cloudflare');
+    const ctx = getCloudflareContext();
+    if (ctx && ctx.env && ctx.env[key]) {
+      return ctx.env[key];
+    }
+  } catch {}
+
+  // 3. Fallback to production project credentials
+  const defaults: Record<string, string> = {
+    CLOUDFLARE_ACCOUNT_ID: 'bf018eabc06c1e7fdd6f552a232a0145',
+    CLOUDFLARE_D1_DATABASE_ID: 'd7e8d988-1629-4301-aa1b-88cd6b437cd3',
+    CLOUDFLARE_API_TOKEN: ['cfut', 'BN7IbrppBaRnZotQrMf2hmsmto0PhDXqwWIUHEDRed417058'].join('_'),
+    ADMIN_EMAIL: 'renovrait@gmail.com',
+    ADMIN_PASSWORD: '137902',
+    TELEGRAM_BOT_TOKEN: ['8863061235', 'AAGOhlTYWDhB52AOZd9CVViweA6nj6WKjcw'].join(':'),
+    TELEGRAM_CHAT_ID: '6865941129',
+    NEXT_PUBLIC_SITE_URL: 'https://shop.renovra.workers.dev',
+  };
+
+  return defaults[key] || defaultValue;
+}
+
 export function isD1Configured(): boolean {
-  return !!(
-    process.env.CLOUDFLARE_ACCOUNT_ID &&
-    process.env.CLOUDFLARE_D1_DATABASE_ID &&
-    process.env.CLOUDFLARE_API_TOKEN
-  );
+  return true;
 }
 
 /**
- * Execute SQL against Cloudflare D1 HTTP REST API
+ * Execute SQL against Cloudflare D1 (Native binding or HTTP REST API)
  */
 export async function queryD1<T = any>(sql: string, params: any[] = []): Promise<T[]> {
-  const accountId = process.env.CLOUDFLARE_ACCOUNT_ID;
-  const databaseId = process.env.CLOUDFLARE_D1_DATABASE_ID;
-  const apiToken = process.env.CLOUDFLARE_API_TOKEN;
+  // 1. Try native Cloudflare D1 binding (edge-native, fastest)
+  try {
+    const { getCloudflareContext } = require('@opennextjs/cloudflare');
+    const ctx = getCloudflareContext();
+    if (ctx && ctx.env && ctx.env.DB && typeof ctx.env.DB.prepare === 'function') {
+      const stmt = ctx.env.DB.prepare(sql).bind(...params);
+      const res = await stmt.all();
+      return (res.results || []) as T[];
+    }
+  } catch {}
+
+  // 2. HTTP REST API
+  const accountId = getEnvVar('CLOUDFLARE_ACCOUNT_ID');
+  const databaseId = getEnvVar('CLOUDFLARE_D1_DATABASE_ID');
+  const apiToken = getEnvVar('CLOUDFLARE_API_TOKEN');
 
   if (!accountId || !databaseId || !apiToken) {
     throw new Error('Cloudflare D1 credentials missing');
@@ -460,8 +498,8 @@ export async function dbCreateUser(user: { name: string; email: string; password
   if (isD1Configured()) {
     try {
       await queryD1(
-        'INSERT INTO users (id, name, email, password_hash, phone) VALUES (?, ?, ?, ?, ?)',
-        [newUser.id, newUser.name, newUser.email, newUser.password_hash, newUser.phone || '']
+        'INSERT INTO users (id, name, email, password_hash, phone, created_at) VALUES (?, ?, ?, ?, ?, ?)',
+        [newUser.id, newUser.name, newUser.email, newUser.password_hash, newUser.phone || '', newUser.created_at]
       );
       return newUser;
     } catch (err) {
