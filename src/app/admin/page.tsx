@@ -16,7 +16,10 @@ import {
   MessageSquare,
   ShieldAlert,
   ShieldCheck,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  ExternalLink,
+  ImageOff
 } from 'lucide-react';
 
 type Payment = {
@@ -52,7 +55,7 @@ export default function AdminDashboard() {
 
     setProducts(defaultProducts);
     try {
-      const res = await fetch('/api/orders');
+      const res = await fetch(`/api/orders?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.orders) {
         setPayments(data.orders);
@@ -409,14 +412,25 @@ export default function AdminDashboard() {
                           )}
                           {payment.proof_url && payment.proof_url !== 'FREE_TRIAL' && (
                             <button 
+                              type="button"
                               onClick={() => setSelectedProof(payment.proof_url!)} 
-                              className="text-xs text-blue-400 hover:text-blue-300 underline text-left mt-1.5 inline-block font-medium"
+                              className="inline-flex items-center gap-1.5 mt-2 px-2.5 py-1 rounded-lg bg-blue-500/15 hover:bg-blue-500/25 text-blue-400 hover:text-blue-300 border border-blue-500/30 text-xs font-semibold transition shadow-sm w-fit cursor-pointer"
+                              title="গ্রাহকের পেমেন্ট স্ক্রিনশট দেখুন"
                             >
-                              📷 প্রুফ দেখুন
+                              <Eye className="w-3.5 h-3.5" />
+                              <span>প্রুফ দেখুন</span>
                             </button>
                           )}
                           {payment.proof_url === 'FREE_TRIAL' && (
-                            <span className="text-xs text-green-400 mt-1 font-semibold">ফ্রি ট্রায়াল</span>
+                            <span className="inline-flex items-center gap-1 mt-2 px-2 py-0.5 rounded text-[11px] font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/25 w-fit">
+                              🎁 ফ্রি ট্রায়াল
+                            </span>
+                          )}
+                          {!payment.proof_url && (
+                            <span className="text-[11px] text-gray-500 italic mt-2 flex items-center gap-1">
+                              <ImageOff className="w-3 h-3 text-gray-600" />
+                              <span>কোনো প্রুফ নেই</span>
+                            </span>
                           )}
                         </div>
                       </td>
@@ -482,16 +496,81 @@ export default function AdminDashboard() {
 
       {/* Proof Image Modal */}
       {selectedProof && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-sm" onClick={() => setSelectedProof(null)}>
-          <div className="relative max-w-2xl w-full bg-[var(--surface)] p-4 rounded-2xl border border-white/10 shadow-2xl" onClick={e => e.stopPropagation()}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className="text-lg font-bold text-white">গ্রাহকের পেমেন্ট স্ক্রিনশট / প্রমাণ</h3>
-              <button onClick={() => setSelectedProof(null)} className="p-2 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors">
-                <XCircle className="w-6 h-6" />
-              </button>
+        <div 
+          className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in duration-200" 
+          onClick={() => setSelectedProof(null)}
+        >
+          <div 
+            className="relative max-w-2xl w-full bg-[#0d1322] p-5 rounded-2xl border border-white/10 shadow-2xl overflow-hidden" 
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center pb-3 border-b border-white/10 mb-4">
+              <div className="flex items-center gap-2">
+                <span className="p-1.5 rounded-lg bg-blue-500/15 text-blue-400 border border-blue-500/30">
+                  <Eye className="w-4 h-4" />
+                </span>
+                <h3 className="text-base font-bold text-white">গ্রাহকের পেমেন্ট স্ক্রিনশট / প্রমাণ</h3>
+              </div>
+              
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => {
+                    const w = window.open('');
+                    if (w) {
+                      w.document.write(`
+                        <html>
+                          <head><title>পেমেন্ট প্রুফ - Renovra</title></head>
+                          <body style="margin:0;background:#0b0f19;display:flex;align-items:center;justify-content:center;min-height:100vh;">
+                            <img src="${selectedProof}" style="max-width:95vw;max-height:95vh;object-fit:contain;border-radius:8px;box-shadow:0 10px 40px rgba(0,0,0,0.8);" />
+                          </body>
+                        </html>
+                      `);
+                    }
+                  }}
+                  className="px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-medium text-gray-300 hover:text-white border border-white/10 flex items-center gap-1.5 transition cursor-pointer"
+                  title="নতুন ব্রাউজার ট্যাবে বড় করে দেখুন"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">নতুন ট্যাবে</span>
+                </button>
+
+                <a
+                  href={selectedProof}
+                  download={`renovra-proof-${Date.now()}.png`}
+                  className="px-2.5 py-1.5 rounded-lg bg-emerald-500/15 hover:bg-emerald-500/25 text-xs font-semibold text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5 transition"
+                  title="ছবি ডাউনলোড করুন"
+                >
+                  <Download className="w-3.5 h-3.5" />
+                  <span className="hidden sm:inline">ডাউনলোড</span>
+                </a>
+
+                <button 
+                  onClick={() => setSelectedProof(null)} 
+                  className="p-1.5 text-gray-400 hover:text-white rounded-lg hover:bg-white/10 transition-colors ml-1 cursor-pointer"
+                  title="বন্ধ করুন"
+                >
+                  <XCircle className="w-6 h-6" />
+                </button>
+              </div>
             </div>
-            <div className="p-2 overflow-hidden rounded-xl bg-black/50 flex justify-center">
-              <img src={selectedProof} alt="Payment Proof" className="max-h-[70vh] object-contain rounded-lg" />
+
+            <div className="relative p-3 overflow-hidden rounded-xl bg-black/60 border border-white/5 flex items-center justify-center min-h-[260px] max-h-[72vh]">
+              {selectedProof.startsWith('http') || selectedProof.startsWith('data:') ? (
+                <img 
+                  src={selectedProof} 
+                  alt="Customer Payment Proof" 
+                  className="max-h-[68vh] w-auto max-w-full object-contain rounded-lg shadow-2xl transition"
+                />
+              ) : (
+                <div className="text-center p-6 text-gray-400 flex flex-col items-center gap-2">
+                  <ImageOff className="w-8 h-8 text-gray-500" />
+                  <p className="text-sm font-medium text-gray-300">ইমেজ প্রিভিউ উপলব্ধ নয়</p>
+                  <p className="text-xs text-gray-500 font-mono bg-white/5 px-3 py-1.5 rounded-lg max-w-md break-all">
+                    {selectedProof}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         </div>

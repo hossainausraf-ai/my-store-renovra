@@ -25,6 +25,7 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { optimizeImageClient } from '@/lib/image-optimizer';
 
 function CheckoutForm() {
   const searchParams = useSearchParams();
@@ -72,6 +73,8 @@ function CheckoutForm() {
   const [trxIdInput, setTrxIdInput] = useState('');
   const [proofFile, setProofFile] = useState<File | null>(null);
   const [proofPreview, setProofPreview] = useState<string | null>(null);
+  const [proofDataUrl, setProofDataUrl] = useState<string>('');
+  const [isOptimizingProof, setIsOptimizingProof] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState<'bkash' | 'cellfin' | 'bank_transfer' | 'bangla_qr' | 'redotpay'>('bkash');
   const [copied, setCopied] = useState(false);
 
@@ -325,7 +328,7 @@ function CheckoutForm() {
       return;
     }
 
-    if (finalPrice > 0 && !proofFile) {
+    if (finalPrice > 0 && !proofFile && !proofDataUrl) {
       setError('দয়া করে পেমেন্টের স্ক্রিনশট আপলোড করুন।');
       setIsLoading(false);
       return;
@@ -354,6 +357,7 @@ function CheckoutForm() {
       formData.append('paymentMethod', paymentMethod);
       formData.append('trxId', trxIdInput);
       if (currentUser?.id) formData.append('userId', currentUser.id);
+      if (proofDataUrl) formData.append('proofUrl', proofDataUrl);
       if (proofFile) formData.append('proof', proofFile);
 
       const res = await fetch('/api/orders', {
@@ -1175,24 +1179,48 @@ function CheckoutForm() {
                     <span className="text-[11px] text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded-md border border-amber-500/20">বাধ্যতামূলক</span>
                   </label>
                   {!proofPreview ? (
-                    <label className={`flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer bg-black/20 hover:bg-black/40 transition-all ${!proofFile ? 'border-amber-500/40 hover:border-amber-400' : 'border-white/10'}`}>
-                      <div className="flex flex-col items-center justify-center pt-3 pb-3 text-center px-4">
-                        <Upload className="w-6 h-6 text-amber-400 mb-1.5 animate-bounce" />
-                        <p className="text-xs text-gray-200">
-                          <span className="font-bold text-amber-300">পেমেন্ট সফল হওয়ার স্ক্রিনশট দিন</span> বা ফাইল ড্রপ করুন
-                        </p>
-                        <p className="text-[10px] text-gray-400 mt-1">PNG, JPG, JPEG বা WebP ইমেজ</p>
-                      </div>
+                    <label className={`relative flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-xl cursor-pointer bg-black/20 hover:bg-black/40 transition-all ${!proofFile ? 'border-amber-500/40 hover:border-amber-400' : 'border-white/10'}`}>
+                      {isOptimizingProof ? (
+                        <div className="flex flex-col items-center justify-center pt-3 pb-3 text-center px-4">
+                          <Loader2 className="w-6 h-6 text-primary animate-spin mb-1.5" />
+                          <p className="text-xs text-primary font-medium">ছবি অপ্টিমাইজ করা হচ্ছে...</p>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col items-center justify-center pt-3 pb-3 text-center px-4">
+                          <Upload className="w-6 h-6 text-amber-400 mb-1.5 animate-bounce" />
+                          <p className="text-xs text-gray-200">
+                            <span className="font-bold text-amber-300">পেমেন্ট সফল হওয়ার স্ক্রিনশট দিন</span> বা ফাইল ড্রপ করুন
+                          </p>
+                          <p className="text-[10px] text-gray-400 mt-1">PNG, JPG, JPEG বা WebP ইমেজ (স্বয়ংক্রিয় কম্প্রেসড)</p>
+                        </div>
+                      )}
                       <input
                         type="file"
                         className="hidden"
                         accept="image/*"
-                        onChange={(e) => {
+                        disabled={isOptimizingProof}
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            setProofFile(file);
-                            setProofPreview(URL.createObjectURL(file));
                             setError('');
+                            setIsOptimizingProof(true);
+                            try {
+                              const optimized = await optimizeImageClient(file, { maxDimension: 1200, quality: 0.82 });
+                              setProofFile(optimized.file);
+                              setProofDataUrl(optimized.dataUrl);
+                              setProofPreview(optimized.dataUrl);
+                            } catch (err) {
+                              setProofFile(file);
+                              const objUrl = URL.createObjectURL(file);
+                              setProofPreview(objUrl);
+                              const reader = new FileReader();
+                              reader.onload = (re) => {
+                                if (re.target?.result) setProofDataUrl(re.target.result as string);
+                              };
+                              reader.readAsDataURL(file);
+                            } finally {
+                              setIsOptimizingProof(false);
+                            }
                           }
                         }}
                       />
@@ -1209,6 +1237,7 @@ function CheckoutForm() {
                           onClick={() => {
                             setProofFile(null);
                             setProofPreview(null);
+                            setProofDataUrl('');
                           }}
                           className="p-1 bg-red-500/80 hover:bg-red-500 text-white rounded-md transition"
                           title="ছবি মুছুন"

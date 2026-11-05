@@ -4,7 +4,14 @@ import { sendTelegramOrderNotification } from '@/lib/telegram';
 
 export async function GET() {
   const orders = await dbGetOrders();
-  return NextResponse.json({ success: true, orders });
+  return NextResponse.json(
+    { success: true, orders },
+    {
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+      },
+    }
+  );
 }
 
 export async function POST(req: NextRequest) {
@@ -34,7 +41,7 @@ export async function POST(req: NextRequest) {
       price = Number(json.price) || 0;
       paymentMethod = json.paymentMethod || 'bkash';
       manualTrxId = (json.trxId || '').trim();
-      proofUrl = json.proofUrl || '';
+      proofUrl = (json.proofUrl || json.proof_url || '').trim();
       couponCode = (json.couponCode || json.coupon_code || '').trim().toUpperCase();
       discountAmount = Number(json.discountAmount || json.discount_amount) || 0;
       originalPrice = Number(json.originalPrice || json.original_price) || price;
@@ -49,6 +56,7 @@ export async function POST(req: NextRequest) {
       paymentMethod = ((formData.get('paymentMethod') as string) || 'bkash').trim();
       manualTrxId = ((formData.get('trxId') as string) || '').trim();
       proofFile = formData.get('proof') as File | null;
+      proofUrl = ((formData.get('proofUrl') || formData.get('proof_url') || '') as string).trim();
       couponCode = (((formData.get('couponCode') || formData.get('coupon_code') || '') as string)).trim().toUpperCase();
       discountAmount = Number(formData.get('discountAmount') || formData.get('discount_amount')) || 0;
       originalPrice = Number(formData.get('originalPrice') || formData.get('original_price')) || price;
@@ -73,20 +81,38 @@ export async function POST(req: NextRequest) {
     const trxId = manualTrxId || `PROOF-${randomSuffix}`;
 
     let proofBuffer: Buffer | undefined;
-    let proofFileName = 'proof.jpg';
-    if (!proofUrl) proofUrl = '';
+    let proofFileName = `proof-${orderId}.jpg`;
 
+    // Process uploaded file if available
     if (proofFile && typeof proofFile.arrayBuffer === 'function') {
-      const arrayBuffer = await proofFile.arrayBuffer();
-      proofBuffer = Buffer.from(arrayBuffer);
-      proofFileName = proofFile.name || `proof-${orderId}.jpg`;
-      // Convert preview to base64 data URL for web admin view (up to 3MB)
-      if (proofBuffer.length < 3 * 1024 * 1024) {
-        proofUrl = `data:${proofFile.type || 'image/jpeg'};base64,${proofBuffer.toString('base64')}`;
-      } else {
-        proofUrl = `FILE_UPLOADED (${Math.round(proofBuffer.length / 1024)}KB)`;
+      try {
+        const arrayBuffer = await proofFile.arrayBuffer();
+        proofBuffer = Buffer.from(arrayBuffer);
+        proofFileName = proofFile.name || `proof-${orderId}.jpg`;
+        // If proofUrl was not provided from client, create base64 data url
+        if (!proofUrl || !proofUrl.startsWith('data:')) {
+          proofUrl = `data:${proofFile.type || 'image/jpeg'};base64,${proofBuffer.toString('base64')}`;
+        }
+      } catch (err) {
+        console.warn('Error reading proof file arrayBuffer:', err);
       }
-    } else if (price === 0) {
+    }
+
+    // If proofUrl was sent as a data URL from client, create Buffer for Telegram attachment if not set
+    if (!proofBuffer && proofUrl && proofUrl.startsWith('data:')) {
+      try {
+        const matches = proofUrl.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+        if (matches && matches[2]) {
+          proofBuffer = Buffer.from(matches[2], 'base64');
+          const ext = matches[1]?.includes('webp') ? 'webp' : (matches[1]?.includes('png') ? 'png' : 'jpg');
+          proofFileName = `proof-${orderId}.${ext}`;
+        }
+      } catch (err) {
+        console.warn('Error decoding base64 proofUrl into Buffer:', err);
+      }
+    }
+
+    if (price === 0) {
       proofUrl = 'FREE_TRIAL';
     }
 
