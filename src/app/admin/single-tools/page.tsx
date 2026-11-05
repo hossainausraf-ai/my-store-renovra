@@ -72,10 +72,20 @@ export default function AdminSingleToolsPage() {
     setTimeout(() => setNotification(null), 4000);
   };
 
+  const syncClientCache = async () => {
+    try {
+      const res = await fetch(`/api/products?t=${Date.now()}`, { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        localStorage.setItem('renovra_cached_products', JSON.stringify(data.products));
+      }
+    } catch {}
+  };
+
   const fetchTools = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/products?type=single_tool');
+      const res = await fetch(`/api/products?type=single_tool&t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.products) {
         setTools(data.products);
@@ -227,7 +237,8 @@ export default function AdminSingleToolsPage() {
 
       if (data.success) {
         showNotification('success', isEditing ? 'টুল আপডেট সফল হয়েছে!' : 'নতুন টুল সফলভাবে যোগ করা হয়েছে!');
-        fetchTools();
+        await fetchTools();
+        await syncClientCache();
         resetForm();
       } else {
         showNotification('error', data.message || 'টুল সংরক্ষণ করতে ব্যর্থ হয়েছে!');
@@ -247,6 +258,7 @@ export default function AdminSingleToolsPage() {
       const data = await res.json();
       if (data.success) {
         setTools(prev => prev.filter(t => t.id !== id));
+        await syncClientCache();
         showNotification('success', 'টুল ডিলিট করা হয়েছে!');
       } else {
         showNotification('error', 'ডিলিট করতে ব্যর্থ হয়েছে!');
@@ -279,6 +291,7 @@ export default function AdminSingleToolsPage() {
       });
       const data = await res.json();
       if (data.success) {
+        await syncClientCache();
         showNotification('success', 'টুলসের ক্রম সফলভাবে আপডেট হয়েছে!');
       } else {
         showNotification('error', 'ক্রম পরিবর্তন সংরক্ষণ করতে সমস্যা হয়েছে!');

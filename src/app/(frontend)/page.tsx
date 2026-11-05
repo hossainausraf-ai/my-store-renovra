@@ -14,21 +14,59 @@ import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 const INITIAL_VISIBLE_TOOLS = 12;
 
 export default function Home() {
-  const [products, setProducts] = useState<any[]>(defaultProducts);
+  const [products, setProducts] = useState<any[]>(() => {
+    if (typeof window !== 'undefined') {
+      try {
+        const cached = localStorage.getItem('renovra_cached_products');
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (Array.isArray(parsed) && parsed.length > 0) {
+            return parsed;
+          }
+        }
+      } catch {}
+    }
+    return defaultProducts;
+  });
   const [activeCategory, setActiveCategory] = useState('All');
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_TOOLS);
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetch('/api/products')
+    // If we loaded from cache and need fresh sync
+    fetch(`/api/products?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
-        if (data.success && data.products?.length > 0) {
+        if (data.success && Array.isArray(data.products) && data.products.length > 0) {
           setProducts(data.products);
+          try {
+            localStorage.setItem('renovra_cached_products', JSON.stringify(data.products));
+          } catch {}
         }
       })
       .catch(e => console.warn('Frontend products load fallback:', e));
+
+    const onStorageUpdate = (e: StorageEvent) => {
+      if (e.key === 'renovra_cached_products' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          if (Array.isArray(parsed)) setProducts(parsed);
+        } catch {}
+      }
+    };
+    window.addEventListener('storage', onStorageUpdate);
+    return () => window.removeEventListener('storage', onStorageUpdate);
   }, []);
+
+  const getPeriod = (pkg: any) => {
+    if (pkg.validity) {
+      const v = String(pkg.validity).toLowerCase().trim();
+      if (v === '24h' || v.includes('24h') || v.includes('1 day') || v.includes('day')) return '24h';
+      if (v.includes('year')) return 'year';
+      if (v.includes('lifetime')) return 'lifetime';
+    }
+    return 'month';
+  };
 
   const subscriptions = products.filter(p => p.product_type === 'subscription');
   const allSingleTools = products.filter(p => p.product_type === 'single_tool');
@@ -79,7 +117,7 @@ export default function Home() {
                       badge: pkg.badge_text || 'Premium',
                       name: pkg.name,
                       price: pkg.price,
-                      period: "month",
+                      period: getPeriod(pkg),
                       features: pkg.features || [],
                       colorFrom: pkg.color_from || 'from-blue-500/50',
                       colorTo: pkg.color_to || 'to-blue-500/10',

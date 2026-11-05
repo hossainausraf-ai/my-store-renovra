@@ -182,7 +182,7 @@ function CheckoutForm() {
       .catch(e => console.warn('Checkout settings load fallback:', e));
 
     // Fetch live products
-    fetch('/api/products')
+    fetch(`/api/products?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         const prodList = (data.success && data.products?.length > 0) ? data.products : defaultProducts;

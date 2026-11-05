@@ -286,6 +286,7 @@ export async function dbSaveProduct(product: Partial<Product> & { name: string; 
           ]
         );
       }
+      inMemoryProducts = null;
       return { ...product, id } as Product;
     } catch (err) {
       console.warn('D1 Insert/Update Error (falling back to local):', err);
@@ -326,6 +327,7 @@ export async function dbDeleteProduct(id: string): Promise<boolean> {
   if (isD1Configured()) {
     try {
       await queryD1('DELETE FROM products WHERE id = ?', [id]);
+      inMemoryProducts = null;
       return true;
     } catch (err) {
       console.warn('D1 Delete Error (falling back to local):', err);
@@ -345,6 +347,7 @@ export async function dbReorderProducts(orderedIds: string[]): Promise<boolean> 
       for (let i = 0; i < orderedIds.length; i++) {
         await queryD1('UPDATE products SET order_idx = ? WHERE id = ?', [i, orderedIds[i]]);
       }
+      inMemoryProducts = null;
       return true;
     } catch (err) {
       console.warn('D1 Reorder Error:', err);

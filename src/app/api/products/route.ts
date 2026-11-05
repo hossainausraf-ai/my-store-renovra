@@ -1,14 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { dbGetProducts, dbSaveProduct, dbDeleteProduct } from '@/lib/d1';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+  'CDN-Cache-Control': 'no-store',
+  'Cloudflare-CDN-Cache-Control': 'no-store',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
     const type = searchParams.get('type') || undefined;
     const products = await dbGetProducts(type);
-    return NextResponse.json({ success: true, products });
+    return NextResponse.json({ success: true, products }, { headers: noCacheHeaders });
   } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });
   }
 }
 
@@ -16,7 +27,7 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
     if (!body.name || body.price === undefined || !body.product_type) {
-      return NextResponse.json({ success: false, message: 'Name, price, and product_type are required' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Name, price, and product_type are required' }, { status: 400, headers: noCacheHeaders });
     }
 
     const saved = await dbSaveProduct({
@@ -37,9 +48,9 @@ export async function POST(req: NextRequest) {
       download_url: body.download_url || '',
     });
 
-    return NextResponse.json({ success: true, product: saved });
+    return NextResponse.json({ success: true, product: saved }, { headers: noCacheHeaders });
   } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });
   }
 }
 
@@ -52,12 +63,12 @@ export async function DELETE(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const id = searchParams.get('id');
     if (!id) {
-      return NextResponse.json({ success: false, message: 'Missing product ID' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Missing product ID' }, { status: 400, headers: noCacheHeaders });
     }
 
     const success = await dbDeleteProduct(id);
-    return NextResponse.json({ success });
+    return NextResponse.json({ success }, { headers: noCacheHeaders });
   } catch (err: any) {
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });
   }
 }

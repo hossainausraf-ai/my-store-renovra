@@ -11,7 +11,7 @@ export default function DigitalProductsPage() {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    fetch('/api/products?type=digital')
+    fetch(`/api/products?type=digital&t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.products) {

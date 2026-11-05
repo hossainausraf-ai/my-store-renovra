@@ -30,6 +30,7 @@ type Product = {
   color_from: string;
   color_to: string;
   is_popular: boolean;
+  validity?: string;
 };
 
 export default function AdminPackagesPage() {
@@ -54,7 +55,8 @@ export default function AdminPackagesPage() {
     features: '',
     color_from: 'from-blue-500/50',
     color_to: 'to-blue-500/10',
-    is_popular: false
+    is_popular: false,
+    validity: '1 Month'
   });
 
   const showNotification = (type: 'success' | 'error', message: string) => {
@@ -62,10 +64,20 @@ export default function AdminPackagesPage() {
     setTimeout(() => setNotification(null), 4000);
   };
 
+  const syncClientCache = async () => {
+    try {
+      const res = await fetch(`/api/products?t=${Date.now()}`, { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        localStorage.setItem('renovra_cached_products', JSON.stringify(data.products));
+      }
+    } catch {}
+  };
+
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/products?type=subscription');
+      const res = await fetch(`/api/products?type=subscription&t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.products) {
         setProducts(data.products);
@@ -84,7 +96,7 @@ export default function AdminPackagesPage() {
   const resetForm = () => {
     setFormData({
       name: '', description: '', price: '', category: '', image_url: '', gallery_images: [], badge_text: 'Popular', 
-      features: '', color_from: 'from-blue-500/50', color_to: 'to-blue-500/10', is_popular: false
+      features: '', color_from: 'from-blue-500/50', color_to: 'to-blue-500/10', is_popular: false, validity: '1 Month'
     });
     setIsAdding(false);
     setIsEditing(null);
@@ -102,7 +114,8 @@ export default function AdminPackagesPage() {
       features: product.features ? product.features.join('\n') : '',
       color_from: product.color_from || 'from-blue-500/50',
       color_to: product.color_to || 'to-blue-500/10',
-      is_popular: product.is_popular || false
+      is_popular: product.is_popular || false,
+      validity: product.validity || '1 Month'
     });
     setIsEditing(product.id);
     setIsAdding(true);
@@ -132,7 +145,7 @@ export default function AdminPackagesPage() {
       color_from: formData.color_from,
       color_to: formData.color_to,
       is_popular: formData.is_popular,
-      validity: '30 Days'
+      validity: formData.validity || '1 Month'
     };
 
     try {
@@ -145,7 +158,8 @@ export default function AdminPackagesPage() {
 
       if (data.success) {
         showNotification('success', isEditing ? 'প্যাকেজ সফলভাবে আপডেট হয়েছে!' : 'নতুন প্যাকেজ যোগ করা হয়েছে!');
-        fetchProducts();
+        await fetchProducts();
+        await syncClientCache();
         resetForm();
       } else {
         showNotification('error', data.message || 'প্যাকেজ সংরক্ষণ করতে সমস্যা হয়েছে!');
@@ -165,6 +179,7 @@ export default function AdminPackagesPage() {
       const data = await res.json();
       if (data.success) {
         setProducts(prev => prev.filter(p => p.id !== id));
+        await syncClientCache();
         showNotification('success', 'প্যাকেজ ডিলিট করা হয়েছে!');
       } else {
         showNotification('error', 'ডিলিট করতে সমস্যা হয়েছে!');
@@ -194,6 +209,7 @@ export default function AdminPackagesPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ orderedIds: items.map(p => p.id) })
       });
+      await syncClientCache();
     } catch (e) {
       console.error('Error reordering packages:', e);
     }
@@ -298,6 +314,17 @@ export default function AdminPackagesPage() {
                 placeholder="যেমন: Popular, Best Value"
                 value={formData.badge_text}
                 onChange={e => setFormData({ ...formData, badge_text: e.target.value })}
+                className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-gray-400 mb-2 uppercase tracking-wider">মেয়াদ / ভ্যালিডিটি (Validity)</label>
+              <input
+                type="text"
+                placeholder="যেমন: 1 Month, 24h, 1 Year"
+                value={formData.validity}
+                onChange={e => setFormData({ ...formData, validity: e.target.value })}
                 className="w-full bg-[#1F2937]/50 border border-white/10 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-blue-500"
               />
             </div>
@@ -467,7 +494,7 @@ export default function AdminPackagesPage() {
                           <div className="flex items-center justify-between pt-4 border-t border-white/5">
                             <div className="text-xl font-bold text-white flex items-baseline gap-1">
                               <span className="text-sm text-gray-400">৳</span>{product.price}
-                              <span className="text-xs text-gray-500 font-normal">/মাস</span>
+                              <span className="text-xs text-gray-500 font-normal">/{product.validity || 'মাস'}</span>
                             </div>
                             <div className="flex gap-2">
                               <button 

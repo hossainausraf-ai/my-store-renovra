@@ -69,10 +69,20 @@ export default function AdminDigitalProductsPage() {
     setTimeout(() => setNotification(null), 4000);
   };
 
+  const syncClientCache = async () => {
+    try {
+      const res = await fetch(`/api/products?t=${Date.now()}`, { cache: 'no-store' });
+      const data = await res.json();
+      if (data.success && Array.isArray(data.products)) {
+        localStorage.setItem('renovra_cached_products', JSON.stringify(data.products));
+      }
+    } catch {}
+  };
+
   const fetchProducts = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/products?type=digital');
+      const res = await fetch(`/api/products?type=digital&t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.products) {
         setProducts(data.products);
@@ -222,7 +232,8 @@ export default function AdminDigitalProductsPage() {
 
       if (data.success) {
         showNotification('success', isEditing ? 'প্রোডাক্ট সফলভাবে আপডেট হয়েছে!' : 'নতুন ডিজিটাল প্রোডাক্ট যোগ করা হয়েছে!');
-        fetchProducts();
+        await fetchProducts();
+        await syncClientCache();
         resetForm();
       } else {
         showNotification('error', data.message || 'সংরক্ষণ করতে ব্যর্থ হয়েছে!');
@@ -242,6 +253,7 @@ export default function AdminDigitalProductsPage() {
       const data = await res.json();
       if (data.success) {
         setProducts(prev => prev.filter(p => p.id !== id));
+        await syncClientCache();
         showNotification('success', 'প্রোডাক্ট ডিলিট করা হয়েছে!');
       } else {
         showNotification('error', 'ডিলিট করতে ব্যর্থ হয়েছে!');
