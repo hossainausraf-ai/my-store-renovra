@@ -57,7 +57,7 @@ export default function AdminDashboard() {
     try {
       const res = await fetch(`/api/orders?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
-      if (data.success && data.orders) {
+      if (data.success && Array.isArray(data.orders)) {
         setPayments(data.orders);
       }
     } catch (e) {
@@ -86,11 +86,11 @@ export default function AdminDashboard() {
       });
       const data = await res.json();
       if (!data.success) {
-        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
+        alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে: ' + (data.message || ''));
         fetchPayments(false);
       }
-    } catch (err) {
-      alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে!');
+    } catch (err: any) {
+      alert('স্ট্যাটাস আপডেট করতে সমস্যা হয়েছে: ' + (err?.message || ''));
       fetchPayments(false);
       console.error(err);
     }
@@ -100,14 +100,18 @@ export default function AdminDashboard() {
     if (!window.confirm('আপনি কি নিশ্চিত যে এই অর্ডারটি সম্পূর্ণ মুছে ফেলতে চান?')) return;
     setPayments(prev => prev.filter(p => p.id !== id && p.trx_id !== id));
     try {
-      const res = await fetch(`/api/orders?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/orders?id=${encodeURIComponent(id)}`, { 
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
       const data = await res.json();
       if (!data.success) {
-        alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে!');
+        alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে: ' + (data.message || ''));
         fetchPayments(false);
       }
-    } catch (err) {
-      alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে!');
+    } catch (err: any) {
+      alert('অর্ডার ডিলিট করতে সমস্যা হয়েছে: ' + (err?.message || ''));
       fetchPayments(false);
       console.error(err);
     }

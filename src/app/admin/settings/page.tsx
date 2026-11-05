@@ -60,7 +60,7 @@ export default function AdminSettingsPage() {
   };
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch(`/api/settings?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings) {

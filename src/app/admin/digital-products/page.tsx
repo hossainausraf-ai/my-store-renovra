@@ -75,6 +75,7 @@ export default function AdminDigitalProductsPage() {
       const data = await res.json();
       if (data.success && Array.isArray(data.products)) {
         localStorage.setItem('renovra_cached_products', JSON.stringify(data.products));
+        window.dispatchEvent(new Event('storage'));
       }
     } catch {}
   };

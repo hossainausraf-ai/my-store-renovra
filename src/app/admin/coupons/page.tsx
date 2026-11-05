@@ -71,7 +71,7 @@ export default function AdminCouponsPage() {
   const fetchCoupons = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/coupons');
+      const res = await fetch(`/api/coupons?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.coupons) {
         setCoupons(data.coupons);

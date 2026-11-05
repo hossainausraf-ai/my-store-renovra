@@ -2,15 +2,22 @@ import { NextRequest, NextResponse } from 'next/server';
 import { dbGetOrders, dbSaveOrder, dbUpdateOrderStatus, dbDeleteOrder, dbIncrementCouponUsage } from '@/lib/d1';
 import { sendTelegramOrderNotification } from '@/lib/telegram';
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
+const noCacheHeaders = {
+  'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0',
+  'CDN-Cache-Control': 'no-store',
+  'Cloudflare-CDN-Cache-Control': 'no-store',
+  'Pragma': 'no-cache',
+  'Expires': '0',
+};
+
 export async function GET() {
   const orders = await dbGetOrders();
   return NextResponse.json(
     { success: true, orders },
-    {
-      headers: {
-        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
-      },
-    }
+    { headers: noCacheHeaders }
   );
 }
 
@@ -190,27 +197,34 @@ export async function PATCH(req: NextRequest) {
     const body = await req.json();
     const { id, status } = body;
     if (!id || !status) {
-      return NextResponse.json({ success: false, message: 'Missing parameters' }, { status: 400 });
+      return NextResponse.json({ success: false, message: 'Missing parameters' }, { status: 400, headers: noCacheHeaders });
     }
-    const updated = await dbUpdateOrderStatus(id, status);
-    return NextResponse.json({ success: updated });
+    const updated = await dbUpdateOrderStatus(id.trim(), status.trim());
+    return NextResponse.json({ success: updated }, { headers: noCacheHeaders });
   } catch (err: any) {
     console.error('PATCH /api/orders error:', err);
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });
   }
 }
 
 export async function DELETE(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
+    let id = searchParams.get('id');
     if (!id) {
-      return NextResponse.json({ success: false, message: 'Missing order id' }, { status: 400 });
+      try {
+        const body = await req.json();
+        id = body?.id;
+      } catch {}
     }
-    const deleted = await dbDeleteOrder(id);
-    return NextResponse.json({ success: deleted });
+    if (!id || !id.trim()) {
+      return NextResponse.json({ success: false, message: 'Missing order id' }, { status: 400, headers: noCacheHeaders });
+    }
+    const cleanId = id.trim();
+    const deleted = await dbDeleteOrder(cleanId);
+    return NextResponse.json({ success: deleted }, { headers: noCacheHeaders });
   } catch (err: any) {
-    console.error('PATCH /api/orders error:', err);
-    return NextResponse.json({ success: false, message: err.message }, { status: 500 });
+    console.error('DELETE /api/orders error:', err);
+    return NextResponse.json({ success: false, message: err.message }, { status: 500, headers: noCacheHeaders });
   }
 }

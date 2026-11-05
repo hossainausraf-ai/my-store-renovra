@@ -53,7 +53,7 @@ export default function AnalyticsPage() {
     
     let payments: any[] = [];
     try {
-      const res = await fetch('/api/orders');
+      const res = await fetch(`/api/orders?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && data.orders) {
         payments = data.orders;

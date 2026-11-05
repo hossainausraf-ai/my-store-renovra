@@ -70,8 +70,7 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
   const currentImg = activeImg || item?.imageUrl || allImages[0] || '';
 
   useEffect(() => {
-    if (cachedWhatsApp) return;
-    fetch('/api/settings')
+    fetch(`/api/settings?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings?.support_whatsapp) {

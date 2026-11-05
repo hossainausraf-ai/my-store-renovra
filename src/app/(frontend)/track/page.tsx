@@ -17,7 +17,7 @@ function TrackOrderContent() {
   const [supportWhatsApp, setSupportWhatsApp] = useState('8801766392692');
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch(`/api/settings?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings?.support_whatsapp) {

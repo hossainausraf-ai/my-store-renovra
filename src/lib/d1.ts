@@ -1010,26 +1010,36 @@ export async function dbSaveOrder(order: StoredOrder): Promise<StoredOrder> {
 }
 
 export async function dbUpdateOrderStatus(id: string, status: string): Promise<boolean> {
+  const cleanId = id.trim();
   if (isD1Configured()) {
     try {
-      await queryD1('UPDATE orders SET status = ? WHERE id = ? OR trx_id = ?', [status, id, id]);
+      await queryD1(
+        'UPDATE orders SET status = ? WHERE id = ? OR trx_id = ? OR LOWER(id) = LOWER(?) OR LOWER(trx_id) = LOWER(?)',
+        [status, cleanId, cleanId, cleanId, cleanId]
+      );
     } catch (err) {
       console.warn('D1 dbUpdateOrderStatus Error:', err);
+      throw err;
     }
   }
-  updateOrderStatus(id, status as any);
+  updateOrderStatus(cleanId, status as any);
   return true;
 }
 
 export async function dbDeleteOrder(id: string): Promise<boolean> {
+  const cleanId = id.trim();
   if (isD1Configured()) {
     try {
-      await queryD1('DELETE FROM orders WHERE id = ? OR trx_id = ?', [id, id]);
+      await queryD1(
+        'DELETE FROM orders WHERE id = ? OR trx_id = ? OR LOWER(id) = LOWER(?) OR LOWER(trx_id) = LOWER(?)',
+        [cleanId, cleanId, cleanId, cleanId]
+      );
     } catch (err) {
       console.warn('D1 dbDeleteOrder Error:', err);
+      throw err;
     }
   }
-  deleteOrder(id);
+  deleteOrder(cleanId);
   return true;
 }
 

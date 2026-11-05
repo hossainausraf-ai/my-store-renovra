@@ -178,7 +178,7 @@ function CheckoutForm() {
       .catch(() => {});
 
     // Fetch live settings (bKash/Nagad numbers)
-    fetch('/api/settings')
+    fetch(`/api/settings?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings) {

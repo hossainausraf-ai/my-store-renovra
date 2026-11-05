@@ -18,7 +18,7 @@ export default function Navbar() {
   const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
-    fetch('/api/settings')
+    fetch(`/api/settings?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings?.logo_url) {
