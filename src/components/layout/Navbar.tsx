@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import StarBorder from '@/components/ui/StarBorder';
 import { useCart } from '@/context/CartContext';
+import CurrencySelector from '@/components/ui/CurrencySelector';
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -270,6 +271,12 @@ export default function Navbar() {
           </div>
 
           <div className="flex-1 overflow-y-auto py-5 px-4 flex flex-col gap-2.5">
+            {/* Currency Selector inside Mobile Menu */}
+            <div className="flex flex-col items-center justify-center p-3 mb-2 rounded-2xl bg-black/40 border border-white/10">
+              <span className="text-[10px] text-gray-400 uppercase tracking-widest font-bold mb-2">Currency / মুদ্রা</span>
+              <CurrencySelector />
+            </div>
+
             {/* View Cart Button on Mobile Menu */}
             <button
               onClick={() => {

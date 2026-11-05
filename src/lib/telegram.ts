@@ -7,6 +7,8 @@ export interface TelegramOrderPayload {
   whatsapp?: string;
   productName: string;
   price: number;
+  currency?: string;
+  convertedPrice?: number;
   paymentMethod: string;
   trxId: string;
   proofUrl?: string;
@@ -35,12 +37,18 @@ export async function sendTelegramOrderNotification(payload: TelegramOrderPayloa
   const waLink = `https://wa.me/${cleanWa.startsWith('88') ? cleanWa : `88${cleanWa}`}`;
   const now = new Date().toLocaleString('en-US', { timeZone: 'Asia/Dhaka' });
 
+  const priceDisplay = payload.currency === 'USD'
+    ? `$ ${payload.convertedPrice || (payload.price / 120).toFixed(2)} USD (সমমূল্য ৳ ${payload.price} BDT)`
+    : (payload.currency === 'INR'
+      ? `₹ ${payload.convertedPrice || Math.round(payload.price / 1.45)} INR (সমমূল্য ৳ ${payload.price} BDT)`
+      : `৳ ${payload.price}`);
+
   // Safe HTML message
   const caption = `
 🚨 <b>নতুন অর্ডার এসেছে! (New Order)</b>
 ━━━━━━━━━━━━━━━━━━━━━━
 📦 <b>পণ্য/প্যাকেজ:</b> ${escapeHtml(payload.productName)}
-💵 <b>মূল্য:</b> ৳ ${payload.price}${payload.originalPrice && payload.originalPrice !== payload.price ? ` <s>(৳ ${payload.originalPrice})</s>` : ''}
+💵 <b>মূল্য:</b> ${priceDisplay}${payload.originalPrice && payload.originalPrice !== payload.price ? ` <s>(৳ ${payload.originalPrice})</s>` : ''}
 ${payload.couponCode ? `🎟️ <b>কুপন কোড:</b> <code>${escapeHtml(payload.couponCode)}</code> (ছাড়: -৳ ${payload.discountAmount || 0})\n` : ''}💳 <b>পেমেন্ট মেথড:</b> ${escapeHtml(payload.paymentMethod.toUpperCase())}
 🔢 <b>TrxID:</b> <code>${escapeHtml(payload.trxId)}</code>
 

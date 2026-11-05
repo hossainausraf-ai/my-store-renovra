@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Crown, CheckCircle2, Calendar, ShoppingCart, Clock, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface SingleToolProps {
   tool: {
@@ -20,6 +21,7 @@ interface SingleToolProps {
 
 export default function SingleToolCard({ tool }: SingleToolProps) {
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [imgError, setImgError] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
@@ -139,8 +141,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
           <div className="mt-auto pt-1">
             <div className="text-center mb-1.5 sm:mb-3">
               <div className="text-sm sm:text-2xl font-black text-white tracking-tight flex items-baseline justify-center gap-0.5 sm:gap-1">
-                <span className="text-[11px] sm:text-base text-gray-400 font-bold">৳</span> 
-                {tool.price} 
+                <span>{formatPrice(tool.price)}</span>
                 <span className="text-[8px] sm:text-xs font-medium text-gray-500 font-sans tracking-normal">{periodText}</span>
               </div>
             </div>

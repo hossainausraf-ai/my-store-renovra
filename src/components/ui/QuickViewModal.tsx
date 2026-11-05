@@ -17,6 +17,7 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
 
 export interface QuickViewItem {
   id: string;
@@ -44,6 +45,7 @@ let cachedWhatsApp: string | null = null;
 
 export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModalProps) {
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [supportWhatsApp, setSupportWhatsApp] = React.useState(cachedWhatsApp || '8801766392692');
   const [activeImg, setActiveImg] = React.useState<string>('');
 
@@ -111,7 +113,7 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
   const initial = item.name ? item.name.charAt(0).toUpperCase() : 'P';
   
   const whatsappMsg = encodeURIComponent(
-    `Hello Renovra! I want to order "${item.name}" (৳${item.price} ${periodText}). Please share details.`
+    `Hello Renovra! I want to order "${item.name}" (${formatPrice(item.price)} ${periodText}). Please share details.`
   );
 
   // Default features if none specified
@@ -255,7 +257,7 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
               </p>
               <div className="flex items-baseline gap-1.5">
                 <span className="text-3xl sm:text-4xl font-black text-[#ccff00] tracking-tight">
-                  ৳{item.price}
+                  {formatPrice(item.price)}
                 </span>
                 <span className="text-sm font-medium text-gray-400">
                   {periodText}

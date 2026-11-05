@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { Eye, ShoppingCart, Image as ImageIcon, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface DigitalProductProps {
   id: string;
@@ -18,6 +19,7 @@ interface DigitalProductProps {
 
 export default function DigitalProductCard({ product }: { product: DigitalProductProps }) {
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -82,7 +84,7 @@ export default function DigitalProductCard({ product }: { product: DigitalProduc
           )}
 
           <div className="flex items-center justify-between mt-auto pt-2 sm:pt-3 border-t border-white/5 gap-2">
-            <span className="text-sm sm:text-lg font-black tracking-tight text-white shrink-0">৳ {product.price}</span>
+            <span className="text-sm sm:text-lg font-black tracking-tight text-white shrink-0">{formatPrice(product.price)}</span>
 
             <div className="flex items-center gap-1.5">
               <button

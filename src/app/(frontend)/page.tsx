@@ -7,6 +7,7 @@ import HeroSection from '@/components/home/HeroSection';
 import UserReviews from '@/components/home/UserReviews';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
 import HowItWorksVideos from '@/components/home/HowItWorksVideos';
+import CurrencySelector from '@/components/ui/CurrencySelector';
 import { defaultProducts } from '@/data/products';
 import { useEffect, useState, useMemo } from 'react';
 import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
@@ -106,10 +107,15 @@ export default function Home() {
         ) : (
           subscriptions.length > 0 && (
             <div className="mb-6 sm:mb-16">
-              <div className="text-center mb-4 sm:mb-8">
+              <div className="text-center mb-5 sm:mb-8">
                 <p className="text-blue-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-1 sm:mb-2">Pricing</p>
                 <h2 className="text-lg sm:text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight mb-1 sm:mb-3 text-white sm:whitespace-nowrap">Choose a plan that's right for you</h2>
-                <p className="text-xs sm:text-base text-gray-400">Unlock full access to 100+ premium tools while saving more.</p>
+                <p className="text-xs sm:text-base text-gray-400 mb-3.5 sm:mb-5">Unlock full access to 100+ premium tools while saving more.</p>
+
+                {/* Currency Switcher Pill (BDT, INR, USD) */}
+                <div className="flex justify-center mt-2 sm:mt-4">
+                  <CurrencySelector />
+                </div>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2.5 sm:gap-5">

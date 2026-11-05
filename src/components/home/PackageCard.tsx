@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { ArrowRight, Star, CheckCircle2, ShoppingBag, Check } from 'lucide-react';
 import QuickViewModal, { QuickViewItem } from '@/components/ui/QuickViewModal';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
 
 interface PackageProps {
   id: string;
@@ -22,6 +23,7 @@ interface PackageProps {
 
 export default function PackageCard({ pkg }: { pkg: PackageProps }) {
   const { addToCart } = useCart();
+  const { formatPrice } = useCurrency();
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
   const [isAdded, setIsAdded] = useState(false);
 
@@ -62,7 +64,7 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
         <h3 className="text-sm sm:text-xl font-bold leading-tight min-h-[2.2rem] sm:min-h-[2.8rem] text-white line-clamp-2">{pkg.name}</h3>
 
         <div className="mt-2 sm:mt-4 flex items-baseline gap-1">
-          <span className="text-xl sm:text-4xl font-black tracking-tight text-white">৳ {pkg.price}</span>
+          <span className="text-xl sm:text-4xl font-black tracking-tight text-white">{formatPrice(pkg.price)}</span>
           <span className="text-[10px] sm:text-sm text-gray-400 font-normal">/{pkg.period || 'month'}</span>
         </div>
 

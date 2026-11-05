@@ -26,6 +26,8 @@ import {
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
 import { optimizeImageClient } from '@/lib/image-optimizer';
+import { useCurrency } from '@/context/CurrencyContext';
+import CurrencySelector from '@/components/ui/CurrencySelector';
 
 function CheckoutForm() {
   const searchParams = useSearchParams();
@@ -40,6 +42,7 @@ function CheckoutForm() {
     finalTotal: cartFinalTotal,
     clearCart
   } = useCart();
+  const { currency, setCurrency, formatPrice, convertPrice, symbol } = useCurrency();
 
   const shouldSelectCartInitially = (isFromCartParam || (!pkgId && cartItems.length > 0)) && cartItems.length > 0;
 
@@ -350,6 +353,9 @@ function CheckoutForm() {
 
       formData.append('price', String(finalPrice));
       formData.append('originalPrice', String(originalPrice));
+      formData.append('currency', currency);
+      formData.append('convertedPrice', String(convertPrice(finalPrice)));
+      formData.append('currencySymbol', symbol);
       if (appliedCoupon) {
         formData.append('couponCode', appliedCoupon.code);
         formData.append('discountAmount', String(discountAmount));
@@ -609,6 +615,17 @@ function CheckoutForm() {
         instructions: 'যেকোনো ব্যাংক বা ওয়ালেট (bKash, CellFin, Citytouch, Astha, Upay) দিয়ে নিচের বাংলা কিউআর স্ক্যান করে পেমেন্ট করুন।'
       };
     }
+    if (paymentMethod === 'redotpay') {
+      return {
+        name: 'RedotPay ID (USD / Binance / Crypto)',
+        number: siteSettings?.redotpay_id || defaultSettings.redotpay_id,
+        color: 'text-red-400',
+        bg: 'bg-red-500/10',
+        border: 'border-red-500/30',
+        type: 'phone',
+        instructions: `RedotPay অ্যাপ বা Binance Pay দিয়ে ${formatPrice(finalPrice)} (${currency !== 'USD' ? `$${convertPrice(finalPrice)} USD` : ''}) সেন্ড করে TrxID নিচে দিন।`
+      };
+    }
     return {
       name: 'RedotPay ID',
       number: siteSettings?.redotpay_id || defaultSettings.redotpay_id,
@@ -633,9 +650,12 @@ function CheckoutForm() {
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-white tracking-tight">নিরাপদ চেকআউট (Checkout)</h1>
           <p className="text-xs sm:text-sm text-gray-400 mt-1 sm:mt-2">পেমেন্ট সম্পন্ন করে অর্ডারটি কনফার্ম করুন</p>
         </div>
-        <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-400 bg-green-400/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-green-400/20 w-fit">
-          <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
-          <span>SSL & Telegram Verified</span>
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+          <CurrencySelector />
+          <div className="flex items-center gap-1.5 sm:gap-2 text-xs sm:text-sm text-green-400 bg-green-400/10 px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border border-green-400/20 w-fit">
+            <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <span>SSL & Telegram Verified</span>
+          </div>
         </div>
       </div>
 
@@ -666,14 +686,14 @@ function CheckoutForm() {
               >
                 {cartItems.length > 0 && (
                   <option value="cart-order" className="bg-gray-900 text-[#ccff00] font-extrabold">
-                    🛒 আপনার কার্ট ({cartItems.length}টি টুলস) — ৳{cartSubtotal}
+                    🛒 আপনার কার্ট ({cartItems.length}টি টুলস) — {formatPrice(cartSubtotal)}
                   </option>
                 )}
                 {allProducts.some(p => p.product_type === 'subscription' || !p.product_type) && (
                   <optgroup label="প্যাকেজ ও সাবস্ক্রিপশন" className="bg-gray-900 text-gray-400 font-bold">
                     {allProducts.filter(p => p.product_type === 'subscription' || !p.product_type).map((p) => (
                       <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
-                        {p.name} — ৳{p.price}
+                        {p.name} — {formatPrice(p.price)}
                       </option>
                     ))}
                   </optgroup>
@@ -682,7 +702,7 @@ function CheckoutForm() {
                   <optgroup label="সিঙ্গেল এআই টুলস" className="bg-gray-900 text-gray-400 font-bold">
                     {allProducts.filter(p => p.product_type === 'single_tool').map((p) => (
                       <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
-                        {p.name} — ৳{p.price}
+                        {p.name} — {formatPrice(p.price)}
                       </option>
                     ))}
                   </optgroup>
@@ -691,7 +711,7 @@ function CheckoutForm() {
                   <optgroup label="ডিজিটাল প্রোডাক্টস" className="bg-gray-900 text-gray-400 font-bold">
                     {allProducts.filter(p => p.product_type === 'digital').map((p) => (
                       <option key={p.id} value={p.id} className="bg-gray-900 text-white font-normal">
-                        {p.name} — ৳{p.price}
+                        {p.name} — {formatPrice(p.price)}
                       </option>
                     ))}
                   </optgroup>
@@ -746,10 +766,10 @@ function CheckoutForm() {
                         </div>
                         <div className="text-right shrink-0">
                           <span className="text-xs font-extrabold text-[#ccff00]">
-                            ৳{item.price * item.quantity}
+                            {formatPrice(item.price * item.quantity)}
                           </span>
                           {item.quantity > 1 && (
-                            <p className="text-[9px] text-gray-500">(৳{item.price} each)</p>
+                            <p className="text-[9px] text-gray-500">({formatPrice(item.price)} each)</p>
                           )}
                         </div>
                       </div>
@@ -931,14 +951,14 @@ function CheckoutForm() {
             <div className="space-y-3 mb-6 border-t border-white/10 pt-4">
               <div className="flex justify-between text-gray-300 text-sm">
                 <span>Subtotal</span>
-                <span>৳ {originalPrice}</span>
+                <span>{formatPrice(originalPrice)}</span>
               </div>
               {appliedCoupon && (
                 <div className="flex justify-between text-emerald-400 text-sm font-semibold">
                   <span className="flex items-center gap-1">
                     <Tag className="w-3.5 h-3.5" /> Coupon ({appliedCoupon.code})
                   </span>
-                  <span>- ৳ {discountAmount}</span>
+                  <span>- {formatPrice(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-green-400 text-sm">
@@ -951,9 +971,12 @@ function CheckoutForm() {
               <span className="text-gray-400 font-medium">সর্বমোট প্রদেয় মূল্য</span>
               <div className="text-right">
                 {appliedCoupon && (
-                  <span className="text-sm line-through text-gray-500 block mr-1">৳ {originalPrice}</span>
+                  <span className="text-sm line-through text-gray-500 block mr-1">{formatPrice(originalPrice)}</span>
                 )}
-                <span className="text-3xl font-extrabold text-white">৳ {finalPrice}</span>
+                <span className="text-3xl font-extrabold text-white">{formatPrice(finalPrice)}</span>
+                {currency !== 'BDT' && (
+                  <span className="text-xs text-gray-400 block mt-0.5 font-medium">(সমমূল্য ৳{finalPrice} BDT)</span>
+                )}
               </div>
             </div>
           </div>
@@ -971,7 +994,7 @@ function CheckoutForm() {
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">2</span>
-                  <span>প্রদত্ত নম্বরে <strong>৳ {finalPrice}</strong> সেন্ড মানি করুন।</span>
+                  <span>প্রদত্ত নম্বরে <strong>{formatPrice(finalPrice)}</strong> {currency !== 'BDT' ? `(বা সমমূল্য ৳${finalPrice} BDT)` : ''} সেন্ড মানি করুন।</span>
                 </li>
                 <li className="flex items-start gap-3">
                   <span className="flex items-center justify-center w-5 h-5 rounded-full bg-blue-500/20 text-blue-400 text-xs font-bold shrink-0 mt-0.5">3</span>
@@ -993,33 +1016,40 @@ function CheckoutForm() {
               <>
                 <h3 className="font-bold text-xl text-white mb-4">পেমেন্ট মেথড বেছে নিন</h3>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 sm:gap-3 mb-6">
+                <div className="grid grid-cols-2 min-[480px]:grid-cols-3 sm:grid-cols-5 gap-2 sm:gap-2.5 mb-6">
                   {/* bKash */}
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-500/10 text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                  <label className={`cursor-pointer rounded-2xl border-2 p-2.5 sm:p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bkash' ? 'border-pink-500 bg-pink-500/10 text-pink-400 shadow-[0_0_15px_rgba(236,72,153,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="bkash" className="hidden" checked={paymentMethod === 'bkash'} onChange={() => setPaymentMethod('bkash')} />
-                    <span className="font-bold text-sm mb-0.5">bKash</span>
+                    <span className="font-bold text-xs sm:text-sm mb-0.5">bKash</span>
                     <span className="text-[10px] opacity-70">Personal</span>
                   </label>
 
                   {/* CellFin */}
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'cellfin' ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                  <label className={`cursor-pointer rounded-2xl border-2 p-2.5 sm:p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'cellfin' ? 'border-emerald-500 bg-emerald-500/10 text-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="cellfin" className="hidden" checked={paymentMethod === 'cellfin'} onChange={() => setPaymentMethod('cellfin')} />
-                    <span className="font-bold text-sm mb-0.5">CellFin</span>
+                    <span className="font-bold text-xs sm:text-sm mb-0.5">CellFin</span>
                     <span className="text-[10px] opacity-70">IBBL</span>
                   </label>
 
                   {/* Bank Transfer */}
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-500/10 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                  <label className={`cursor-pointer rounded-2xl border-2 p-2.5 sm:p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bank_transfer' ? 'border-blue-500 bg-blue-500/10 text-blue-400 shadow-[0_0_15px_rgba(59,130,246,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="bank_transfer" className="hidden" checked={paymentMethod === 'bank_transfer'} onChange={() => setPaymentMethod('bank_transfer')} />
-                    <span className="font-bold text-sm mb-0.5">Bank</span>
+                    <span className="font-bold text-xs sm:text-sm mb-0.5">Bank</span>
                     <span className="text-[10px] opacity-70">Transfer</span>
                   </label>
 
                   {/* Bangla QR */}
-                  <label className={`cursor-pointer rounded-2xl border-2 p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bangla_qr' ? 'border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                  <label className={`cursor-pointer rounded-2xl border-2 p-2.5 sm:p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'bangla_qr' ? 'border-purple-500 bg-purple-500/10 text-purple-400 shadow-[0_0_15px_rgba(168,85,247,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
                     <input type="radio" name="method" value="bangla_qr" className="hidden" checked={paymentMethod === 'bangla_qr'} onChange={() => setPaymentMethod('bangla_qr')} />
-                    <span className="font-bold text-sm mb-0.5">Bangla QR</span>
+                    <span className="font-bold text-xs sm:text-sm mb-0.5">Bangla QR</span>
                     <span className="text-[10px] opacity-70">Any App</span>
+                  </label>
+
+                  {/* RedotPay (USD / Crypto) */}
+                  <label className={`cursor-pointer rounded-2xl border-2 p-2.5 sm:p-3 flex flex-col items-center justify-center transition-all ${paymentMethod === 'redotpay' ? 'border-red-500 bg-red-500/10 text-red-400 shadow-[0_0_15px_rgba(239,68,68,0.25)]' : 'border-white/5 hover:border-white/20 text-gray-400 bg-black/20'}`}>
+                    <input type="radio" name="method" value="redotpay" className="hidden" checked={paymentMethod === 'redotpay'} onChange={() => setPaymentMethod('redotpay')} />
+                    <span className="font-bold text-xs sm:text-sm mb-0.5">RedotPay</span>
+                    <span className="text-[10px] opacity-70">USD / Crypto</span>
                   </label>
                 </div>
 
@@ -1031,10 +1061,12 @@ function CheckoutForm() {
                       {paymentMethod === 'cellfin' && <Smartphone className="w-4 h-4 text-emerald-400" />}
                       {paymentMethod === 'bank_transfer' && <Building2 className="w-4 h-4 text-blue-400" />}
                       {paymentMethod === 'bangla_qr' && <QrCode className="w-4 h-4 text-purple-400" />}
+                      {paymentMethod === 'redotpay' && <CreditCard className="w-4 h-4 text-red-400" />}
                       {paymentConfig.name}
                     </span>
                     <div className="text-xs font-bold text-white/90 bg-black/40 px-3 py-1 rounded-lg border border-white/10">
-                      টাকার পরিমাণ: <span className="text-[#ccff00] font-mono">৳ {finalPrice}</span>
+                      প্রদেয় পরিমাণ: <span className="text-[#ccff00] font-mono">{formatPrice(finalPrice)}</span>
+                      {currency !== 'BDT' && <span className="text-gray-400 font-normal ml-1"> (৳{finalPrice} BDT)</span>}
                     </div>
                   </div>
 

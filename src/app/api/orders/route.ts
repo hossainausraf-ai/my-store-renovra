@@ -30,6 +30,8 @@ export async function POST(req: NextRequest) {
     let couponCode = '';
     let discountAmount = 0;
     let originalPrice = 0;
+    let currency = 'BDT';
+    let convertedPrice = 0;
 
     if (contentType.includes('application/json')) {
       const json = await req.json();
@@ -39,6 +41,8 @@ export async function POST(req: NextRequest) {
       packageId = json.packageId || '';
       packageName = json.packageName || 'Product';
       price = Number(json.price) || 0;
+      currency = (json.currency || 'BDT').trim().toUpperCase();
+      convertedPrice = Number(json.convertedPrice) || price;
       paymentMethod = json.paymentMethod || 'bkash';
       manualTrxId = (json.trxId || '').trim();
       proofUrl = (json.proofUrl || json.proof_url || '').trim();
@@ -53,6 +57,8 @@ export async function POST(req: NextRequest) {
       packageId = ((formData.get('packageId') as string) || '').trim();
       packageName = ((formData.get('packageName') as string) || 'Product').trim();
       price = Number(formData.get('price')) || 0;
+      currency = (((formData.get('currency') as string) || 'BDT')).trim().toUpperCase();
+      convertedPrice = Number(formData.get('convertedPrice')) || price;
       paymentMethod = ((formData.get('paymentMethod') as string) || 'bkash').trim();
       manualTrxId = ((formData.get('trxId') as string) || '').trim();
       proofFile = formData.get('proof') as File | null;
@@ -152,6 +158,8 @@ export async function POST(req: NextRequest) {
       whatsapp: contactPhone,
       productName: packageName,
       price,
+      currency,
+      convertedPrice,
       paymentMethod,
       trxId,
       proofBuffer,

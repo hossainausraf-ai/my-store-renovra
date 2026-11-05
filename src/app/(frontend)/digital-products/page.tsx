@@ -1,6 +1,7 @@
 'use client';
 
 import DigitalProductCard from '@/components/home/DigitalProductCard';
+import CurrencySelector from '@/components/ui/CurrencySelector';
 import { defaultProducts } from '@/data/products';
 import { useState, useEffect } from 'react';
 
@@ -30,6 +31,9 @@ export default function DigitalProductsPage() {
           <p className="text-xs sm:text-lg text-gray-400 max-w-2xl mx-auto">
             Download exclusive e-books, templates, and coding resources to supercharge your workflow.
           </p>
+          <div className="flex justify-center mt-4 sm:mt-6">
+            <CurrencySelector />
+          </div>
         </div>
 
         {isLoading ? (

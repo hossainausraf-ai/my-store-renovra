@@ -18,9 +18,12 @@ import {
   ShoppingBag
 } from 'lucide-react';
 import { useCart } from '@/context/CartContext';
+import { useCurrency } from '@/context/CurrencyContext';
+import CurrencySelector from '@/components/ui/CurrencySelector';
 
 export default function CartDrawer() {
   const router = useRouter();
+  const { formatPrice } = useCurrency();
   const {
     items,
     isCartOpen,
@@ -105,6 +108,12 @@ export default function CartDrawer() {
           </button>
         </div>
 
+        {/* Currency Switcher inside Cart */}
+        <div className="px-5 py-2 bg-black/40 border-b border-white/10 flex items-center justify-between">
+          <span className="text-[11px] font-bold text-gray-400">Currency / মুদ্রা:</span>
+          <CurrencySelector />
+        </div>
+
         {/* Body Content */}
         {items.length === 0 ? (
           <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
@@ -150,11 +159,11 @@ export default function CartDrawer() {
                       {item.validity || '1 Month'}
                     </span>
                     <span className="text-xs font-bold text-[#ccff00]">
-                      ৳{item.price * item.quantity}
+                      {formatPrice(item.price * item.quantity)}
                     </span>
                     {item.quantity > 1 && (
                       <span className="text-[10px] text-gray-500">
-                        (৳{item.price} each)
+                        ({formatPrice(item.price)} each)
                       </span>
                     )}
                   </div>
@@ -226,10 +235,10 @@ export default function CartDrawer() {
                 <div className="flex items-center justify-between p-2 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs">
                   <span className="font-bold flex items-center gap-1">
                     <Check className="w-3.5 h-3.5" />
-                    কুপন &apos;{appliedCoupon.code}&apos; প্রয়োগ হয়েছে (-৳{discountAmount})
+                    কুপন &apos;{appliedCoupon.code}&apos; প্রয়োগ হয়েছে (-{formatPrice(discountAmount)})
                   </span>
                   <span className="text-[10px] bg-emerald-500 text-black px-1.5 py-0.5 rounded font-black">
-                    {appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}% OFF` : `৳${appliedCoupon.discount_value} OFF`}
+                    {appliedCoupon.discount_type === 'percentage' ? `${appliedCoupon.discount_value}% OFF` : `${formatPrice(appliedCoupon.discount_value)} OFF`}
                   </span>
                 </div>
               ) : (
@@ -283,19 +292,19 @@ export default function CartDrawer() {
             <div className="space-y-1.5 text-xs sm:text-sm">
               <div className="flex justify-between text-gray-400">
                 <span>সাবটোটাল ({totalCount}টি আইটেম):</span>
-                <span className="text-white font-medium">৳{subtotal}</span>
+                <span className="text-white font-medium">{formatPrice(subtotal)}</span>
               </div>
               {discountAmount > 0 && (
                 <div className="flex justify-between text-emerald-400">
                   <span>কুপন ডিসকাউন্ট:</span>
-                  <span className="font-bold">- ৳{discountAmount}</span>
+                  <span className="font-bold">- {formatPrice(discountAmount)}</span>
                 </div>
               )}
               <div className="flex justify-between items-baseline pt-2 border-t border-white/10 text-white">
                 <span className="text-sm sm:text-base font-bold">সর্বমোট প্রদেয়:</span>
                 <div className="text-right">
                   <span className="text-lg sm:text-2xl font-black text-[#ccff00] tracking-tight">
-                    ৳{finalTotal}
+                    {formatPrice(finalTotal)}
                   </span>
                 </div>
               </div>
