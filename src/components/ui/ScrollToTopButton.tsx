@@ -7,12 +7,19 @@ export default function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
+    let ticking = false;
+    let lastState = false;
     const handleScroll = () => {
-      // Show button when scrolled down more than 300px
-      if (window.scrollY > 300) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isOver = window.scrollY > 300;
+          if (isOver !== lastState) {
+            lastState = isOver;
+            setIsVisible(isOver);
+          }
+          ticking = false;
+        });
+        ticking = true;
       }
     };
 

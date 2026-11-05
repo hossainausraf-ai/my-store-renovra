@@ -130,12 +130,14 @@ export default function PackageCard({ pkg }: { pkg: PackageProps }) {
         </div>
       </div>
 
-      {/* Quick View Modal */}
-      <QuickViewModal 
-        item={quickViewData}
-        isOpen={isQuickViewOpen}
-        onClose={() => setIsQuickViewOpen(false)}
-      />
+      {/* Quick View Modal - only mount when opened to eliminate 11 idle modal trees */}
+      {isQuickViewOpen && (
+        <QuickViewModal 
+          item={quickViewData}
+          isOpen={isQuickViewOpen}
+          onClose={() => setIsQuickViewOpen(false)}
+        />
+      )}
     </>
   );
 }

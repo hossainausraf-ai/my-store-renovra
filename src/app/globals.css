@@ -16,54 +16,71 @@
     --surface: #1E293B;
   }
 
+  html {
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeSpeed;
+  }
+
   body {
     background-color: var(--background);
     color: var(--foreground);
     font-family: var(--font-jakarta), var(--font-noto-bengali), sans-serif;
+    overflow-x: hidden;
+  }
+
+  * {
+    -webkit-tap-highlight-color: transparent;
   }
 }
 
-/* Custom Animations */
+/* GPU Hardware-Accelerated Animations */
 @keyframes marquee-vertical {
   0% {
-    transform: translateY(0);
+    transform: translate3d(0, 0, 0);
   }
-
   100% {
-    transform: translateY(-50%);
+    transform: translate3d(0, -50%, 0);
   }
 }
 
 @keyframes marquee-horizontal-left {
   0% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
-
   100% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 
 @keyframes marquee-horizontal-right {
   0% {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
-
   100% {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-marquee-vertical {
   animation: marquee-vertical 20s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
 }
 
 .animate-marquee-left {
-  animation: marquee-horizontal-left 30s linear infinite;
+  animation: marquee-horizontal-left 32s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 .animate-marquee-right {
-  animation: marquee-horizontal-right 30s linear infinite;
+  animation: marquee-horizontal-right 32s linear infinite;
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
 }
 
 /* Hide scrollbar utility */

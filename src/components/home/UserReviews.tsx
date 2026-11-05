@@ -129,7 +129,7 @@ const row2Reviews: ReviewItem[] = [
 
 function ReviewCard({ review }: { review: ReviewItem }) {
   return (
-    <div className="w-[210px] min-[360px]:w-[225px] sm:w-[380px] shrink-0 bg-[#0e131f]/90 backdrop-blur-md border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 shadow-2xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
+    <div className="w-[210px] min-[360px]:w-[225px] sm:w-[380px] shrink-0 bg-[#0e131f] border border-white/10 hover:border-white/20 rounded-xl sm:rounded-2xl p-2.5 sm:p-5 shadow-xl transition-all duration-300 hover:-translate-y-0.5 flex flex-col justify-between">
       <div>
         {/* Top Header: Avatar + Name + Recommends + Date */}
         <div className="flex items-start gap-2 sm:gap-3">
@@ -221,13 +221,11 @@ export default function UserReviews() {
       </div>
 
       {/* Two-Row Marquee Loop Carousel */}
-      <div 
-        className="relative w-full overflow-hidden space-y-2.5 sm:space-y-5"
-        style={{
-          maskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)',
-          WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%)'
-        }}
-      >
+      <div className="relative w-full overflow-hidden space-y-2.5 sm:space-y-5">
+        {/* Soft edge fade overlays */}
+        <div className="absolute left-0 top-0 bottom-0 w-8 sm:w-28 bg-gradient-to-r from-[var(--background)] to-transparent pointer-events-none z-10" />
+        <div className="absolute right-0 top-0 bottom-0 w-8 sm:w-28 bg-gradient-to-l from-[var(--background)] to-transparent pointer-events-none z-10" />
+
         {/* Row 1: Right to Left (animate-marquee-left) */}
         <div className="flex gap-2.5 sm:gap-5 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused] py-0.5">
           {loopRow1.map((rev, idx) => (

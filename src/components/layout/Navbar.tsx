@@ -40,12 +40,24 @@ export default function Navbar() {
       .catch(() => setCurrentUser(null));
   }, [pathname]);
 
-  // Handle scroll effect
+  // Handle scroll effect with high-performance RAF throttle
   useEffect(() => {
+    let ticking = false;
+    let lastState = false;
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const isOver = window.scrollY > 20;
+          if (isOver !== lastState) {
+            lastState = isOver;
+            setScrolled(isOver);
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -68,9 +80,9 @@ export default function Navbar() {
       <nav className="fixed w-full z-50 top-2.5 sm:top-4 px-2.5 sm:px-6">
         <div className="max-w-5xl mx-auto transition-all duration-300">
           {/* Main Pill Navbar */}
-          <div className={`border rounded-full px-3 sm:px-6 py-1.5 sm:py-3 flex items-center justify-between transition-all duration-300 ${scrolled
-              ? 'bg-[#1E293B]/80 border-white/10 backdrop-blur-xl shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
-              : 'bg-[#1E293B]/40 border-white/10 backdrop-blur-md shadow-lg'
+          <div className={`border rounded-full px-3 sm:px-6 py-1.5 sm:py-3 flex items-center justify-between transition-all duration-300 transform-gpu ${scrolled
+              ? 'bg-[#1E293B]/90 border-white/10 backdrop-blur-md shadow-[0_8px_30px_rgba(0,0,0,0.5)]'
+              : 'bg-[#1E293B]/50 border-white/10 backdrop-blur-sm shadow-lg'
             }`}>
 
             {/* Mobile Menu Button */}

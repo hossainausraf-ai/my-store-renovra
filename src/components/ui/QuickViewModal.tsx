@@ -40,9 +40,11 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
+let cachedWhatsApp: string | null = null;
+
 export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModalProps) {
   const { addToCart } = useCart();
-  const [supportWhatsApp, setSupportWhatsApp] = React.useState('8801766392692');
+  const [supportWhatsApp, setSupportWhatsApp] = React.useState(cachedWhatsApp || '8801766392692');
   const [activeImg, setActiveImg] = React.useState<string>('');
 
   React.useEffect(() => {
@@ -66,12 +68,15 @@ export default function QuickViewModal({ item, isOpen, onClose }: QuickViewModal
   const currentImg = activeImg || item?.imageUrl || allImages[0] || '';
 
   useEffect(() => {
+    if (cachedWhatsApp) return;
     fetch('/api/settings')
       .then(res => res.json())
       .then(data => {
         if (data.success && data.settings?.support_whatsapp) {
           const num = data.settings.support_whatsapp.replace(/[^0-9]/g, '');
-          setSupportWhatsApp(num.startsWith('88') ? num : `88${num}`);
+          const formatted = num.startsWith('88') ? num : `88${num}`;
+          cachedWhatsApp = formatted;
+          setSupportWhatsApp(formatted);
         }
       })
       .catch(() => {});

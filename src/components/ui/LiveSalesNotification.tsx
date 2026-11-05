@@ -188,7 +188,7 @@ export default function LiveSalesNotification() {
 
   return (
     <div
-      className={`hidden sm:block fixed z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+      className={`hidden sm:block fixed z-50 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] transform-gpu ${
         isVisible 
           ? 'opacity-100 translate-y-0 scale-100 pointer-events-auto' 
           : 'opacity-0 translate-y-6 scale-95 pointer-events-none'
@@ -198,7 +198,7 @@ export default function LiveSalesNotification() {
         href="/#packages"
         className="block group relative"
       >
-        <div className="bg-[#0f1419]/95 backdrop-blur-xl border border-white/10 hover:border-[#ccff00]/40 rounded-2xl p-3 sm:p-3.5 shadow-[0_15px_40px_rgba(0,0,0,0.7),0_0_20px_rgba(204,255,0,0.05)] flex items-center gap-3 transition-all duration-300">
+        <div className="bg-[#0f1419]/95 backdrop-blur-md border border-white/10 hover:border-[#ccff00]/40 rounded-2xl p-3 sm:p-3.5 shadow-[0_15px_40px_rgba(0,0,0,0.7),0_0_20px_rgba(204,255,0,0.05)] flex items-center gap-3 transition-all duration-300">
           
           {/* Avatar with Initials + Shopping Bag Icon Badge */}
           <div className="relative shrink-0">

@@ -160,9 +160,9 @@ function ToolCard({ tool }: { tool: ToolLogo }) {
 }
 
 export default function ToolsMarquee() {
-  // Multiply sets to ensure seamless infinite looping with zero pop-in
-  const topQuad = [...topRowTools, ...topRowTools, ...topRowTools, ...topRowTools];
-  const bottomQuad = [...bottomRowTools, ...bottomRowTools, ...bottomRowTools, ...bottomRowTools];
+  // 2 sets perfectly match 50% keyframe loop with half the DOM footprint
+  const topQuad = [...topRowTools, ...topRowTools];
+  const bottomQuad = [...bottomRowTools, ...bottomRowTools];
 
   return (
     <section className="py-6 sm:py-24 w-full overflow-hidden bg-transparent border-t border-white/5 relative">

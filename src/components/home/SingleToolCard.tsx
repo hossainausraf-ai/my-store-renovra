@@ -74,7 +74,7 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
 
           {/* Logo and Category Row */}
           <div className="flex justify-between items-end gap-2 sm:gap-3">
-            <div className="w-9 h-9 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] z-20 bg-white/10 backdrop-blur-md border border-white/20 p-1 sm:p-2 overflow-hidden relative shrink-0">
+            <div className="w-9 h-9 sm:w-14 sm:h-14 rounded-xl sm:rounded-2xl flex items-center justify-center shadow-[0_8px_32px_rgba(0,0,0,0.3)] z-20 bg-[#15232d] border border-white/15 p-1 sm:p-2 overflow-hidden relative shrink-0">
               {tool.imageUrl && !imgError ? (
                 <img 
                   src={tool.imageUrl} 
@@ -233,12 +233,14 @@ export default function SingleToolCard({ tool }: SingleToolProps) {
         </div>
       </div>
 
-      {/* Quick View Modal */}
-      <QuickViewModal 
-        item={quickViewData}
-        isOpen={isQuickViewOpen}
-        onClose={() => setIsQuickViewOpen(false)}
-      />
+      {/* Quick View Modal - only mount when opened to eliminate 30+ idle modal trees */}
+      {isQuickViewOpen && (
+        <QuickViewModal 
+          item={quickViewData}
+          isOpen={isQuickViewOpen}
+          onClose={() => setIsQuickViewOpen(false)}
+        />
+      )}
     </>
   );
 }

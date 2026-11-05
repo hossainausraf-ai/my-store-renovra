@@ -125,11 +125,10 @@ export default function HeroSection() {
   return (
     <div className="relative w-full pt-20 pb-3 sm:pt-16 sm:pb-8 md:pt-24 md:pb-12 overflow-hidden bg-transparent">
       
-      {/* Dynamic Background Effects */}
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mix-blend-overlay"></div>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-      <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-gradient-to-br from-[#ccff00]/10 to-[#00bfff]/5 rounded-full blur-[120px] pointer-events-none translate-x-1/3 -translate-y-1/3"></div>
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-gradient-to-tr from-[#8a2be2]/10 to-transparent rounded-full blur-[100px] pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+      {/* Dynamic Background Effects (Hardware Accelerated) */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none"></div>
+      <div className="absolute top-0 right-0 w-[500px] sm:w-[800px] h-[500px] sm:h-[800px] bg-gradient-to-br from-[#ccff00]/10 to-[#00bfff]/5 rounded-full blur-[80px] sm:blur-[100px] pointer-events-none translate-x-1/3 -translate-y-1/3 transform-gpu"></div>
+      <div className="absolute bottom-0 left-0 w-[400px] sm:w-[600px] h-[400px] sm:h-[600px] bg-gradient-to-tr from-[#8a2be2]/10 to-transparent rounded-full blur-[70px] sm:blur-[90px] pointer-events-none -translate-x-1/3 translate-y-1/3 transform-gpu"></div>
       
       {/* Inline styles for custom floating animations */}
       <style dangerouslySetInnerHTML={{__html: `

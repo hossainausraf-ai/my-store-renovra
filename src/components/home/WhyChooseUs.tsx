@@ -85,13 +85,11 @@ export default function WhyChooseUs() {
         </div>
 
         {/* Mobile View: 2 Compact Cards Visible at Once in Continuous Loop Carousel (Right to Left) */}
-        <div 
-          className="block md:hidden overflow-hidden w-full relative py-2 -mx-3 px-3"
-          style={{ 
-            maskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)',
-            WebkitMaskImage: 'linear-gradient(to right, transparent 0%, black 5%, black 95%, transparent 100%)'
-          }}
-        >
+        <div className="block md:hidden overflow-hidden w-full relative py-2 -mx-3 px-3">
+          {/* Soft edge fade overlays */}
+          <div className="absolute left-0 top-0 bottom-0 w-6 bg-gradient-to-r from-[var(--background)] to-transparent pointer-events-none z-10" />
+          <div className="absolute right-0 top-0 bottom-0 w-6 bg-gradient-to-l from-[var(--background)] to-transparent pointer-events-none z-10" />
+
           <div className="flex gap-3 w-max animate-marquee-left hover:[animation-play-state:paused] active:[animation-play-state:paused]">
             {[...FEATURES, ...FEATURES].map((feature, idx) => (
               <div

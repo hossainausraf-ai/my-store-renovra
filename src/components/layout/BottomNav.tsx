@@ -28,8 +28,8 @@ export default function BottomNav() {
   ];
 
   return (
-    <div className="md:hidden fixed bottom-4 left-4 right-4 z-50">
-      <div className="bg-[#1E293B]/90 backdrop-blur-xl border border-white/10 rounded-full px-6 py-3 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.5)]">
+    <div className="md:hidden fixed bottom-4 left-4 right-4 z-50 transform-gpu">
+      <div className="bg-[#0f172a]/95 backdrop-blur-md border border-white/10 rounded-full px-6 py-3 flex items-center justify-between shadow-[0_8px_30px_rgba(0,0,0,0.6)]">
         {navItems.map((item) => {
           const isPackages = item.href === '/#packages';
           const isHome = item.href === '/';

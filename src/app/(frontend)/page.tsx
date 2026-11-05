@@ -8,7 +8,7 @@ import UserReviews from '@/components/home/UserReviews';
 import WhyChooseUs from '@/components/home/WhyChooseUs';
 import HowItWorksVideos from '@/components/home/HowItWorksVideos';
 import { defaultProducts } from '@/data/products';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { ChevronDown, ChevronUp, Sparkles } from 'lucide-react';
 
 const INITIAL_VISIBLE_TOOLS = 12;
@@ -68,24 +68,28 @@ export default function Home() {
     return 'month';
   };
 
-  const subscriptions = products.filter(p => p.product_type === 'subscription');
-  const allSingleTools = products.filter(p => p.product_type === 'single_tool');
+  const subscriptions = useMemo(() => products.filter(p => p.product_type === 'subscription'), [products]);
+  const allSingleTools = useMemo(() => products.filter(p => p.product_type === 'single_tool'), [products]);
 
   // Normalize and deduplicate categories specifically for Single Tools (The Arsenal)
-  const categoryMap = new Map<string, string>();
-  allSingleTools.forEach(p => {
-    const raw = (p.category || '').trim();
-    if (!raw) return;
-    const lower = raw.toLowerCase();
-    if (!categoryMap.has(lower)) {
-      categoryMap.set(lower, raw);
-    }
-  });
-  const categories = ['All', ...Array.from(categoryMap.values())];
+  const categories = useMemo(() => {
+    const categoryMap = new Map<string, string>();
+    allSingleTools.forEach(p => {
+      const raw = (p.category || '').trim();
+      if (!raw) return;
+      const lower = raw.toLowerCase();
+      if (!categoryMap.has(lower)) {
+        categoryMap.set(lower, raw);
+      }
+    });
+    return ['All', ...Array.from(categoryMap.values())];
+  }, [allSingleTools]);
 
-  const singleTools = activeCategory.toLowerCase() === 'all'
-    ? allSingleTools
-    : allSingleTools.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
+  const singleTools = useMemo(() => {
+    return activeCategory.toLowerCase() === 'all'
+      ? allSingleTools
+      : allSingleTools.filter(p => (p.category || '').trim().toLowerCase() === activeCategory.toLowerCase());
+  }, [activeCategory, allSingleTools]);
 
   return (
     <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-20 sm:pb-24">
