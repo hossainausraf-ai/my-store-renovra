@@ -76,6 +76,34 @@ const defaultToolCards = [
       'Instant access after purchase'
     ],
     emojis: ['👍', '🔓', '📌', '🚀', '🤩']
+  },
+  {
+    id: 'hero-chatgpt',
+    name: 'ChatGPT',
+    logo: '/logos/chatgpt.svg',
+    features: [
+      'GPT-4o & o1 models',
+      'Unlimited prompts',
+      'Image & file uploads',
+      'Custom GPTs access',
+      'Priority response speed',
+      'Instant access after purchase'
+    ],
+    emojis: ['🚀', '🤩', '❤️', '👍', '🔓']
+  },
+  {
+    id: 'hero-duolingo',
+    name: 'Duolingo',
+    logo: '/logos/duolingo.svg',
+    features: [
+      'Super Duolingo access',
+      'No ads, ever',
+      'Unlimited hearts',
+      'Personalized practice',
+      'Offline lessons',
+      'Instant access after purchase'
+    ],
+    emojis: ['🤩', '❤️', '👍', '🔓', '📌']
   }
 ];
 

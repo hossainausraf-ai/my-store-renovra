@@ -73,5 +73,35 @@
     ],
     "emojis": ["👍", "🔓", "📌", "🚀", "🤩"],
     "order_idx": 4
+  },
+  {
+    "id": "hero-chatgpt",
+    "name": "ChatGPT",
+    "logo_url": "/logos/chatgpt.svg",
+    "features": [
+      "GPT-4o & o1 models",
+      "Unlimited prompts",
+      "Image & file uploads",
+      "Custom GPTs access",
+      "Priority response speed",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🚀", "🤩", "❤️", "👍", "🔓"],
+    "order_idx": 5
+  },
+  {
+    "id": "hero-duolingo",
+    "name": "Duolingo",
+    "logo_url": "/logos/duolingo.svg",
+    "features": [
+      "Super Duolingo access",
+      "No ads, ever",
+      "Unlimited hearts",
+      "Personalized practice",
+      "Offline lessons",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🤩", "❤️", "👍", "🔓", "📌"],
+    "order_idx": 6
   }
 ]
