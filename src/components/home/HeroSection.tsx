@@ -8,51 +8,23 @@ const changingWords = ['Students.', 'Creators.', 'Freelancers.', 'Designers.', '
 
 const defaultToolCards = [
   {
-    id: 'envato',
-    name: 'Envato Elements',
-    logo: 'https://cdn.worldvectorlogo.com/logos/envato.svg',
+    id: 'hero-udemy',
+    name: 'Udemy',
+    logo: '/logos/udemy.svg',
     features: [
-      'Unlimited downloads',
-      'Templates, graphics, fonts',
-      'Video & audio assets',
-      'Commercial license',
-      'New items weekly',
+      '10,000+ premium courses',
+      'Certificates of completion',
+      'Lifetime access content',
+      'Mobile & TV apps',
+      'Subtitles in many languages',
       'Instant access after purchase'
     ],
-    emojis: ['🚀', '😍', '❤️', '🔥', '✨']
+    emojis: ['👍', '🔓', '📌', '🚀', '🤩']
   },
   {
-    id: 'canva',
-    name: 'Canva Pro',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg',
-    features: [
-      '100M+ premium assets',
-      'Magic Studio AI tools',
-      'Background remover',
-      'Brand kits & resize',
-      '100GB cloud storage',
-      'Instant access after purchase'
-    ],
-    emojis: ['🎨', '✨', '🔥', '💖', '👑']
-  },
-  {
-    id: 'chatgpt',
-    name: 'ChatGPT Plus',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg',
-    features: [
-      'GPT-4o & o1 models',
-      'Unlimited prompts',
-      'Image & file uploads',
-      'Custom GPTs access',
-      'Priority response speed',
-      'Instant access after purchase'
-    ],
-    emojis: ['🤖', '⚡', '🧠', '💡', '🚀']
-  },
-  {
-    id: 'monica',
+    id: 'hero-monica',
     name: 'Monica AI',
-    logo: 'https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg',
+    logo: '/logos/monica.png',
     features: [
       'GPT-4, Claude & Gemini',
       'AI chat on any webpage',
@@ -61,7 +33,49 @@ const defaultToolCards = [
       'Cross-device sync',
       'Instant access after purchase'
     ],
-    emojis: ['😍', '🚀', '❤️', '🌟', '📌']
+    emojis: ['👍', '🔓', '📌', '🚀', '❤️']
+  },
+  {
+    id: 'hero-capcut',
+    name: 'CapCut Pro',
+    logo: '/logos/capcut.png',
+    features: [
+      'All Pro effects unlocked',
+      '4K export quality',
+      'Cloud storage included',
+      'AI tools & auto captions',
+      'No watermarks',
+      'Instant access after purchase'
+    ],
+    emojis: ['🤩', '❤️', '👍', '🔓', '📌']
+  },
+  {
+    id: 'hero-semrush',
+    name: 'Semrush',
+    logo: '/logos/semrush.png',
+    features: [
+      'Ubersuggest Included',
+      'No Search limitations',
+      'Up to 2 devices / IP allowed',
+      '99% uptime with no interruptions',
+      '24/7 live chat support',
+      'Instant access after purchase'
+    ],
+    emojis: ['👍', '🔓', '📌', '🚀', '🤩']
+  },
+  {
+    id: 'hero-hix',
+    name: 'Hix AI',
+    logo: '/logos/hix.png',
+    features: [
+      '120+ AI writing tools',
+      'AI detector & humanizer',
+      'Long-form article writer',
+      'SEO content optimizer',
+      'Multi-language support',
+      'Instant access after purchase'
+    ],
+    emojis: ['👍', '🔓', '📌', '🚀', '🤩']
   }
 ];
 
@@ -80,7 +94,7 @@ export default function HeroSection() {
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
-    fetch('/api/hero-cards')
+    fetch(`/api/hero-cards?t=${Date.now()}`, { cache: 'no-store' })
       .then(res => res.json())
       .then(data => {
         if (data.success && Array.isArray(data.cards) && data.cards.length > 0) {

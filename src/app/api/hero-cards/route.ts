@@ -4,7 +4,14 @@ import { dbGetHeroCards, dbSaveHeroCard, dbDeleteHeroCard } from '@/lib/d1';
 export async function GET() {
   try {
     const cards = await dbGetHeroCards();
-    return NextResponse.json({ success: true, cards });
+    return NextResponse.json(
+      { success: true, cards },
+      {
+        headers: {
+          'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        },
+      }
+    );
   } catch (error: any) {
     console.error('Error fetching hero cards:', error);
     return NextResponse.json({ success: false, message: error.message }, { status: 500 });

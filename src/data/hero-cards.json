@@ -1,53 +1,23 @@
 [
   {
-    "id": "hero-envato",
-    "name": "Envato Elements",
-    "logo_url": "https://cdn.worldvectorlogo.com/logos/envato.svg",
+    "id": "hero-udemy",
+    "name": "Udemy",
+    "logo_url": "/logos/udemy.svg",
     "features": [
-      "Unlimited downloads",
-      "Templates, graphics, fonts",
-      "Video & audio assets",
-      "Commercial license",
-      "New items weekly",
+      "10,000+ premium courses",
+      "Certificates of completion",
+      "Lifetime access content",
+      "Mobile & TV apps",
+      "Subtitles in many languages",
       "Instant access after purchase"
     ],
-    "emojis": ["🚀", "😍", "❤️", "🔥", "✨"],
+    "emojis": ["👍", "🔓", "📌", "🚀", "🤩"],
     "order_idx": 0
-  },
-  {
-    "id": "hero-canva",
-    "name": "Canva Pro",
-    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg",
-    "features": [
-      "100M+ premium assets",
-      "Magic Studio AI tools",
-      "Background remover",
-      "Brand kits & resize",
-      "100GB cloud storage",
-      "Instant access after purchase"
-    ],
-    "emojis": ["🎨", "✨", "🔥", "💖", "👑"],
-    "order_idx": 1
-  },
-  {
-    "id": "hero-chatgpt",
-    "name": "ChatGPT Plus",
-    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/0/04/ChatGPT_logo.svg",
-    "features": [
-      "GPT-4o & o1 models",
-      "Unlimited prompts",
-      "Image & file uploads",
-      "Custom GPTs access",
-      "Priority response speed",
-      "Instant access after purchase"
-    ],
-    "emojis": ["🤖", "⚡", "🧠", "💡", "🚀"],
-    "order_idx": 2
   },
   {
     "id": "hero-monica",
     "name": "Monica AI",
-    "logo_url": "https://upload.wikimedia.org/wikipedia/commons/4/47/Claude_Ai.svg",
+    "logo_url": "/logos/monica.png",
     "features": [
       "GPT-4, Claude & Gemini",
       "AI chat on any webpage",
@@ -56,8 +26,52 @@
       "Cross-device sync",
       "Instant access after purchase"
     ],
-    "emojis": ["😍", "🚀", "❤️", "🌟", "📌"],
+    "emojis": ["👍", "🔓", "📌", "🚀", "❤️"],
+    "order_idx": 1
+  },
+  {
+    "id": "hero-capcut",
+    "name": "CapCut Pro",
+    "logo_url": "/logos/capcut.png",
+    "features": [
+      "All Pro effects unlocked",
+      "4K export quality",
+      "Cloud storage included",
+      "AI tools & auto captions",
+      "No watermarks",
+      "Instant access after purchase"
+    ],
+    "emojis": ["🤩", "❤️", "👍", "🔓", "📌"],
+    "order_idx": 2
+  },
+  {
+    "id": "hero-semrush",
+    "name": "Semrush",
+    "logo_url": "/logos/semrush.png",
+    "features": [
+      "Ubersuggest Included",
+      "No Search limitations",
+      "Up to 2 devices / IP allowed",
+      "99% uptime with no interruptions",
+      "24/7 live chat support",
+      "Instant access after purchase"
+    ],
+    "emojis": ["👍", "🔓", "📌", "🚀", "🤩"],
     "order_idx": 3
+  },
+  {
+    "id": "hero-hix",
+    "name": "Hix AI",
+    "logo_url": "/logos/hix.png",
+    "features": [
+      "120+ AI writing tools",
+      "AI detector & humanizer",
+      "Long-form article writer",
+      "SEO content optimizer",
+      "Multi-language support",
+      "Instant access after purchase"
+    ],
+    "emojis": ["👍", "🔓", "📌", "🚀", "🤩"],
+    "order_idx": 4
   }
 ]
-

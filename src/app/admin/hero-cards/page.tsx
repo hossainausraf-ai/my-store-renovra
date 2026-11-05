@@ -26,7 +26,7 @@ export interface HeroCard {
   order_idx?: number;
 }
 
-const PRESET_EMOJIS = ['🚀', '🔥', '✨', '💡', '👑', '🎨', '⚡', '🧠', '❤️', '😍'];
+const PRESET_EMOJIS = ['👍', '🔓', '📌', '🚀', '🤩', '❤️', '🔥', '✨', '💡', '👑', '🎨', '⚡', '🧠', '😍', '🌟'];
 
 export default function AdminHeroCardsPage() {
   const [cards, setCards] = useState<HeroCard[]>([]);
@@ -53,7 +53,7 @@ export default function AdminHeroCardsPage() {
   const fetchCards = async () => {
     setIsLoading(true);
     try {
-      const res = await fetch('/api/hero-cards');
+      const res = await fetch(`/api/hero-cards?t=${Date.now()}`, { cache: 'no-store' });
       const data = await res.json();
       if (data.success && Array.isArray(data.cards)) {
         setCards(data.cards);
