@@ -50,7 +50,7 @@ export default function HowItWorksVideos() {
   const [deviceTab, setDeviceTab] = useState<'pc' | 'phone'>('pc');
 
   return (
-    <section id="faq" className="relative w-full py-6 sm:py-20 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24 sm:scroll-mt-32">
+    <section id="faq" className="relative w-full pt-4 sm:pt-8 pb-4 sm:pb-8 px-3 sm:px-6 lg:px-8 max-w-7xl mx-auto scroll-mt-24 sm:scroll-mt-32">
       {/* Anchor for Watch How It Works links */}
       <div id="how-it-works" className="-mt-24 pt-24" />
 

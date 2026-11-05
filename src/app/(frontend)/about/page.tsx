@@ -1,6 +1,6 @@
 export default function AboutPage() {
   return (
-    <main className="flex flex-col items-center pt-32 pb-24 px-4 min-h-screen">
+    <main className="flex flex-col items-center pt-28 sm:pt-32 pb-10 sm:pb-14 px-4 min-h-screen">
       <div className="max-w-4xl mx-auto w-full">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-6xl font-bold tracking-tight mb-6 text-white">About Us</h1>

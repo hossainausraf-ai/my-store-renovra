@@ -23,7 +23,7 @@ export default function DigitalProductsPage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center pt-24 sm:pt-32 pb-24 px-2.5 sm:px-4 min-h-screen">
+    <main className="flex flex-col items-center pt-24 sm:pt-32 pb-10 sm:pb-14 px-2.5 sm:px-4 min-h-screen">
       <div className="max-w-7xl mx-auto w-full">
         <div className="text-center mb-10 sm:mb-16">
           <p className="text-purple-500 text-[10px] sm:text-xs font-bold tracking-[0.2em] uppercase mb-2 sm:mb-3">Resources</p>

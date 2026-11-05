@@ -93,7 +93,7 @@ export default function Home() {
   }, [activeCategory, allSingleTools]);
 
   return (
-    <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-20 sm:pb-24">
+    <main className="flex flex-col items-center justify-center min-h-screen overflow-x-hidden pb-6 sm:pb-10">
 
       {/* Hero Section */}
       <div className="w-full">

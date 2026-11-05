@@ -20,7 +20,7 @@ export default function ContactPage() {
   }, []);
 
   return (
-    <main className="flex flex-col items-center pt-28 sm:pt-36 pb-24 px-4 min-h-screen">
+    <main className="flex flex-col items-center pt-28 sm:pt-36 pb-10 sm:pb-14 px-4 min-h-screen">
       <div className="max-w-3xl mx-auto w-full">
         <div className="text-center mb-12 sm:mb-16">
           <h1 className="text-3xl sm:text-5xl md:text-6xl font-black tracking-tight mb-4 text-white">Contact Us</h1>
